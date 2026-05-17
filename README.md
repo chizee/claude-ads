@@ -250,9 +250,11 @@ Comprehensive coverage across all platforms with weighted severity scoring:
 | TikTok Ads | 28 | Creative-first, Smart+, GMV Max, Search Ads, Events API (post-USDS) |
 | Microsoft Ads | 24 | Google import safety, Copilot, CTV, LinkedIn targeting, video |
 | Apple Ads | 35+ | Campaign structure, CPPs, Maximize Conversions, AdAttributionKit |
-| Amazon Ads | 30+ | Sponsored Products / Brands / Display, ACOS / TACOS, search-term harvesting |
+| Amazon Ads | 30+\* | Sponsored Products / Brands / Display, ACOS / TACOS, search-term harvesting |
 | Cross-platform | 3 | Privacy infrastructure, creative diversity, refresh cadence |
-| Attribution + Server-side | 25+ | AdAttributionKit, GA4, Consent Mode V2, sGTM, CAPI Gateway, hash quality |
+| Attribution + Server-side | 25+\* | AdAttributionKit, GA4, Consent Mode V2, sGTM, CAPI Gateway, hash quality |
+
+> \* **Verified vs estimated counts.** The 209 checks for Google (80), Meta (50), LinkedIn (27), TikTok (28), and Microsoft (24) are bidirectionally verified against the eval harness catalog (`tests/fixtures/check-catalog.yaml`) — they can't drift without failing CI. Apple, Amazon, Cross-platform, and Attribution + Server-side counts are inline thresholds in their respective SKILL.md files; corresponding audit reference files and catalog entries land in Wave 3 (`apple-audit.md`, `amazon-audit.md`, `attribution-audit.md`).
 
 <p align="center">
   <img src="assets/diagrams/15-platform-grid.svg" alt="Platform Coverage Grid" width="100%">
