@@ -605,6 +605,18 @@ Built by **[Agrici Daniel](https://agricidaniel.com/about)**: AI Workflow Archit
 - [YouTube](https://www.youtube.com/@AgriciDaniel): tutorials and demos
 - [All open-source tools](https://github.com/AgriciDaniel): public profile
 
+## Star history
+
+<a href="https://star-history.com/#AgriciDaniel/claude-ads&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=AgriciDaniel/claude-ads&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=AgriciDaniel/claude-ads&type=Date" />
+    <img alt="Star history of AgriciDaniel/claude-ads on GitHub" src="https://api.star-history.com/svg?repos=AgriciDaniel/claude-ads&type=Date" />
+  </picture>
+</a>
+
+If Claude Ads saves you time, a star on the [public repo](https://github.com/AgriciDaniel/claude-ads) is the easiest way to say thanks (and helps other PPC folks find it).
+
 ## License
 
 MIT. See [LICENSE](LICENSE) for details.
