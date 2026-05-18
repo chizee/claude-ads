@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="Claude Ads: Paid Advertising Audit Skill for Claude Code — animated terminal-style banner with breathing gradient logo, scanning command palette, and pulsing status indicators" width="100%">
+  <img src="assets/banner.svg" alt="Claude Ads: Paid Advertising Audit Skill for Claude Code. Animated terminal-style banner with breathing gradient logo, scanning command palette, and pulsing status indicators" width="100%">
 </p>
 
-# Claude Ads — Paid Advertising Audit Skill for Claude Code
+# Claude Ads: Paid Advertising Audit Skill for Claude Code
 
-A manual audit of a single Google Ads account takes 4-6 hours of senior PPC time. **Claude Ads runs the same audit in 10-15 minutes**, scores it on a 0-100 weighted scale, and outputs a prioritized action plan — across Google, Meta, YouTube, LinkedIn, TikTok, Microsoft, Apple, and Amazon Ads. Built for **PPC agencies, in-house marketers, and freelance ad consultants**. Local, deterministic, MIT-licensed.
+A manual audit of a single Google Ads account takes 4-6 hours of senior PPC time. **Claude Ads runs the same audit in 10-15 minutes**, scores it on a 0-100 weighted scale, and outputs a prioritized action plan across Google, Meta, YouTube, LinkedIn, TikTok, Microsoft, Apple, and Amazon Ads. Built for **PPC agencies, in-house marketers, and freelance ad consultants**. Local, deterministic, MIT-licensed.
 
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skills-Compatible-blue)](https://agentskills.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -23,24 +23,24 @@ A manual audit of a single Google Ads account takes 4-6 hours of senior PPC time
 > **Last updated:** 2026-05-18 · **Version:** v1.7.0 · [CHANGELOG](CHANGELOG.md) · [Blog: full ad audit breakdown](https://agricidaniel.com/blog/claude-code-ad-agency)
 
 > **Two versions of this skill.**
-> - 🌐 **Public open-source** → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads) — MIT, public releases, no membership. Use this if you want stable + downloadable.
-> - 🔒 **Community private mirror** (this repo) → [`AI-Marketing-Hub/claude-ads`](https://github.com/AI-Marketing-Hub/claude-ads) — early access to v1.6.0+ work, Wave 2 sub-skills, 10-Principle Thinking Framework, direct collab with the [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) community. Requires membership.
+> - 🌐 **Public open-source** → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads): MIT, public releases, no membership. Use this if you want stable + downloadable.
+> - 🔒 **Community private mirror** (this repo) → [`AI-Marketing-Hub/claude-ads`](https://github.com/AI-Marketing-Hub/claude-ads): early access to v1.6.0+ work, Wave 2 sub-skills, 10-Principle Thinking Framework, direct collab with the [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) community. Requires membership.
 >
 > Badges above track the public repo since shields.io can't read private repos.
 
 ## Who this is for
 
-- **PPC agencies running 5+ accounts** — audit every account weekly instead of once a quarter. Same time budget.
-- **In-house marketers owning paid across 4+ platforms** — second-pair-of-eyes before exec reviews. No human bias on which platform you favor.
-- **Freelance PPC consultants** — anchor day-1 client scope with a 10-minute audit. Win the engagement before you spend an hour on diagnostic.
+- **PPC agencies running 5+ accounts**: audit every account weekly instead of once a quarter. Same time budget.
+- **In-house marketers owning paid across 4+ platforms**: second-pair-of-eyes before exec reviews. No human bias on which platform you favor.
+- **Freelance PPC consultants**: anchor day-1 client scope with a 10-minute audit. Win the engagement before you spend an hour on diagnostic.
 
 ## What's new in v1.7.0 (Wave 2)
 
-- **3 new sub-skills** — `/ads amazon` (Sponsored Products/Brands/Display, ACOS/TACOS), `/ads attribution` (AdAttributionKit + GA4 + Consent Mode V2), `/ads tracking` (sGTM + CAPI Gateway + dedup + hashing).
-- **41-test pytest eval harness** in `tests/` — routing snapshots, bidirectional 209-check catalog coverage, scoring math determinism, SSRF regression. Runs in CI on every commit.
-- **Cross-runtime install matrix** — `install.sh` / `install.ps1 --target=<host>` with whitelist validation for Claude Code, Codex CLI, Cursor, Windsurf, Gemini CLI, Goose.
-- **Deep platform rewrites** — `/ads google` for the AI Max era (`ai_max_setting.enable_ai_max`, AI Brief, FUE, brand exclusions). `/ads meta` for the Andromeda + GEM + Lattice era with Entity-ID clustering detection.
-- **10-Principle Thinking Framework** — every audit, plan, and creative output runs under a shared cognitive discipline. See [`ads/references/thinking-framework.md`](ads/references/thinking-framework.md).
+- **3 new sub-skills**: `/ads amazon` (Sponsored Products/Brands/Display, ACOS/TACOS), `/ads attribution` (AdAttributionKit + GA4 + Consent Mode V2), `/ads tracking` (sGTM + CAPI Gateway + dedup + hashing).
+- **41-test pytest eval harness** in `tests/`: routing snapshots, bidirectional 209-check catalog coverage, scoring math determinism, SSRF regression. Runs in CI on every commit.
+- **Cross-runtime install matrix**: `install.sh` / `install.ps1 --target=<host>` with whitelist validation for Claude Code, Codex CLI, Cursor, Windsurf, Gemini CLI, Goose.
+- **Deep platform rewrites**: `/ads google` for the AI Max era (`ai_max_setting.enable_ai_max`, AI Brief, FUE, brand exclusions). `/ads meta` for the Andromeda + GEM + Lattice era with Entity-ID clustering detection.
+- **10-Principle Thinking Framework**: every audit, plan, and creative output runs under a shared cognitive discipline. See [`ads/references/thinking-framework.md`](ads/references/thinking-framework.md).
 
 Full release notes: [CHANGELOG.md](CHANGELOG.md).
 
@@ -63,7 +63,7 @@ What `/ads audit` actually returns (truncated for brevity):
       "id": "M-AND-01",
       "severity": "critical",
       "platform": "meta",
-      "title": "Andromeda creative similarity > 60% — retrieval suppression risk",
+      "title": "Andromeda creative similarity > 60%: retrieval suppression risk",
       "impact": "Estimated 20-35% reach loss; 4 ad sets affected",
       "action": "Replace 7 near-duplicate creatives with concept-diverse variants",
       "owner": "creative",
@@ -98,12 +98,13 @@ Plus a PDF version (`/ads report`) with health score gauge, platform comparison 
 - [Features: what 250+ audit checks cover](#features-what-250-audit-checks-cover)
 - [Compared to manual / agency / commercial tools](#compared-to-manual--agency--commercial-tools)
 - [Use cases](#use-cases)
-- [Eval harness — verified rigor](#eval-harness--verified-rigor)
+- [Eval harness: verified rigor](#eval-harness-verified-rigor)
 - [Architecture](#architecture)
 - [How it analyzes your ads](#how-it-analyzes-your-ads)
 - [FAQ](#faq)
 - [Requirements](#requirements)
 - [Uninstall](#uninstall)
+- [Roadmap](#roadmap)
 - [Project info](#project-info)
 - [Related projects](#related-projects)
 - [Maintainer](#maintainer)
@@ -113,10 +114,10 @@ Plus a PDF version (`/ads report`) with health score gauge, platform comparison 
 
 > ℹ️ **Which version are you installing?**
 >
-> - **Not an AI Marketing Hub Pro member?** Install from the public repo → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads). All commands below work there — swap `AI-Marketing-Hub/claude-ads` for `AgriciDaniel/claude-ads` and the plugin slug `claude-ads@ai-marketing-hub-claude-ads` for `claude-ads@agricidaniel-claude-ads`.
+> - **Not an AI Marketing Hub Pro member?** Install from the public repo → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads). All commands below work there: swap `AI-Marketing-Hub/claude-ads` for `AgriciDaniel/claude-ads` and the plugin slug `claude-ads@ai-marketing-hub-claude-ads` for `claude-ads@agricidaniel-claude-ads`.
 > - **Pro member?** The commands below install the community version with early access. Requires `gh auth login` (or PAT) with access to the `AI-Marketing-Hub` org. If `/plugin marketplace add` 404s, DM in the [Skool community](https://www.skool.com/ai-marketing-hub-pro) to get added.
 
-### 1. Plugin install (Claude Code — recommended)
+### 1. Plugin install (Claude Code, recommended)
 
 ```shell
 /plugin marketplace add AI-Marketing-Hub/claude-ads
@@ -174,7 +175,7 @@ bash install.sh --target=goose      # Goose CLI               (experimental)
 bash install.sh --target=claude --skill-dir=~/custom/skills --agent-dir=~/custom/agents
 ```
 
-Targets and override paths are strictly whitelist-validated — no shell injection, no flag confusion, no `..` segments, no UNC paths.
+Targets and override paths are strictly whitelist-validated: no shell injection, no flag confusion, no `..` segments, no UNC paths.
 
 > ⚠ **Experimental targets:** Only Claude Code is verified end-to-end. Other host install paths follow each host's documented convention; skill discovery and sub-skill routing may differ. Open an issue with reproduction details if a target needs adjustment.
 
@@ -244,9 +245,9 @@ claude
 | `/ads tiktok` | TikTok Ads deep analysis (Creative, Shop, Smart+, post-USDS) |
 | `/ads microsoft` | Microsoft/Bing Ads deep analysis (Copilot, Import validation) |
 | `/ads apple` | Apple Ads deep analysis (CPPs, Maximize Conversions, AdAttributionKit, TAP) |
-| `/ads amazon` | Amazon Ads deep analysis (Sponsored Products / Brands / Display, ACOS / TACOS) — *Wave 2* |
-| `/ads attribution` | Cross-platform attribution audit (AdAttributionKit, GA4, Consent Mode V2, MMP) — *Wave 2* |
-| `/ads tracking` | Server-side tracking pipeline audit (sGTM, CAPI Gateway, dedup, hashing) — *Wave 2* |
+| `/ads amazon` | Amazon Ads deep analysis (Sponsored Products / Brands / Display, ACOS / TACOS) · *Wave 2* |
+| `/ads attribution` | Cross-platform attribution audit (AdAttributionKit, GA4, Consent Mode V2, MMP) · *Wave 2* |
+| `/ads tracking` | Server-side tracking pipeline audit (sGTM, CAPI Gateway, dedup, hashing) · *Wave 2* |
 | `/ads creative` | Cross-platform creative quality audit and fatigue detection |
 | `/ads landing` | Landing page quality assessment for ad campaigns |
 | `/ads budget` | Budget allocation and bidding strategy review |
@@ -273,10 +274,10 @@ Spawns 6 parallel subagents:
 
 Generates a unified **Ads Health Score (0-100)** with prioritized action plan.
 
-> **Wave 2 standalone sub-skills.** `/ads audit` parallel-delegates the 6 agents above. Amazon, attribution, and server-side tracking are standalone sub-skills (`/ads amazon`, `/ads attribution`, `/ads tracking`) — invoke them directly. Wave 3 will add their paired audit agents.
+> **Wave 2 standalone sub-skills.** `/ads audit` parallel-delegates the 6 agents above. Amazon, attribution, and server-side tracking are standalone sub-skills (`/ads amazon`, `/ads attribution`, `/ads tracking`); invoke them directly. Wave 3 will add their paired audit agents.
 
 <p align="center">
-  <img src="assets/diagrams/02-parallel-audit.svg" alt="Parallel Audit Pipeline" width="100%">
+  <img src="assets/diagrams/02-pipeline-A.svg" alt="Audit pipeline: stage-by-stage execution from data intake through parallel sub-agent dispatch to scored report output" width="100%">
 </p>
 
 <p align="center">
@@ -314,7 +315,7 @@ Industry templates with platform mix, campaign architecture, creative strategy, 
 
 ### `/ads report`
 
-PDF audit reports for client deliverables — health score gauge, platform comparison charts, pass/fail distribution, formatted tables, zero-overlap layout.
+PDF audit reports for client deliverables: health score gauge, platform comparison charts, pass/fail distribution, formatted tables, zero-overlap layout.
 
 <p align="center">
   <img src="assets/diagrams/16-pdf-pipeline.svg" alt="PDF Report Pipeline" width="100%">
@@ -338,7 +339,7 @@ What every check actually does: catches the platform-specific blind spots that c
 | Cross-platform | 3 | Privacy infrastructure, creative diversity, refresh cadence |
 | Attribution + server-side | 25+\* | AdAttributionKit, GA4, Consent Mode V2, sGTM, CAPI Gateway, hash quality |
 
-> \* **Verified vs estimated.** The 209 checks for Google (80), Meta (50), LinkedIn (27), TikTok (28), and Microsoft (24) are bidirectionally verified against `tests/fixtures/check-catalog.yaml` — they can't drift without failing CI. Apple, Amazon, Cross-platform, and Attribution + Server-side counts are inline thresholds in their respective SKILL.md files; corresponding audit reference files + catalog entries land in Wave 3.
+> \* **Verified vs estimated.** The 209 checks for Google (80), Meta (50), LinkedIn (27), TikTok (28), and Microsoft (24) are bidirectionally verified against `tests/fixtures/check-catalog.yaml`; they can't drift without failing CI. Apple, Amazon, Cross-platform, and Attribution + Server-side counts are inline thresholds in their respective SKILL.md files; corresponding audit reference files + catalog entries land in Wave 3.
 
 <p align="center">
   <img src="assets/diagrams/15-platform-grid.svg" alt="Platform Coverage Grid" width="100%">
@@ -361,7 +362,7 @@ Weighted scoring algorithm with severity multipliers:
 | F | <40 | Urgent intervention required |
 
 <p align="center">
-  <img src="assets/diagrams/13-scoring-algorithm.svg" alt="Scoring Algorithm" width="100%">
+  <img src="assets/diagrams/04-scoring-weights-B.svg" alt="Scoring weight breakdown: donut chart showing the 9 audit categories that compose the 100-point Ads Health Score, with per-platform legend" width="100%">
 </p>
 
 ### Industry detection
@@ -397,7 +398,7 @@ AI-powered creative generation with 4 specialized agents (`/ads dna` → `/ads c
 
 ### 10-Principle Thinking Framework
 
-Every audit, plan, and creative output runs under a shared cognitive discipline — **OBSERVE × 2 / LISTEN / THINK / CONNECT × 2 / FEEL / ACCEPT / CREATE / GROW**. Maps each principle to concrete ad-work behavior, the anti-pattern that signals you're skipping it, and the workflow stage where it dominates. It's the difference between a list of red flags and a strategic deliverable. Defined in [`ads/references/thinking-framework.md`](ads/references/thinking-framework.md).
+Every audit, plan, and creative output runs under a shared cognitive discipline: **OBSERVE × 2 / LISTEN / THINK / CONNECT × 2 / FEEL / ACCEPT / CREATE / GROW**. Maps each principle to concrete ad-work behavior, the anti-pattern that signals you're skipping it, and the workflow stage where it dominates. It's the difference between a list of red flags and a strategic deliverable. Defined in [`ads/references/thinking-framework.md`](ads/references/thinking-framework.md).
 
 ### Data handling & privacy
 
@@ -417,7 +418,7 @@ Runs entirely on your local machine via Claude Code. No ad account data is sent 
 | **Output format** | Wall-of-findings PDF | Branded slide deck | Web dashboard, exports | **JSON + PDF, local files** |
 | **Custom benchmarks** | Manual | Manual | Vendor-fixed | **Edit local SKILL.md** |
 | **Data leaves machine?** | No (your spreadsheet) | Yes (sent to agency) | Yes (uploaded to vendor) | **No, fully local** |
-| **Lock-in** | None | High | High (data exit cost) | **None — MIT, your files** |
+| **Lock-in** | None | High | High (data exit cost) | **None (MIT, your files)** |
 | **Andromeda / AI Max / AdAttributionKit awareness** | Depends on analyst | Depends on agency seniority | Lagging (typically 6-12 mo behind) | **Andromeda (Oct 2025), AI Max (May 2025), AdAttributionKit + WWDC25 configurable windows, Consent Mode V2** |
 
 > Cost benchmarks: manual audit assumes a senior PPC consultant at typical agency billable rates; agency engagement based on common discovery/audit deliverable scopes; commercial-tool subscriptions reflect published mid-tier pricing across the PPC audit category. Your numbers may differ.
@@ -426,25 +427,29 @@ Runs entirely on your local machine via Claude Code. No ad account data is sent 
 
 **Agency lead running 12 client accounts.** Replaces the quarterly "deep audit" ritual with a weekly Monday morning `/ads audit` run per account. Time to deliver a client health-score email drops from 4 hours to 12 minutes; coverage goes from quarterly to weekly without billing more hours.
 
-**In-house marketer at a 50-person SaaS company.** Runs `/ads audit` 24 hours before quarterly business reviews. Catches the items the platform UI buries — broken conversion goals, ASC budget starvation, missing Andromeda creative diversity — before the CMO asks "why is CAC up?" in front of the board.
+**In-house marketer at a 50-person SaaS company.** Runs `/ads audit` 24 hours before quarterly business reviews. Catches the items the platform UI buries (broken conversion goals, ASC budget starvation, missing Andromeda creative diversity) before the CMO asks "why is CAC up?" in front of the board.
 
 **Freelance PPC consultant onboarding a new client.** Runs `/ads audit` on the discovery call. Anchors the engagement scope with a real 0-100 score and 3 prioritized critical findings instead of a vague "I'll take a look and get back to you." Closes more retainers because the proof of value happens before the proposal.
 
-## Eval harness — verified rigor
+## Eval harness: verified rigor
 
 **41 tests, 41 passing, CI on every commit.** Pytest suite in `tests/`:
 
-- **Routing snapshots** — every documented trigger phrase routes to its expected sub-skill (catches description regressions)
-- **Check-catalog coverage** — bidirectional check between `tests/fixtures/check-catalog.yaml` (209 IDs) and every audit reference file; no orphan IDs, no untracked rows
-- **Scoring math** — re-implements the weighted-score algorithm; asserts determinism across 10 runs and correct severity weighting
-- **SSRF regression suite** — 27 IPv4/IPv6 blocklist cases, non-HTTP scheme blocks, DNS fail-closed, credential redaction
+- **Routing snapshots**: every documented trigger phrase routes to its expected sub-skill (catches description regressions)
+- **Check-catalog coverage**: bidirectional check between `tests/fixtures/check-catalog.yaml` (209 IDs) and every audit reference file; no orphan IDs, no untracked rows
+- **Scoring math**: re-implements the weighted-score algorithm; asserts determinism across 10 runs and correct severity weighting
+- **SSRF regression suite**: 27 IPv4/IPv6 blocklist cases, non-HTTP scheme blocks, DNS fail-closed, credential redaction
 
 Rare among Claude Code skills. Makes the project auditable end-to-end and prevents claim-vs-reality drift between releases.
 
 ## Architecture
 
 <p align="center">
-  <img src="assets/diagrams/01-architecture.svg" alt="3-Layer Architecture" width="100%">
+  <img src="assets/diagrams/01-architecture-B.svg" alt="System architecture: left-to-right pipeline from /ads audit invocation through orchestrator routing, sub-skill execution, and report synthesis" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/diagrams/03-sub-skill-map-B.svg" alt="Sub-skill ecosystem: 22 modules organized as concentric rings, platform sub-skills inner, cross-cut and strategy and creative sub-skills outer" width="100%">
 </p>
 
 ```
@@ -466,12 +471,12 @@ Rare among Claude Code skills. Makes the project auditable end-to-end and preven
 
 ## How it analyzes your ads
 
-**Claude Ads works with data you provide** — exports, screenshots, or pasted metrics from your ad platform dashboards. It does not connect to any ad platform API automatically.
+**Claude Ads works with data you provide**: exports, screenshots, or pasted metrics from your ad platform dashboards. It does not connect to any ad platform API automatically.
 
 **To get accurate, account-specific recommendations:**
 1. Export your account data (last 30 days recommended)
 2. Run the relevant command: `/ads google`, `/ads audit`, etc.
-3. Claude will ask for your industry and budget context first — provide these for relevant benchmarks
+3. Claude will ask for your industry and budget context first; provide these for relevant benchmarks
 4. Paste or share your data when prompted
 
 <p align="center">
@@ -481,7 +486,7 @@ Rare among Claude Code skills. Makes the project auditable end-to-end and preven
 ### Live data integration (optional)
 
 For direct API access without manual exports, pair Claude Ads with MCP servers. See [`ads/references/mcp-integration.md`](ads/references/mcp-integration.md) for setup:
-- **Google Ads**: [mcp-google-ads](https://github.com/cohnen/mcp-google-ads) — 29 GAQL tools for live API access
+- **Google Ads**: [mcp-google-ads](https://github.com/cohnen/mcp-google-ads), 29 GAQL tools for live API access
 - **Meta Ads**: [Adspirer MCP](https://www.adspirer.com) (commercial); self-hosted option = wrap Meta Marketing API and feed JSON into the standard data-collection flow
 - **LinkedIn Ads**: [GrowthSpree MCP](https://www.growthspreeofficial.com) or [Adzviser MCP](https://adzviser.com)
 
@@ -500,13 +505,13 @@ No. Claude Ads analyzes data you provide (exports, screenshots, or pasted metric
 <details>
 <summary><b>Does it use real account data or generic benchmarks?</b></summary>
 
-Both. Your account data drives the audit; industry benchmarks (from research covering thousands of campaigns) provide the comparison floor and ceiling. Benchmarks are averages — results vary by industry, budget level, and account maturity. Always provide your industry and monthly spend up front for the most relevant comparisons.
+Both. Your account data drives the audit; industry benchmarks (from research covering thousands of campaigns) provide the comparison floor and ceiling. Benchmarks are averages; results vary by industry, budget level, and account maturity. Always provide your industry and monthly spend up front for the most relevant comparisons.
 </details>
 
 <details>
 <summary><b>Is ad posting or campaign creation still manual?</b></summary>
 
-Yes. Claude Ads is an audit and strategy tool. It finds issues, recommends fixes, and builds campaign plans — but creating, editing, or posting ads remains manual in your ad platform.
+Yes. Claude Ads is an audit and strategy tool. It finds issues, recommends fixes, and builds campaign plans, but creating, editing, or posting ads remains manual in your ad platform.
 </details>
 
 <details>
@@ -530,19 +535,19 @@ Use `/ads math` for the financial calculator (CPA, ROAS, CPL, break-even analysi
 <details>
 <summary><b>What's the maintenance & support commitment?</b></summary>
 
-Single maintainer (see [Maintainer](#maintainer)). Bug reports and issues filed via GitHub get a response within 48 hours on the public repo; faster for Pro community members via the [Skool community](https://www.skool.com/ai-marketing-hub-pro). No SLA on feature requests — those go through the public roadmap. CI runs the full eval harness on every commit, so regressions are caught before they ship.
+Single maintainer (see [Maintainer](#maintainer)). Bug reports and issues filed via GitHub get a response within 48 hours on the public repo; faster for Pro community members via the [Skool community](https://www.skool.com/ai-marketing-hub-pro). No SLA on feature requests; those go through the public roadmap. CI runs the full eval harness on every commit, so regressions are caught before they ship.
 </details>
 
 <details>
 <summary><b>Does my data leave my machine?</b></summary>
 
-No. The skill runs locally in Claude Code. When you opt into a live MCP integration (e.g. mcp-google-ads), data flows directly from your machine to the platform API — never through claude-ads infrastructure (there is none).
+No. The skill runs locally in Claude Code. When you opt into a live MCP integration (e.g. mcp-google-ads), data flows directly from your machine to the platform API, never through claude-ads infrastructure (there is none).
 </details>
 
 <details>
 <summary><b>How is this different from a commercial PPC audit tool?</b></summary>
 
-Three things: (1) local-first, no data uploaded anywhere; (2) MIT-licensed and forkable — you can edit the audit checks; (3) it tracks 2026-current platform changes (Andromeda, AI Max, AdAttributionKit) that commercial tools often lag 6-12 months behind on.
+Three things: (1) local-first, no data uploaded anywhere; (2) MIT-licensed and forkable: you can edit the audit checks; (3) it tracks 2026-current platform changes (Andromeda, AI Max, AdAttributionKit) that commercial tools often lag 6-12 months behind on.
 </details>
 
 <details>
@@ -571,29 +576,37 @@ curl -fsSL https://raw.githubusercontent.com/AI-Marketing-Hub/claude-ads/main/un
 irm https://raw.githubusercontent.com/AI-Marketing-Hub/claude-ads/main/uninstall.ps1 | iex
 ```
 
+## Roadmap
+
+<p align="center">
+  <img src="assets/diagrams/05-roadmap-A.svg" alt="Wave roadmap: 12-month timeline from v1.5 stable through v1.7.x Wave 2 to v1.8.0 visual system and v2.0 multi-tenant" width="100%">
+</p>
+
+The 12-month delivery cadence from v1.5 stable through Wave 2 (v1.7.x, current) to Wave 3 (v1.8.0+, in active development on the private repo). Full per-release detail in [CHANGELOG.md](CHANGELOG.md).
+
 ## Project info
 
-- [CHANGELOG](CHANGELOG.md) — release history with full v1.7.0 notes
-- [CONTRIBUTING](CONTRIBUTING.md) — bug reports, feature requests, sub-skill templates, testing discipline
-- [CODE OF CONDUCT](CODE_OF_CONDUCT.md) — Contributor Covenant
-- [SECURITY](SECURITY.md) — vulnerability disclosure, outbound network destinations table, error sanitization
-- [SUPPORT](SUPPORT.md) — where to ask for help
+- [CHANGELOG](CHANGELOG.md): release history with full v1.7.0 notes
+- [CONTRIBUTING](CONTRIBUTING.md): bug reports, feature requests, sub-skill templates, testing discipline
+- [CODE OF CONDUCT](CODE_OF_CONDUCT.md): Contributor Covenant
+- [SECURITY](SECURITY.md): vulnerability disclosure, outbound network destinations table, error sanitization
+- [SUPPORT](SUPPORT.md): where to ask for help
 
 ## Related projects
 
-- 🌐 **[claude-ads (public)](https://github.com/AgriciDaniel/claude-ads)** — the open-source version of this skill (MIT, latest public release `v1.5.1`). Use this if you're not in the Pro community.
-- [Claude SEO](https://github.com/AgriciDaniel/claude-seo) — comprehensive SEO analysis skill for Claude Code
+- 🌐 **[claude-ads (public)](https://github.com/AgriciDaniel/claude-ads)**: the open-source version of this skill (MIT, latest public release `v1.5.1`). Use this if you're not in the Pro community.
+- [Claude SEO](https://github.com/AgriciDaniel/claude-seo): comprehensive SEO analysis skill for Claude Code
 
 ## Maintainer
 
-Built by **[Agrici Daniel](https://agricidaniel.com/about)** — AI Workflow Architect. Single maintainer, open to community contributions via the [Pro Skool community](https://www.skool.com/ai-marketing-hub-pro).
+Built by **[Agrici Daniel](https://agricidaniel.com/about)**: AI Workflow Architect. Single maintainer, open to community contributions via the [Pro Skool community](https://www.skool.com/ai-marketing-hub-pro).
 
-- [Blog](https://agricidaniel.com/blog) — deep dives on AI marketing automation
-- [AI Marketing Hub (free)](https://www.skool.com/ai-marketing-hub) — open community
-- [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) — Pro community, early access to this skill
-- [YouTube](https://www.youtube.com/@AgriciDaniel) — tutorials and demos
-- [All open-source tools](https://github.com/AgriciDaniel) — public profile
+- [Blog](https://agricidaniel.com/blog): deep dives on AI marketing automation
+- [AI Marketing Hub (free)](https://www.skool.com/ai-marketing-hub): open community
+- [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro): Pro community, early access to this skill
+- [YouTube](https://www.youtube.com/@AgriciDaniel): tutorials and demos
+- [All open-source tools](https://github.com/AgriciDaniel): public profile
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE) for details.

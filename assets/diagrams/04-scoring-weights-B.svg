@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 948"
+     preserveAspectRatio="xMidYMid meet" width="100%" font-family="JetBrains Mono, monospace">
+<defs>
+  <style type="text/css"><![CDATA[
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+    .bg            { fill: #1F1B16; }
+    .bg-soft       { fill: #1F1B16; }
+    .box           { fill: #26221C; stroke: #4A3D32; stroke-width: 1; }
+    .box-focal     { fill: #2E2620; stroke: #D97757; stroke-width: 1.4; }
+    .box-future    { fill: #221E18; stroke: #3A312A; stroke-width: 1; stroke-dasharray: 4 3; }
+    .box-soft      { fill: #232019; stroke: #3A312A; stroke-width: 1; }
+    .label-h       { font-family: 'JetBrains Mono', monospace; fill: #F5F4ED; font-size: 16px; font-weight: 700; letter-spacing: 0.3px; }
+    .label         { font-family: 'JetBrains Mono', monospace; fill: #F5F4ED; font-size: 14px; font-weight: 600; }
+    .label-sub     { font-family: 'JetBrains Mono', monospace; fill: #9C8B7E; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; }
+    .label-tiny    { font-family: 'JetBrains Mono', monospace; fill: #6F5F54; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .label-radial  { font-family: 'JetBrains Mono', monospace; fill: #E0D2C4; font-size: 13px; font-weight: 600; letter-spacing: 0.6px; }
+    .label-accent  { font-family: 'JetBrains Mono', monospace; fill: #D97757; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .label-inter   { font-family: 'Inter', system-ui, sans-serif; fill: #F5F4ED; font-size: 14px; font-weight: 500; }
+    .conn          { stroke: #6F5F54; stroke-width: 1; fill: none; }
+    .conn-soft     { stroke: #4A3D32; stroke-width: 1; fill: none; }
+    .conn-dashed   { stroke: #4A3D32; stroke-width: 1; fill: none; stroke-dasharray: 4 3; }
+    .accent-fill   { fill: #D97757; }
+    .accent-bright { fill: #E89270; }
+    .corner-mark   { font-family: 'JetBrains Mono', monospace; fill: #5A5750; font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase; }
+  ]]></style>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#6F5F54"/>
+  </marker>
+  <marker id="arrow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4A3D32"/>
+  </marker>
+</defs>
+<!-- Window outer border + bg -->
+<rect x="0.5" y="0.5" width="1099" height="947" rx="10" fill="#2A2520" stroke="#3A312A" stroke-width="1"/>
+
+  <!-- OS window title bar -->
+  <path d="M 0 10 Q 0 0 10 0 L 1090 0 Q 1100 0 1100 10 L 1100 48 L 0 48 Z" fill="#2A2520"/>
+  <line x1="0" y1="48" x2="1100" y2="48" stroke="#3A312A" stroke-width="1"/>
+  <text x="20" y="29.0" font-family="JetBrains Mono, monospace" font-size="15" fill="#E0D2C4" font-weight="600">claude-ads.app — 04 · scoring weights · B</text>
+  <!-- Traffic lights (right-aligned) -->
+  <circle cx="1016"   cy="24.0" r="9" fill="#fbbf24" stroke="#3A312A" stroke-width="0.7"/>
+  <circle cx="1044"   cy="24.0" r="9" fill="#10b981"  stroke="#3A312A" stroke-width="0.7"/>
+  <circle cx="1072" cy="24.0" r="9" fill="#ef4444"    stroke="#3A312A" stroke-width="0.7"/>
+
+<!-- Content area: dark canvas, shifted down by TITLE_H -->
+<g transform="translate(0, 48)">
+  <rect class="bg" width="1100" height="900"/>
+  <text x="550.0" y="60" class="label-sub" text-anchor="middle">scoring weight · google · 9 categories</text>
+<path d="M 450.0 230.0 A 240 240 0 0 1 667.1584925918447 367.8129700243826 L 567.6275168205825 414.6486920965406 A 130 130 0 0 0 450.0 340.0 Z" fill="#D97757" stroke="#0A0807" stroke-width="1.5"/>
+<text x="594.6732346443291" y="242.03146011445594" class="label-radial" text-anchor="start">conversion tracking · 18%</text>
+<path d="M 667.1584925918447 367.8129700243826 A 240 240 0 0 1 652.6387021204836 598.5984307949592 L 559.762630315262 539.6574833472696 A 130 130 0 0 0 567.6275168205825 414.6486920965406 Z" fill="#E89270" stroke="#0A0807" stroke-width="1.5"/>
+<text x="719.4672166756334" y="486.95344027291463" class="label-radial" text-anchor="start">keywords · 16%</text>
+<path d="M 652.6387021204836 598.5984307949592 A 240 240 0 0 1 509.6855729195651 702.4599586708714 L 482.3296853314311 595.9158109467221 A 130 130 0 0 0 559.762630315262 539.6574833472696 Z" fill="#B25B3F" stroke="#0A0807" stroke-width="1.5"/>
+<text x="608.7020181189678" y="688.4345884812358" class="label-radial" text-anchor="start">account structure · 12%</text>
+<path d="M 509.6855729195651 702.4599586708714 A 240 240 0 0 1 334.3791182155884 680.3136032105273 L 387.37202236677706 583.9198684057022 A 130 130 0 0 0 482.3296853314311 595.9158109467221 Z" fill="#7A3A1F" stroke="#0A0807" stroke-width="1.5"/>
+<text x="416.1600269376379" y="737.870969354909" class="label-radial" text-anchor="end">quality score · 12%</text>
+<path d="M 334.3791182155884 680.3136032105273 A 240 240 0 0 1 221.74643608916315 544.1640786499875 L 326.36265288163 510.1722092687432 A 130 130 0 0 0 387.37202236677706 583.9198684057022 Z" fill="#F5B095" stroke="#0A0807" stroke-width="1.5"/>
+<text x="241.96142445053692" y="642.1044772321462" class="label-radial" text-anchor="end">ad copy · 12%</text>
+<path d="M 221.74643608916315 544.1640786499875 A 240 240 0 0 1 217.5400413291285 410.3144270804349 L 324.08418905327795 437.6703146685689 A 130 130 0 0 0 326.36265288163 510.1722092687432 Z" fill="#9C4A2F" stroke="#0A0807" stroke-width="1.5"/>
+<text x="180.13322870125245" y="478.4809049510946" class="label-radial" text-anchor="end">settings · 9%</text>
+<path d="M 217.5400413291285 410.3144270804349 A 240 240 0 0 1 285.70869457711467 295.04752941886125 L 361.0088762292704 375.23407843521653 A 130 130 0 0 0 324.08418905327795 437.6703146685689 Z" fill="#6F3922" stroke="#0A0807" stroke-width="1.5"/>
+<text x="217.59965270893517" y="332.55881774739987" class="label-radial" text-anchor="end">bidding · 9%</text>
+<path d="M 285.70869457711467 295.04752941886125 A 240 240 0 0 1 361.65010735567716 246.85364338681973 L 402.1438081509918 349.1290568345273 A 130 130 0 0 0 361.0088762292704 375.23407843521653 Z" fill="#E0A285" stroke="#0A0807" stroke-width="1.5"/>
+<text x="305.3267653556708" y="242.031460114456" class="label-radial" text-anchor="end">performance max · 6%</text>
+<path d="M 361.65010735567716 246.85364338681973 A 240 240 0 0 1 449.9999999999997 230.0 L 449.9999999999999 340.0 A 130 130 0 0 0 402.1438081509918 349.1290568345273 Z" fill="#C26B4A" stroke="#0A0807" stroke-width="1.5"/>
+<text x="399.4070450618541" y="204.78244230325413" class="label-radial" text-anchor="end">audiences · 6%</text>
+<g transform="translate(438.0,434.0) scale(1.0)" fill="#D97757"><path d="M3.9998 22.9291C1.7908 22.9291 0 21.1383 0 18.9293s1.7908-3.9998 3.9998-3.9998 3.9998 1.7908 3.9998 3.9998-1.7908 3.9998-3.9998 3.9998zm19.4643-6.0004L15.4632 3.072C14.3586 1.1587 11.9121.5028 9.9988 1.6074S7.4295 5.1585 8.5341 7.0718l8.0009 13.8567c1.1046 1.9133 3.5511 2.5679 5.4644 1.4646 1.9134-1.1046 2.568-3.5511 1.4647-5.4644zM7.5137 4.8438L1.5645 15.1484A4.5 4.5 0 0 1 4 14.4297c2.5597-.0075 4.6248 2.1585 4.4941 4.7148l3.2168-5.5723-3.6094-6.25c-.4499-.7793-.6322-1.6394-.5878-2.4784z"/></g>
+<text x="450.0" y="474.0" class="label-accent" text-anchor="middle">google</text>
+<text x="450.0" y="496.0" class="label-tiny" text-anchor="middle">100% / 9 cat</text>
+<text x="820" y="130" class="label-sub" text-anchor="start">OTHER PLATFORMS</text>
+<g transform="translate(820,156) scale(0.6666666666666666)" fill="#9C8B7E"><path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z"/></g>
+<text x="848" y="168" class="label" text-anchor="start">meta</text>
+<g transform="translate(820,188) scale(0.6666666666666666)" fill="#9C8B7E"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></g>
+<text x="848" y="200" class="label" text-anchor="start">linkedin</text>
+<g transform="translate(820,220) scale(0.6666666666666666)" fill="#9C8B7E"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></g>
+<text x="848" y="232" class="label" text-anchor="start">tiktok</text>
+<g transform="translate(820,252) scale(0.6666666666666666)" fill="#9C8B7E"><path d="M3 3h8.5v8.5H3zM12.5 3H21v8.5h-8.5zM3 12.5h8.5V21H3zM12.5 12.5H21V21h-8.5z"/></g>
+<text x="848" y="264" class="label" text-anchor="start">microsoft</text>
+<g transform="translate(820,284) scale(0.6666666666666666)" fill="#9C8B7E"><path d="M17.05 12.43c-.03-2.78 2.27-4.13 2.38-4.19-1.3-1.9-3.31-2.16-4.03-2.19-1.7-.18-3.34 1.01-4.2 1.01-.87 0-2.21-.99-3.65-.96-1.87.03-3.62 1.09-4.58 2.77-1.96 3.39-.5 8.41 1.4 11.17.93 1.34 2.04 2.86 3.49 2.81 1.4-.06 1.93-.91 3.62-.91 1.69 0 2.17.91 3.65.88 1.51-.03 2.46-1.37 3.38-2.72 1.06-1.56 1.5-3.07 1.52-3.15-.03-.01-2.92-1.12-2.95-4.45zM14.59 4.18c.77-.93 1.29-2.22 1.15-3.51-1.11.05-2.46.74-3.26 1.67-.71.82-1.34 2.13-1.17 3.4 1.24.1 2.5-.63 3.28-1.56z"/></g>
+<text x="848" y="296" class="label" text-anchor="start">apple</text>
+<g transform="translate(820,316) scale(0.6666666666666666)" fill="none" stroke="#9C8B7E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.5 Q12 19.5 21 13.5"/><path d="M18.5 11.5 L21 13.5 L19 15.5"/></g>
+<text x="848" y="328" class="label" text-anchor="start">amazon</text>
+<g transform="translate(820,348) scale(0.6666666666666666)" fill="#9C8B7E"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></g>
+<text x="848" y="360" class="label" text-anchor="start">youtube</text>
+  <text x="1080" y="888" class="corner-mark" text-anchor="end">04 · scoring weights · B</text>
+</g>
+</svg>
