@@ -8,8 +8,9 @@ Comprehensive paid advertising audit and optimization skill conforming to the [A
 
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skills-Compatible-blue)](https://agentskills.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/github/v/release/AI-Marketing-Hub/claude-ads)](https://github.com/AI-Marketing-Hub/claude-ads/releases)
-[![CI](https://img.shields.io/github/actions/workflow/status/AI-Marketing-Hub/claude-ads/ci.yml?branch=main&label=CI)](https://github.com/AI-Marketing-Hub/claude-ads/actions)
+[![Version](https://img.shields.io/github/v/release/AgriciDaniel/claude-ads?label=public%20release)](https://github.com/AgriciDaniel/claude-ads/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/AgriciDaniel/claude-ads/ci.yml?branch=main&label=public%20CI)](https://github.com/AgriciDaniel/claude-ads/actions)
+[![Community](https://img.shields.io/badge/AI%20Marketing%20Hub-Pro%20community-purple)](https://www.skool.com/ai-marketing-hub-pro)
 
 **Host support:**
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Verified-brightgreen)](https://claude.ai/claude-code)
@@ -18,6 +19,13 @@ Comprehensive paid advertising audit and optimization skill conforming to the [A
 [![Windsurf](https://img.shields.io/badge/Windsurf-Experimental-yellow)](https://codeium.com/windsurf)
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Experimental-yellow)](https://github.com/google-gemini/gemini-cli)
 [![Goose](https://img.shields.io/badge/Goose-Experimental-yellow)](https://block.github.io/goose/)
+
+> **Two versions of this skill.** Choose the one that fits how you work:
+>
+> - 🌐 **Public open-source** — [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads) — MIT-licensed, public releases (latest: `v1.5.1`), open to anyone. Use this if you want the stable, downloadable, no-membership-required version.
+> - 🔒 **Community private mirror** (this repo) — [`AI-Marketing-Hub/claude-ads`](https://github.com/AI-Marketing-Hub/claude-ads) — early access to v1.6.0+ work, Wave 2 sub-skills (Amazon / Attribution / Server-side Tracking), the 10-Principle Thinking Framework, and direct collaboration with the [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) community. Requires membership.
+>
+> The badges above track the **public** repo (`AgriciDaniel/claude-ads`) since the private mirror isn't visible to shields.io.
 
 > **Blog:** [Read the full ad audit breakdown](https://agricidaniel.com/blog/claude-code-ad-agency)
 
@@ -39,13 +47,10 @@ Comprehensive paid advertising audit and optimization skill conforming to the [A
 
 ## Installation
 
-> ⚠ **Private repository.** This repo lives in the `AI-Marketing-Hub` GitHub
-> org and is currently private. The remote install commands below
-> (`/plugin marketplace add`, `curl | bash`, `irm | iex`) require an
-> authenticated session with access to the org. Members of AI Marketing Hub
-> Pro can authenticate via `gh auth login` or a GitHub PAT. For everyone
-> else, use the **Manual Install** path with `git clone` after being added
-> as a collaborator.
+> ℹ️ **Which version are you installing?**
+>
+> - **Not an AI Marketing Hub Pro member?** Install from the public repo instead → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads). All the install commands below work there too — just swap `AI-Marketing-Hub/claude-ads` for `AgriciDaniel/claude-ads` and the plugin slug `claude-ads@ai-marketing-hub-claude-ads` for `claude-ads@agricidaniel-claude-ads`. Public releases ship there; this private mirror runs ahead of public releases.
+> - **Pro member?** The commands below install the **community version** with early access to in-development features. They require an authenticated `gh auth login` (or GitHub PAT) session with access to the `AI-Marketing-Hub` org. If `/plugin marketplace add` fails with a 404, your account isn't in the org yet — DM in the [Skool community](https://www.skool.com/ai-marketing-hub-pro) to get added.
 
 ### Plugin Install (Claude Code — Recommended)
 
@@ -432,7 +437,8 @@ irm https://raw.githubusercontent.com/AI-Marketing-Hub/claude-ads/main/uninstall
 
 ## Related Projects
 
-- [Claude SEO](https://github.com/AgriciDaniel/claude-seo); Comprehensive SEO analysis skill for Claude Code
+- 🌐 **[claude-ads (public)](https://github.com/AgriciDaniel/claude-ads)** — the open-source version of this skill (MIT, latest public release `v1.5.1`). Use this if you're not in the Pro community.
+- [Claude SEO](https://github.com/AgriciDaniel/claude-seo) — comprehensive SEO analysis skill for Claude Code
 
 ## License
 
