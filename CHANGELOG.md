@@ -64,6 +64,15 @@ side tracking, and Amazon retail media.
   experimental), new "Eval Harness" Features section.
 - **Updated repo About-field text** and **Topics list** in
   `research/distribution-prep-v1.7.0.md` to reflect Wave 2 changes.
+- **10-Principle Thinking Framework** (`ads/references/thinking-framework.md`)
+  — load-on-demand thinking discipline (OBSERVE × 2 / LISTEN / THINK /
+  CONNECT × 2 / FEEL / ACCEPT / CREATE / GROW) referenced by the
+  orchestrator and four thinking-heavy sub-skills (`ads-audit`, `ads-plan`,
+  `ads-create`, `ads-dna`). Maps each principle to concrete ad-work behavior
+  + anti-pattern + example workflow trigger. Cross-links existing artifacts
+  (3× Kill Rule, Context Intake gate, MER/LTV math, copy frameworks,
+  voice-to-style mapping) so the discipline feels native rather than
+  bolted-on.
 
 ### Changed
 

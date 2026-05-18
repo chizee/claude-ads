@@ -8,6 +8,12 @@ tested_with: claude-code v2.x
 
 # Full Multi-Platform Ads Audit
 
+This audit operates under the **10-Principle Thinking Framework** (see
+`ads/references/thinking-framework.md`). OBSERVE (External + Internal)
+dominates data collection, THINK + CONNECT (Lateral) dominate analysis,
+CONNECT (System) + ACCEPT dominate synthesis and prioritization. If the
+audit feels mechanical, you are skipping a principle.
+
 ## Process
 
 1. **Collect account data**: request exports, screenshots, or API access

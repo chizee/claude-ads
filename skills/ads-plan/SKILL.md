@@ -8,6 +8,13 @@ tested_with: claude-code v2.x
 
 # Strategic Paid Advertising Plan
 
+Strategic planning is where the **10-Principle Thinking Framework** (see
+`ads/references/thinking-framework.md`) earns its weight. THINK and
+CONNECT (Lateral) dominate — first-principles unit economics combined
+with cross-platform leverage are what make a plan strategic rather than
+prescriptive. FEEL gates the messaging and audience choices; ACCEPT
+gates the constraints (budget, timeline, team capacity).
+
 ## Process
 
 ### 1. Discovery

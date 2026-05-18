@@ -63,6 +63,18 @@ Use the provided context to:
 - Apply budget-appropriate recommendations (e.g. Smart Bidding requires 15+ conv/month)
 - Calibrate severity scoring (a $500/mo account has different priorities than $50k/mo)
 
+## 10-Principle Thinking Framework
+
+Every command in this skill operates under a shared thinking discipline:
+**OBSERVE × 2 (External + Internal) → LISTEN → THINK → CONNECT × 2 (Lateral + System) → FEEL → ACCEPT → CREATE → GROW**.
+
+Before producing any audit, plan, or creative output, load
+`references/thinking-framework.md` and let it shape the analysis — not as a
+checklist, but as a mindset gate. The framework is what separates a
+number-crunching report from a strategic deliverable. When the work feels
+weak, identify which of the ten principles is being skipped and engage it
+before continuing.
+
 ## Orchestration Logic
 
 When the user invokes `/ads audit`, delegate to subagents in parallel:
@@ -169,6 +181,7 @@ Load these on-demand as needed; do NOT load all at startup.
 When sub-skills or agents reference `ads/references/*.md`, resolve to
 `~/.claude/skills/ads/references/*.md`.
 
+- `references/thinking-framework.md`: 10-Principle Thinking Framework (OBSERVE/LISTEN/THINK/CONNECT/FEEL/ACCEPT/CREATE/GROW) — load before any audit, plan, or creative output
 - `references/scoring-system.md`: Weighted scoring algorithm and grading thresholds
 - `references/benchmarks.md`: Industry benchmarks by platform (CPC, CTR, CVR, ROAS)
 - `references/bidding-strategies.md`: Bidding decision trees per platform

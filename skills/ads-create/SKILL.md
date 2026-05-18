@@ -11,6 +11,12 @@ tested_with: claude-code v2.x
 Generates structured campaign concepts and platform-specific copy from your brand
 profile and optional audit data. Outputs `campaign-brief.md` for use by `/ads generate`.
 
+Operates under the **10-Principle Thinking Framework** (see
+`ads/references/thinking-framework.md`). LISTEN to the brand voice before
+typing; FEEL the emotional resonance of every headline and CTA; CREATE
+the deliverable — do not hedge concepts so heavily that the next person
+has to do the work. Spec compliance without emotional pull is a fail.
+
 ## Quick Reference
 
 | Command | What it does |

@@ -11,6 +11,12 @@ tested_with: claude-code v2.x
 Extracts brand identity from a website and saves it as `brand-profile.json`
 for use by `/ads create`, `/ads generate`, and `/ads photoshoot`.
 
+Brand DNA extraction is OBSERVE and LISTEN made concrete (see the
+**10-Principle Thinking Framework** in `ads/references/thinking-framework.md`).
+The website is the input; the brand profile is what the site is *saying*
+about itself when no one is curating the message. Listen to the voice
+before you label it. Observe the visual choices before you classify them.
+
 ## Quick Reference
 
 | Command | What it does |
