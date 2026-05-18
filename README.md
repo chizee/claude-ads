@@ -24,9 +24,7 @@ A manual audit of a single Google Ads account takes 4-6 hours of senior PPC time
 
 > **Two versions of this skill.**
 > - 🌐 **Public open-source** → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads): MIT, public releases, no membership. Use this if you want stable + downloadable.
-> - 🔒 **Community private mirror** (this repo) → [`AI-Marketing-Hub/claude-ads`](https://github.com/AI-Marketing-Hub/claude-ads): early access to v1.6.0+ work, Wave 2 sub-skills, 10-Principle Thinking Framework, direct collab with the [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) community. Requires membership.
->
-> Badges above track the public repo since shields.io can't read private repos.
+> - 🔒 **Community private mirror** (this repo) → [`AI-Marketing-Hub/claude-ads`](https://github.com/AI-Marketing-Hub/claude-ads): early access to upcoming features and direct collaboration with the [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) community. Requires membership.
 
 ## Who this is for
 
