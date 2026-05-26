@@ -1,8 +1,8 @@
 ---
 name: ads-microsoft
-description: "Microsoft/Bing Ads deep analysis covering search, Performance Max, Audience Network, and Copilot integration. Evaluates 24 checks with focus on Google Ads import validation, unique Microsoft features (LinkedIn audience targeting, in-market audiences), and cost advantage assessment. Use when user says Microsoft Ads, Bing Ads, Bing PPC, Bing search ads, Copilot ads, Microsoft search ads, Google import audit, or Microsoft campaign."
+description: "Microsoft/Bing Ads deep analysis covering search, Performance Max, Audience Network, and Copilot integration. Evaluates 41 checks with focus on Google Ads import validation, unique Microsoft features (LinkedIn audience targeting, in-market audiences), and cost advantage assessment. Use when user says Microsoft Ads, Bing Ads, Bing PPC, Bing search ads, Copilot ads, Microsoft search ads, Google import audit, or Microsoft campaign."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -11,7 +11,7 @@ tested_with: claude-code v2.x
 ## Process
 
 1. Collect Microsoft Ads data (account export, UET tag status, import results)
-2. Read `ads/references/microsoft-audit.md` for full 24-check audit
+2. Read `ads/references/microsoft-audit.md` for full 41-check audit
 3. Read `ads/references/benchmarks.md` for Microsoft-specific benchmarks
 4. Read `ads/references/scoring-system.md` for weighted scoring
 5. Evaluate all applicable checks as PASS, WARNING, or FAIL
@@ -147,7 +147,7 @@ Settings:          XX/100  ████████░░  (15%)
 ```
 
 ### Deliverables
-- `MICROSOFT-ADS-REPORT.md`: Full 24-check findings with pass/warning/fail
+- `MICROSOFT-ADS-REPORT.md`: Full 41-check findings with pass/warning/fail
 - Google import validation results
 - Copilot integration readiness assessment
 - Cost advantage analysis (CPC savings vs Google)

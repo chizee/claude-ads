@@ -1,8 +1,8 @@
 # Google Ads Audit Checklist
 
-<!-- Updated: 2026-04-13 | v1.5 update: AI Max, Andromeda-era, privacy infrastructure -->
-<!-- Sources: Google Research PDF 1 (G01-G61), Claude Research (74-item extended), Gemini Research, 2026 Platform Research -->
-<!-- Total Checks: 80 | Categories: 7 | See scoring-system.md for weights and algorithm -->
+<!-- Updated: 2026-05-26 | v1.8.0 update: Google Marketing Live 2026 addendum (G81-G95) -->
+<!-- Sources: Google Research PDF 1 (G01-G61), Claude Research (74-item extended), Gemini Research, 2026 Platform Research, research/notes-google.md (GML 2026) -->
+<!-- Total Checks: 95 | Categories: 8 | See scoring-system.md for weights and algorithm -->
 
 ## Quick Reference
 
@@ -16,6 +16,7 @@
 | Settings & Targeting | 10% | G50-G61 (12) |
 | Performance Max | N/A | G-PM1 through G-PM6 (6, scored within Ads & Assets) |
 | AI & Demand Gen | N/A | G-AI1 (1) + G-DG1 through G-DG3 (3, scored within Ads & Assets) |
+| Google Marketing Live 2026 (v1.8.0) | N/A | G81-G95 (15, scored within Ads & Assets + Settings) |
 
 ---
 
@@ -198,6 +199,33 @@
 | G39 | Budget constrained campaigns | High | Top performers show "Eligible" not "Limited by Budget" | Minor budget limitation | Top performers severely budget-limited |
 | G40 | Manual CPC justification | Medium | Manual CPC only on campaigns with <15 conv/month | Manual CPC with 15-30 conv/month | Manual CPC with >30 conv/month |
 | G41 | Portfolio bid strategies | Medium | Low-volume campaigns grouped into portfolios | N/A | Multiple <15 conv campaigns running independently |
+
+---
+
+## Google Marketing Live 2026 (v1.8.0, G81-G95, scored within Ads & Assets + Settings)
+
+GML 2026 (May 20, 2026) landed 3 days after the v1.7.0 cut. Source: `research/notes-google.md`.
+Google-supplied case-study figures (Lufthansa, IKEA, "+15% conversions") are flagged as
+vendor claims, not independently audited (JumpFly April 2026 analysis + an 84% advertiser
+survey show neutral-to-negative results).
+
+| ID | Check | Severity | Pass | Warning | Fail |
+|----|-------|----------|------|---------|------|
+| G81 | Ask Advisor governance | High | Ask Advisor (unified Gemini agent across Ads + Analytics + GMP + Merchant Center) used read/insights-only; no unattended write actions | Adopted but write scope unreviewed | Running autonomous write actions without human approval gate |
+| G82 | Business Agent for Leads eligibility | Medium | Evaluated for education / automotive / real-estate verticals where AI Max or PMax is active | Eligible vertical but not evaluated | N/A |
+| G83 | Direct Offers expansion | Low | Promotion bundling / native checkout evaluated for UCP-eligible merchants | UCP-eligible merchant not yet testing native checkout / bundled offers | Driving promo traffic to slow off-site checkout while UCP Direct Offers sit unused |
+| G84 | AI Mode ad-format readiness | Medium | Assets ready for Conversational Discovery / Highlighted Answers / AI-powered Shopping (AI Mode 1B MAU, AI Overviews 2.5B MAU) | Partial asset readiness | No AI-surface asset coverage despite eligibility |
+| G85 | Journey-aware bidding | Medium | Biddable + non-biddable goals (calls, forms, newsletter signups) feeding Smart Bidding | Only biddable goals configured | No secondary goals defined for journey signal |
+| G86 | Smart Bidding Exploration on PMax + Shopping | High | Enabled where eligible (+27% unique converting users per Google; was Search-only) | Search-only, not expanded to PMax/Shopping | Not evaluated despite eligible conversion volume |
+| G87 | Campaign total budgets | Low | Total (vs daily) budgets used where pacing benefits (66% fewer manual adjustments per Google) | Daily budgets only; total budgets not evaluated for flighted/seasonal campaigns | Manual budget babysitting on flighted campaigns that would benefit from total budgets |
+| G88 | Demand-led pacing | Low | Demand-led pacing enabled within monthly budget where appropriate | Eligible but still on flat daily pacing through demand spikes | Capping spend on high-demand days while leaving monthly budget unspent on low-demand days |
+| G89 | Meridian in GA360 | Low | Meridian MMM (GeoX / Studio / Data Manager Map View) evaluated for incrementality on advanced accounts | GA360 account with budget scale but Meridian incrementality not yet evaluated | Allocating large multi-channel budgets on last-click attribution while Meridian MMM is available and ignored |
+| G90 | Qualified Future Conversions (QFCs) | Medium | QFC predictive signal (Gemini, 6-month) evaluated for long-cycle accounts | Long sales-cycle account not yet testing QFCs | Optimizing only to last-click conversions on a 90+ day cycle, ignoring predictive signal |
+| G91 | Attributed Branded Searches | Low | New Attributed Branded Searches metric tracked where brand-lift matters | Metric available but not yet added to brand/upper-funnel reporting | Judging brand-building campaigns on last-click ROAS while Attributed Branded Searches goes untracked |
+| G92 | Asset Studio Gemini Omni readiness | Low | Creative pipeline ready for Asset Studio (Flash, summer 2026 GA: Veo + Nano Banana, 1-Click Creative Testing, Adobe/Canva pull-through) | Aware of summer 2026 GA but no creative-pipeline prep or Adobe/Canva connection | No Asset Studio adoption plan despite creative-bottlenecked account that would benefit from generative testing |
+| G93 | Demand Gen feature stack | Medium | Multimodal video + product feeds (automotive +33% conversions), Campaign Type Attribution, Uplift Experiments adopted where eligible | Demand Gen active but missing feeds/experiments | No Demand Gen despite eligible account |
+| G94 | Ads Advisor 3 safety features | Medium | Agentic safety surface (real-time policy reviews, security monitoring, instant certifications) understood and monitored | N/A | Agentic automation in use without safety-feature awareness |
+| G95 | DSA to AI Max forced migration (Sept 2026) | Critical | Pre-migration readiness done: AI Brief, Final URL Expansion controls, brand exclusions, strong negative lists. No legacy DSA campaigns left unprepared | Migration plan exists but readiness checklist incomplete | Active DSA/ACA campaigns with no migration prep before the no-opt-out September 2026 auto-upgrade |
 
 ---
 

@@ -1,8 +1,8 @@
 ---
 name: ads-audit
-description: "Full multi-platform paid advertising audit with parallel subagent delegation. Analyzes Google Ads, Meta Ads, LinkedIn Ads, TikTok Ads, Microsoft Ads, and Apple Ads accounts via 6 parallel audit agents. Amazon Ads, cross-platform attribution, and server-side tracking are covered by their standalone sub-skills (ads-amazon, ads-attribution, ads-server-side-tracking) — Wave 3 will add their paired agents so they can dispatch in parallel here. Generates health score per platform and aggregate score (0-100). Use when user says audit, full ad check, analyze my ads, account health check, paid media audit, paid advertising audit, ad spend audit, advertising audit, or PPC audit."
+description: "Full multi-platform paid advertising audit with parallel subagent delegation. Analyzes Google Ads, Meta Ads, LinkedIn Ads, TikTok Ads, Microsoft Ads, and Apple Ads accounts via 7 parallel audit agents (incl. a regulatory-compliance agent for EU AI Act + US state privacy). Amazon Ads, cross-platform attribution, and server-side tracking are covered by their standalone sub-skills (ads-amazon, ads-attribution, ads-server-side-tracking) — Wave 3 will add their paired agents so they can dispatch in parallel here. Generates health score per platform and aggregate score (0-100). Use when user says audit, full ad check, analyze my ads, account health check, paid media audit, paid advertising audit, ad spend audit, advertising audit, or PPC audit."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -21,12 +21,13 @@ audit feels mechanical, you are skipping a principle.
 3. **Detect business type**: analyze account signals per ads orchestrator
 4. **Identify active platforms**: determine which platforms are in use
 5. **Delegate to subagents** (if available, otherwise run inline sequentially):
-   - `audit-google`: Conversion tracking, wasted spend, structure, keywords, ads, settings (80 checks; G01-G61 + 19 hyphenated v1.5+ IDs incl. AI Max)
-   - `audit-meta`: Pixel/CAPI health, creative fatigue, structure, audience (50 checks; M01-M40 + 10 hyphenated v1.5+ IDs incl. Andromeda)
+   - `audit-google`: Conversion tracking, wasted spend, structure, keywords, ads, settings (95 checks; G01-G95 incl. AI Max + GML 2026)
+   - `audit-meta`: Pixel/CAPI health, creative fatigue, structure, audience (72 checks; M01-M72 incl. Andromeda + GEM + Lattice + ARM, MCP governance)
    - `audit-creative`: LinkedIn, TikTok, Microsoft creative checks + cross-platform synthesis
    - `audit-tracking`: LinkedIn, TikTok, Microsoft tracking + cross-platform tracking health
    - `audit-budget`: LinkedIn, TikTok, Microsoft budget/bidding + cross-platform allocation
-   - `audit-compliance`: All-platform compliance, settings, performance benchmarks
+   - `audit-policy-compliance`: Platform ad policies, Special Ad Categories, deprecated features, performance benchmarks
+   - `audit-regulatory-compliance`: **New v1.8.0.** EU AI Act, 22-state US privacy, Privacy Sandbox shutdown, iOS 26, DSA, MCP write-action governance (C01-C29 + C-MCP-1..6)
 6. **Validate**: verify each subagent returned valid scores with required fields before aggregating
 7. **Score**: calculate per-platform and aggregate Ads Health Score (0-100)
 8. **Report**: generate prioritized action plan with Quick Wins

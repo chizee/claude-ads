@@ -5,9 +5,9 @@
 This repository contains **Claude Ads**, a Tier 4 Claude Code skill for comprehensive
 paid advertising analysis across all major platforms. It follows the Agent Skills open
 standard and the 3-layer architecture (directive, orchestration, execution). 22 sub-skills,
-10 agents (6 audit + 4 creative), and 12 industry templates cover Google, Meta, YouTube, LinkedIn,
-TikTok, Microsoft, Apple, and Amazon Ads with 250+ weighted audit checks, plus cross-platform
-attribution and server-side tracking deep dives.
+11 agents (7 audit + 4 creative), and 12 industry templates cover Google, Meta, YouTube, LinkedIn,
+TikTok, Microsoft, Apple, and Amazon Ads with 300+ weighted audit checks, plus cross-platform
+attribution, server-side tracking, and regulatory-compliance (EU AI Act + 22-state US privacy) deep dives.
 
 ## Architecture
 
@@ -41,20 +41,21 @@ claude-ads/
     ads-create/SKILL.md             # Campaign concepts and copy briefs
     ads-generate/SKILL.md           # AI ad image generation
     ads-photoshoot/SKILL.md         # Product photography in 5 styles
-  agents/                            # 10 agents (6 audit + 4 creative)
+  agents/                            # 11 agents (7 audit + 4 creative)
     audit-google.md                # Google Ads audit agent
     audit-meta.md                  # Meta Ads audit agent
     audit-creative.md              # Creative quality agent
     audit-tracking.md              # Conversion tracking agent
     audit-budget.md                # Budget analysis agent
-    audit-compliance.md            # Compliance verification agent
+    audit-policy-compliance.md     # Ad-policy + Special Ad Category + performance agent
+    audit-regulatory-compliance.md # EU AI Act + US state privacy + DSA + MCP governance (v1.8.0)
     creative-strategist.md         # Campaign concept strategist
     visual-designer.md             # AI image generation orchestrator
     copy-writer.md                 # Headlines, CTAs, primary text
     format-adapter.md              # Asset dimension validation
-  tests/                             # 41-test pytest eval harness (Wave 2)
+  tests/                             # pytest eval harness (Wave 2)
     conftest.py                    # Shared fixtures
-    fixtures/check-catalog.yaml    # 209-check canonical catalog
+    fixtures/check-catalog.yaml    # 300-check (5-platform) canonical catalog
     routing/                       # Trigger → skill snapshot tests
     audit/                         # Catalog coverage + scoring math tests
     scripts/                       # SSRF + sanitize_error regression tests
@@ -66,7 +67,7 @@ claude-ads/
 
 | Command | Purpose |
 |---------|---------|
-| `/ads audit` | Full multi-platform audit with 6 parallel agents (Wave 2 sub-skills run standalone; see notes) |
+| `/ads audit` | Full multi-platform audit with 7 parallel agents (Wave 2 sub-skills run standalone; see notes) |
 | `/ads google` | Google Ads deep analysis (incl. AI Max) |
 | `/ads meta` | Meta/Facebook Ads analysis (Andromeda + GEM + Lattice) |
 | `/ads youtube` | YouTube Ads analysis |

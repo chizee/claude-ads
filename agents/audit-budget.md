@@ -83,6 +83,13 @@ When given ad account data:
 | MS09 | Budget proportional to Bing volume (typically 20-30% of Google) | Medium |
 | MS10 | LinkedIn profile targeting for B2B (unique advantage) | High |
 
+### v1.8.0 platform additions (scored within your budget / bidding / structure / audience categories)
+
+Read the "v1.8.0" section of `linkedin-audit.md`, `tiktok-audit.md`, and `microsoft-audit.md` and evaluate these new automation / bidding / structure / audience / commerce checks where they apply:
+- **LinkedIn:** L30 (Accelerate auto-campaigns), L32 (Career Journey targeting), L41 (Company Intelligence API), L43 (SMB Auto-targeting + Draft with AI)
+- **TikTok:** T29 (Ads MCP), T30 (Ads Skills), T31 (Smart+ One Buying Experience module control), T34 (Smart+ app objectives), T44 (Market Scope), T46 (GMV Max expansion)
+- **Microsoft:** MS25 (AI Max for Search), MS27 (Audience Generation), MS30 (Brand Agents), MS32 (Copilot Checkout), MS34 (Import Center), MS35 (automated bidding + custom columns)
+
 ## Budget Sufficiency Rules
 
 | Platform | Minimum Daily Budget | Learning Phase Requirement |

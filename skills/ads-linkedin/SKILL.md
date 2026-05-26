@@ -1,8 +1,8 @@
 ---
 name: ads-linkedin
-description: "LinkedIn Ads deep analysis for B2B advertising. Evaluates 27 checks across technical setup, audience targeting, creative quality, lead gen forms, and bidding strategy. Includes Thought Leader Ads, ABM, predictive audiences, and the Oct 2025 Campaign Groups→Campaigns→Ad Sets terminology change. Use when user says LinkedIn Ads, B2B ads, sponsored content, lead gen forms, InMail, ABM ads, Thought Leader Ads, predictive audiences, B2B paid, or LinkedIn campaign."
+description: "LinkedIn Ads deep analysis for B2B advertising. Evaluates 46 checks across technical setup, audience targeting, creative quality, lead gen forms, and bidding strategy. Includes Thought Leader Ads, ABM, predictive audiences, and the Oct 2025 Campaign Groups→Campaigns→Ad Sets terminology change. Use when user says LinkedIn Ads, B2B ads, sponsored content, lead gen forms, InMail, ABM ads, Thought Leader Ads, predictive audiences, B2B paid, or LinkedIn campaign."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -14,7 +14,7 @@ Campaigns are now called Ad Sets. This skill uses the new terminology.
 ## Process
 
 1. Collect LinkedIn Ads data (Campaign Manager export, Insight Tag status)
-2. Read `ads/references/linkedin-audit.md` for full 27-check audit
+2. Read `ads/references/linkedin-audit.md` for full 46-check audit
 3. Read `ads/references/benchmarks.md` for LinkedIn-specific benchmarks
 4. Read `ads/references/scoring-system.md` for weighted scoring
 5. Evaluate all applicable checks as PASS, WARNING, or FAIL
@@ -136,7 +136,7 @@ Budget & Bidding:  XX/100  ████████░░  (15%)
 ```
 
 ### Deliverables
-- `LINKEDIN-ADS-REPORT.md`: Full 27-check findings with pass/warning/fail
+- `LINKEDIN-ADS-REPORT.md`: Full 46-check findings with pass/warning/fail
 - TLA adoption roadmap (if not using)
 - ABM strategy recommendations (for B2B)
 - Lead Gen Form optimization priorities

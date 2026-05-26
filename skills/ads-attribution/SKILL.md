@@ -2,7 +2,7 @@
 name: ads-attribution
 description: "Cross-platform attribution health audit covering AdAttributionKit (iOS view-through 24h post-impression, WWDC 2025 configurable windows), GA4 attribution models (data-driven vs last-click), Consent Mode V2 enforcement, server-side attribution stitching, MMP integration health, and cross-device / cross-platform attribution. Use when user says attribution audit, attribution model, AdAttributionKit, AAK, view-through attribution, GA4 attribution, Consent Mode V2, conversion window, attribution window, MMP audit, AppsFlyer audit, Adjust audit, Branch audit, Singular audit, cross-device attribution, or cross-platform attribution."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -107,6 +107,27 @@ attribution windows or unverified Consent Mode setups will mis-attribute
   `st`, `zp`, `external_id`) sent server-side to Meta
 - **Privacy-safe identifiers** (Customer Match hashes, GAID/IDFA where
   permitted) included in conversion exports
+
+### v1.8.0 refresh — iOS 26, Meta March-3 rebuild, Reddit Dual Attribution
+
+- **iOS 26 ATFP + Expanded Link Tracking Protection** (Sept 15, 2025): Advanced
+  Fingerprinting Protection is now default ON in ALL Safari browsing (was Private
+  only; ~90% fingerprinting-effectiveness reduction), and Link Tracking Protection
+  strips `gclid` / `fbclid` / `msclkid` in ALL Safari. **Server-side conversion APIs
+  are mandatory** for any account with >5% iOS Safari traffic. This affects ALL iOS
+  attribution pipelines, not just Apple Ads. See `ads/references/compliance-requirements.md`
+  (C-iOS-1) and `/ads server-side-tracking`.
+- **Meta March 3, 2026 attribution rebuild**: click-through now counts ONLY link
+  clicks; new engage-through column; engaged-view threshold dropped 10s → 5s; default
+  windows 7-day click / 1-day engage-through / 1-day view. **YoY data is not comparable
+  across the March-3-2026 boundary** — flag this in any reporting view. See `audit-meta`
+  checks M54-M59.
+- **Reddit Dual Attribution** (beta May 20, 2026): combines Reddit first-party + MMP +
+  SKAdNetwork last-touch in a single Ads Manager view; App Event Optimization GA
+  (~22% CPA improvement). Evaluate for accounts running Reddit Max.
+- **AdAttributionKit (no position-level reporting for Apple multi-placement)**: Apple's
+  Multiple Search Ad Placements (March 2026) do not expose position-level reporting in
+  AdAttributionKit initially — caveat any TAP placement-coverage report.
 
 ## Key Thresholds
 

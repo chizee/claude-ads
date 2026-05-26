@@ -14,13 +14,13 @@
 #   - Hyphenated IDs (G-AI1, M-AN1, L-CRM1, T-SR1, MS-SI1): v1.5+ additions
 #   - Prefixes: G=Google, M=Meta, L=LinkedIn, T=TikTok, MS=Microsoft
 
-version: "1.0"
-last_updated: "2026-05-17"
+version: "1.1"
+last_updated: "2026-05-26"
 
 platforms:
   google:
     reference: ads/references/google-audit.md
-    total_checks: 80
+    total_checks: 95
     skill: ads-google
     audit_agent: audit-google
     check_ids:
@@ -104,10 +104,26 @@ platforms:
       - G-PM5
       - G-PM6
       - G-WS1
+      # v1.8.0 — Google Marketing Live 2026 (May 20, 2026)
+      - G81
+      - G82
+      - G83
+      - G84
+      - G85
+      - G86
+      - G87
+      - G88
+      - G89
+      - G90
+      - G91
+      - G92
+      - G93
+      - G94
+      - G95
 
   meta:
     reference: ads/references/meta-audit.md
-    total_checks: 50
+    total_checks: 72
     skill: ads-meta
     audit_agent: audit-meta
     check_ids:
@@ -161,10 +177,33 @@ platforms:
       - M-ST1
       - M-ST2
       - M-TH1
+      # v1.8.0 — MCP + March 3 attribution rebuild + Q1 2026 AI-stack + ARM
+      - M51
+      - M52
+      - M53
+      - M54
+      - M55
+      - M56
+      - M57
+      - M58
+      - M59
+      - M60
+      - M61
+      - M62
+      - M63
+      - M64
+      - M65
+      - M66
+      - M67
+      - M68
+      - M69
+      - M70
+      - M71
+      - M72
 
   linkedin:
     reference: ads/references/linkedin-audit.md
-    total_checks: 27
+    total_checks: 46
     skill: ads-linkedin
     audit_agent: null
     check_ids:
@@ -195,10 +234,30 @@ platforms:
       - L25
       - L-CRM1
       - L-EU1
+      # v1.8.0 — Off-Platform Event Ads + Campaign Manager rename + agency cert
+      - L28
+      - L29
+      - L30
+      - L31
+      - L32
+      - L33
+      - L34
+      - L35
+      - L36
+      - L37
+      - L38
+      - L39
+      - L40
+      - L41
+      - L42
+      - L43
+      - L44
+      - L45
+      - L46
 
   tiktok:
     reference: ads/references/tiktok-audit.md
-    total_checks: 28
+    total_checks: 46
     skill: ads-tiktok
     audit_agent: null
     check_ids:
@@ -230,10 +289,29 @@ platforms:
       - T-EA1
       - T-GM1
       - T-SR1
+      # v1.8.0 — TikTok World 2026 (May 13-15, 2026)
+      - T29
+      - T30
+      - T31
+      - T32
+      - T33
+      - T34
+      - T35
+      - T36
+      - T37
+      - T38
+      - T39
+      - T40
+      - T41
+      - T42
+      - T43
+      - T44
+      - T45
+      - T46
 
   microsoft:
     reference: ads/references/microsoft-audit.md
-    total_checks: 24
+    total_checks: 41
     skill: ads-microsoft
     audit_agent: null
     check_ids:
@@ -261,6 +339,24 @@ platforms:
       - MS-CT1
       - MS-SI1
       - MS-VD1
+      # v1.8.0 — AI Max for Search + Activate 2026
+      - MS25
+      - MS26
+      - MS27
+      - MS28
+      - MS29
+      - MS30
+      - MS31
+      - MS32
+      - MS33
+      - MS34
+      - MS35
+      - MS36
+      - MS37
+      - MS38
+      - MS39
+      - MS40
+      - MS41
 
 # Severity multipliers (from ads/references/scoring-system.md)
 severity_multipliers:

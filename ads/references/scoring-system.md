@@ -1,13 +1,13 @@
 # Ad Account Audit Scoring System
 
-<!-- Updated: 2026-04-13 | v1.5: updated check counts, cross-platform checks, ID convention -->
+<!-- Updated: 2026-05-26 | v1.8.0: +91 platform checks (catalog 300), regulatory-exposure band, C-prefix -->
 <!-- Sources: Google Research PDF 1, Claude Research, Gemini Research, 2026 Platform Research -->
 
 ## Check ID Convention
 
 - **Sequential IDs** (G01, M01, L01, T01, MS01): Original v1.0 checks
 - **Hyphenated IDs** (G-AI1, M-AN1, L-CRM1, T-SR1, MS-SI1, X-PI1): v1.5+ additions
-- **Platform prefixes**: G = Google, M = Meta, L = LinkedIn, T = TikTok, MS = Microsoft, ASA = Apple, X = Cross-platform
+- **Platform prefixes**: G = Google, M = Meta, L = LinkedIn, T = TikTok, MS = Microsoft, ASA = Apple, X = Cross-platform, C = Regulatory compliance (v1.8.0)
 
 ## Weighted Scoring Algorithm
 
@@ -172,27 +172,58 @@ Cross-platform checks are scored at 100% weight in the aggregate score (not with
 
 ---
 
-## Total Check Counts (v1.5)
+## Regulatory Exposure Band (v1.8.0)
 
-| Platform | v1.0 | v1.5 | v1.7 | Change vs v1.5 |
-|----------|------|------|------|----------------|
-| Google | 74 | 80 | 80 | — (AI Max deep-rewrite via SKILL.md body) |
-| Meta | 46 | 50 | 50 | — (Andromeda + GEM + Lattice + Entity-ID predictor via SKILL.md body) |
-| LinkedIn | 25 | 27 | 27 | — |
-| TikTok | 25 | 28 | 28 | — (USDS context via SKILL.md body) |
-| Microsoft | 20 | 24 | 24 | — |
-| Cross-platform | 0 | 3 | 3 | — |
-| **Catalog-tracked total** | **190** | **212** | **212** | — |
-| Apple (SKILL.md inline) | — | — | 35+ | New in v1.7 weight table above |
-| Amazon (SKILL.md inline) | — | — | 30+ | New in v1.7 weight table above |
-| Attribution + Server-side (SKILL.md inline) | — | — | 25+ | New in v1.7 weight table above |
-| **Grand total (all sources)** | **190** | **212** | **~302+** | **+90+ new checks via inline thresholds** |
+The `audit-regulatory-compliance` agent (checks C01-C29 + C-MCP-1..6 + C-iOS-1; see
+`compliance-requirements.md` and `mcp-integration.md`) contributes a cross-cutting
+**regulatory-exposure** band, scored like the cross-platform checks (100% weight in the
+aggregate, not inside any single platform). Map its P-severities onto the standard multipliers:
 
-Note: catalog-tracked checks are verified bidirectionally by the eval harness
-(`tests/audit/test_check_coverage.py`). Apple, Amazon, and Attribution +
-Server-side checks live inline in their respective SKILL.md files; their
-dedicated audit reference files (`apple-audit.md`, `amazon-audit.md`,
-`attribution-audit.md`) and catalog entries land in Wave 3.
+| Finding severity | Multiplier | Examples |
+|------------------|-----------|----------|
+| P0 | 5.0 (Critical) | EU AI Act watermark stripping (C01), GPC not honored (C09), missing visible opt-out confirmation (C11), Connecticut neural data (C13), Maryland MODPA (C16), MCP write scope without approval gate (C-MCP-2), no server-side tracking on >5% iOS Safari (C-iOS-1) |
+| P1 | 3.0 (High) | Chatbot AI non-disclosure (C02), DSA minor/sensitive targeting (C22), HIPAA pixel PHI risk (C23) |
+| P2 | 1.5 (Medium) | Global-framework gaps (PIPL / LGPD / DPDPA), audit-log retention < 90 days (C-MCP-6) |
+
+Regulatory findings only count when `applicable_to_account` is true (geography / creative /
+platform mix). The agent also emits the **five hard regulatory clocks** (June 22 Comscore,
+July 1 CT neural data, Aug 2 EU AI Act, Sept 2026 Google DSA→AI Max, Dec 2 watermarking) as
+`regulatory_clock_warnings`, surfaced unprompted in the audit summary regardless of score.
+
+### Cross-platform 2026 landscape (X01-X25)
+
+The v1.8.0 cross-platform deltas (Reddit Max / Dual Attribution, Pinterest CTV, Snap Smart
+Solutions, CTV/OTT shifts, Universal Commerce Protocol, IAB AAMP + Agent Registry) are
+documented in `research/RESEARCH-NOTES-MAY-2026.md` and surfaced via `/ads attribution`,
+`/ads server-side-tracking`, and the orchestrator. They are narrative/awareness checks, not
+yet in the test-enforced catalog.
+
+---
+
+## Total Check Counts (v1.8.0)
+
+| Platform | v1.0 | v1.5 | v1.7 | v1.8 | v1.8 additions |
+|----------|------|------|------|------|----------------|
+| Google | 74 | 80 | 80 | **95** | G81-G95 (Google Marketing Live 2026) |
+| Meta | 46 | 50 | 50 | **72** | M51-M72 (MCP + March-3 rebuild + AI-stack + ARM) |
+| LinkedIn | 25 | 27 | 27 | **46** | L28-L46 (Off-Platform Event Ads + rename) |
+| TikTok | 25 | 28 | 28 | **46** | T29-T46 (TikTok World 2026) |
+| Microsoft | 20 | 24 | 24 | **41** | MS25-MS41 (AI Max for Search + Activate 2026) |
+| **5-platform catalog (test-enforced)** | **190** | **209** | **209** | **300** | **+91 checks** |
+| Cross-platform (X-PI1 / X-CD1 / X-RF1) | 0 | 3 | 3 | 3 | — |
+| Apple (SKILL.md inline) | — | — | 35+ | 42+ | A36-A42 (multi-placement + iOS 26) |
+| Amazon (SKILL.md inline) | — | — | 30+ | 47+ | AMZ-new-1..17 (UCM / Collections / Prompts / Brand+ / Performance+) |
+| Attribution + Server-side (SKILL.md inline) | — | — | 25+ | 25+ | iOS 26 + Reddit Dual Attribution + Meta rebuild refresh |
+| Regulatory compliance (C01-C29 + C-MCP-1..6 + C-iOS-1) | — | — | — | 36 | New agent: audit-regulatory-compliance |
+| Cross-platform 2026 landscape (X01-X25, research notes) | — | — | — | 25 | Reddit / Pinterest / Snap / CTV / UCP / AAMP |
+| **Grand total (all sources)** | **190** | **212** | **~302+** | **~478+** | **substantive Wave 3 release** |
+
+Note: the **5-platform catalog total** is verified bidirectionally by the eval harness
+(`tests/audit/test_check_coverage.py`) — every catalog ID has a reference-file row and vice
+versa. Apple, Amazon, Attribution + Server-side, the regulatory C-checks, and the X01-X25
+cross-platform landscape live inline in their SKILL.md / reference / research files; formal
+catalog extraction for those (dedicated `apple-audit.md` / `amazon-audit.md` /
+`attribution-audit.md` plus catalog entries) remains a Wave 3.x task.
 
 ---
 

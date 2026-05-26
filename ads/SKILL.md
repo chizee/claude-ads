@@ -1,9 +1,9 @@
 ---
 name: ads
-description: "Multi-platform paid advertising audit and optimization skill. Analyzes Google, Meta, YouTube, LinkedIn, TikTok, Microsoft, Apple, and Amazon Ads. 250+ checks with scoring, parallel agents, industry templates, AI creative generation, attribution and server-side tracking deep dives."
+description: "Multi-platform paid advertising audit and optimization skill. Analyzes Google, Meta, YouTube, LinkedIn, TikTok, Microsoft, Apple, and Amazon Ads. 300+ checks with scoring, parallel agents, a regulatory-compliance agent (EU AI Act + 22-state US privacy), industry templates, AI creative generation, attribution and server-side tracking deep dives."
 argument-hint: "audit | google | meta | youtube | linkedin | tiktok | microsoft | apple | amazon | attribution | tracking | creative | landing | budget | plan <type> | competitor | math | test | report | dna <url> | create | generate | photoshoot"
 license: MIT
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -11,7 +11,7 @@ tested_with: claude-code v2.x
 
 Comprehensive ad account analysis across all major platforms (Google, Meta,
 LinkedIn, TikTok, Microsoft, Apple, Amazon). Orchestrates 22 specialized
-sub-skills and 10 agents (6 audit + 4 creative).
+sub-skills and 11 agents (7 audit + 4 creative).
 
 ## Quick Reference
 
@@ -81,7 +81,7 @@ When the user invokes `/ads audit`, delegate to subagents in parallel:
 1. **Collect context** (see Context Intake above; do this first)
 2. Collect account data (exports, screenshots, or pasted metrics)
 3. Detect business type and identify active platforms
-4. Spawn subagents via Task tool with `context: fork`: audit-google, audit-meta, audit-creative, audit-tracking, audit-budget, audit-compliance
+4. Spawn subagents via Task tool with `context: fork`: audit-google, audit-meta, audit-creative, audit-tracking, audit-budget, audit-policy-compliance, audit-regulatory-compliance
 5. **Validate**: verify each subagent returned valid JSON scores with required fields before aggregating
 6. Collect results and generate unified report with Ads Health Score (0-100)
 7. Create prioritized action plan with Quick Wins
@@ -188,12 +188,16 @@ When sub-skills or agents reference `ads/references/*.md`, resolve to
 - `references/budget-allocation.md`: Platform selection matrix, scaling rules, MER
 - `references/platform-specs.md`: Creative specifications across all platforms
 - `references/conversion-tracking.md`: Pixel, CAPI, EMQ, ttclid implementation
-- `references/compliance.md`: Regulatory requirements, ad policies, privacy
-- `references/google-audit.md`: 80-check Google Ads audit checklist (G01-G61 + 19 hyphenated v1.5+ checks; verified via tests/fixtures/check-catalog.yaml)
-- `references/meta-audit.md`: 50-check Meta Ads audit checklist (M01-M40 + 10 hyphenated v1.5+ checks)
-- `references/linkedin-audit.md`: 27-check LinkedIn Ads audit checklist (L01-L25 + 2 hyphenated v1.5+ checks)
-- `references/tiktok-audit.md`: 28-check TikTok Ads audit checklist (T01-T25 + 3 hyphenated v1.5+ checks)
-- `references/microsoft-audit.md`: 24-check Microsoft Ads audit checklist (MS01-MS20 + 4 hyphenated v1.5+ checks)
+- `references/compliance.md`: Platform ad policies, Special Ad Categories, deprecated features
+- `references/compliance-requirements.md`: 2026 regulatory surface (EU AI Act Article 50, 22-state US privacy, Privacy Sandbox shutdown, iOS 26 ATFP/LTP, DSA) — loaded by audit-regulatory-compliance
+- `references/mcp-integration.md`: Official platform MCP servers + write-action governance policy (read-only-first, human approval gate, paused-by-default; SurfaceLabs precedent)
+- `references/meta-ai-stack.md`: Meta four-layer AI ad system (Andromeda + GEM + Lattice + ARM) with Q1 2026 metrics — loaded by /ads meta + audit-meta
+- `references/automation-tier-classifier.md`: Module-level automation classification (T0-T4) across Smart+ / Advantage+ / AI Max / Accelerate — loaded by /ads audit, /ads budget, and platform sub-skills
+- `references/google-audit.md`: 95-check Google Ads audit checklist (G01-G95 incl. GML 2026 G81-G95; verified via tests/fixtures/check-catalog.yaml)
+- `references/meta-audit.md`: 72-check Meta Ads audit checklist (incl. MCP + March-3 attribution rebuild + AI-stack M51-M72)
+- `references/linkedin-audit.md`: 46-check LinkedIn Ads audit checklist (incl. Off-Platform Event Ads + rename L28-L46)
+- `references/tiktok-audit.md`: 46-check TikTok Ads audit checklist (incl. TikTok World 2026 T29-T46)
+- `references/microsoft-audit.md`: 41-check Microsoft Ads audit checklist (incl. AI Max for Search MS25-MS41)
 - `references/brand-dna-template.md`: Brand DNA schema and extraction guide
 - `references/image-providers.md`: Provider config (Gemini/OpenAI/Stability/Replicate)
 - `references/google-creative-specs.md`: PMax/RSA/YouTube generation-ready specs
@@ -264,12 +268,13 @@ This skill orchestrates 22 specialized sub-skills:
 ## Subagents
 
 For parallel analysis during full audits:
-- `audit-google`: Google Ads checks (G01-G61 + 19 hyphenated v1.5+ IDs = 80 total; incl. AI Max)
-- `audit-meta`: Meta Ads checks (M01-M40 + 10 hyphenated v1.5+ IDs = 50 total; incl. Andromeda + Entity-ID clustering)
+- `audit-google`: Google Ads checks (G01-G95 = 95 total; incl. AI Max + GML 2026 G81-G95)
+- `audit-meta`: Meta Ads checks (= 72 total; incl. Andromeda + GEM + Lattice + ARM, MCP governance, March-3 attribution rebuild M51-M72)
 - `audit-creative`: Creative quality for LinkedIn, TikTok, Microsoft (plus cross-platform creative-diversity scoring for Andromeda Entity-ID retrieval)
 - `audit-tracking`: Conversion tracking health across all platforms
 - `audit-budget`: Budget, bidding, structure for LinkedIn, TikTok, Microsoft
-- `audit-compliance`: Compliance, settings, performance across all platforms
+- `audit-policy-compliance`: Platform ad policies, Special Ad Categories, deprecated features, performance benchmarks (LinkedIn/TikTok/Microsoft)
+- `audit-regulatory-compliance`: **New v1.8.0.** EU AI Act Article 50, 22-state US privacy, Privacy Sandbox shutdown, iOS 26 ATFP/LTP, DSA, MCP write-action governance (C01-C29 + C-MCP-1..6); emits the five hard regulatory clocks + regulatory-exposure band
 - `creative-strategist`: Campaign concepts from brand profile + audit results (Opus, maxTurns: 25)
 - `visual-designer`: Image generation with brand injection via generate_image.py (Sonnet, maxTurns: 30)
 - `copy-writer`: Headlines, CTAs, primary text within platform limits (Sonnet, maxTurns: 20)

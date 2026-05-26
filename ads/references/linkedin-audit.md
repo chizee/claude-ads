@@ -1,8 +1,8 @@
 # LinkedIn Ads Audit Checklist
 
-<!-- Updated: 2026-04-13 | v1.5 -->
+<!-- Updated: 2026-05-26 | v1.8.0 -->
 <!-- Sources: Google Research PDF 1 (L01-L25), Claude Research, Gemini Research -->
-<!-- Total Checks: 27 | Categories: 6 | See scoring-system.md for weights and algorithm -->
+<!-- Total Checks: 46 | v1.8.0: Off-Platform Event Ads + rename (L28-L46) -->
 
 > **Note:** LinkedIn renamed Campaign Groups to Campaigns and Campaigns to Ad Sets in October 2025.
 
@@ -17,6 +17,7 @@
 | Bidding & Budget | 15% | L16-L17 (2 checks) |
 | Structure & Performance | N/A | L18-L25 (8 checks, scored across categories) |
 | CRM & Compliance | 10% | L-CRM1, L-EU1 (2 checks) |
+| Off-Platform Events + Rename (v1.8.0) | N/A | L28-L46 (19, scored within existing categories) |
 
 ---
 
@@ -93,6 +94,34 @@
 |----|-------|----------|------|---------|------|
 | L-CRM1 | CRM integration for revenue attribution | High | Salesforce or HubSpot CRM integration configured (launched June 2025) enabling closed-loop reporting from impression to revenue | CRM available but not integrated with LinkedIn | No CRM integration despite having Salesforce/HubSpot (missing revenue attribution loop) |
 | L-EU1 | EU Sponsored Messaging compliance | Medium | No Message Ads or Conversation Ads targeting EU audiences (EU Sponsored Messaging discontinued since January 2022) | N/A | Message/Conversation Ads targeting EU audiences (will not deliver; discontinued) |
+
+---
+
+## Off-Platform Event Ads + Campaign Manager Rename (v1.8.0, L28-L46, scored within existing categories)
+
+Source: `research/notes-linkedin.md`. LinkedIn remains the premium B2B channel: 121% ROAS but a 272-day average B2B buying journey and $5-15 CPC (vs $1-3 on other platforms) per Dreamdata 2026, so attribution windows and company-level reporting matter more here than on any other platform.
+
+| ID | Check | Severity | Pass | Warning | Fail |
+|----|-------|----------|------|---------|------|
+| L28 | Off-Platform Event Ads (full rollout May 6, 2026) | Medium | B2B/SaaS event campaigns evaluated for the event-format ad: no LinkedIn Event Page required; supports webinars/field/hybrid; Lead Gen syncs to Salesforce/HubSpot/Marketo; Cvent/ON24/Integrate integrations | Format known but not evaluated for relevant event campaigns | N/A |
+| L29 | Campaign Manager terminology rename trap | High | UTM/tracking templates map correctly: UI renamed "Campaign Group"->"Campaign" and "Campaign"->"Ad set", but the API kept old terms (`adCampaignGroups`, `campaignGroup`, `campaign`) | UI/API mapping not verified after rename | UTM/templates mismap UI vs API hierarchy |
+| L30 | Accelerate auto-campaign creation | Low | Accelerate AI auto-campaign creation evaluated | Eligible but auto-campaign creation not evaluated | Ignored despite sufficient conversion history that fits Accelerate |
+| L31 | AI Ad Variants | Low | AI Ad Variants (multiple variants from a single input) evaluated | Available but variant generation not evaluated | Ignored despite a clear creative-testing need that AI Ad Variants would serve |
+| L32 | Career Journey targeting | Medium | Career Journey targeting (recent promotions / new job placements) evaluated for relevant ABM plays | Eligible ABM plays not evaluated | N/A |
+| L33 | Reserved Ads | Low | Reserved Ads (premium guaranteed inventory) evaluated for awareness | Awareness budget present but Reserved Ads not evaluated | Running large brand pushes with no guaranteed premium inventory |
+| L34 | First Impression Ads | Low | First Impression Ads (premium first-position) evaluated for awareness | Awareness budget present but First Impression Ads not evaluated | Ignored despite an awareness goal that premium first-position placement would serve |
+| L35 | BrandLink expansion | Low | BrandLink expansion evaluated for brand-safe video reach | Eligible but BrandLink not evaluated for video campaigns | Ignored despite running brand video with an awareness goal that fits BrandLink |
+| L36 | Wire | Low | Wire (short-form B2B video) evaluated | Available but Wire short-form video not evaluated | Ignored despite clear B2B fit for short-form video reach |
+| L37 | Thought Leader Event Ads | Low | Thought Leader Event Ads evaluated | Eligible event/TLA plays present but format not evaluated | Ignored despite running events and TLAs that this format would combine |
+| L38 | CTV expansion | Low | CTV expansion evaluated for B2B brand reach | Awareness budget present but CTV expansion not evaluated | Ignored despite a B2B brand-reach goal that CTV inventory would serve |
+| L39 | Company Attribution in Revenue Attribution Report | Medium | Company-level attribution reviewed for B2B (accounts for 272-day journey) | Report available but company-level view not reviewed | N/A |
+| L40 | MRC accreditation for video metrics | Low | MRC accreditation noted in benchmark caveats (LinkedIn pursuing; video metrics not yet third-party accredited) | Video metrics reported but accreditation caveat not noted | Relevant video budget reported on un-accredited metrics with no caveat flagged |
+| L41 | Company Intelligence API | Low | Company Intelligence API (May 2026) evaluated | Available but Company Intelligence API not evaluated | Ignored despite clear ABM/B2B fit for company-level intelligence |
+| L42 | Flexible Ad Creation | Low | Flexible Ad Creation (arriving 2026) evaluated | Arriving but Flexible Ad Creation not evaluated for the roadmap | Ignored despite an active creative-testing need it would serve once live |
+| L43 | SMB Auto-targeting + Draft with AI | Low | SMB Auto-targeting + Draft with AI (Apr 2026) evaluated | Available but SMB Auto-targeting + Draft with AI not evaluated | Ignored despite an SMB account that this lightweight setup path would serve |
+| L44 | Real-time CRM data in Campaign Manager | Medium | CRM connected so audiences/exclusions stay fresh via real-time CRM data in Campaign Manager | CRM available but not connected for real-time refresh | N/A |
+| L45 | Ads Agency Certification | Low | Ads Agency Certification (May 6, 2026) pursued where relevant; needs Business Manager + invoicing + Marketing Academy | Agency managing LinkedIn but not pursuing certification | Agency lacks Business Manager + invoicing prerequisites, blocking certification |
+| L46 | Depth Score organic algorithm 2026 | Medium | Organic/Thought-Leader strategy accounts for Depth Score: time-on-content weighted, engagement pods penalized, AI-written posts filtered, external links cut organic reach 30-50% (don't lean on link-out posts or pods) | Organic strategy not reviewed against Depth Score | N/A |
 
 ---
 

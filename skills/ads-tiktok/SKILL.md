@@ -1,8 +1,8 @@
 ---
 name: ads-tiktok
-description: "TikTok Ads deep analysis covering creative quality, tracking, bidding, campaign structure, and TikTok Shop under the TikTok USDS Joint Venture (post Jan 2026 divestiture). Evaluates 28 checks with emphasis on creative-first strategy, safe zone compliance, creative diversity for retrieval, and Smart+ campaigns. Use when user says TikTok Ads, TikTok marketing, TikTok Shop, Spark Ads, Smart+, USDS, creative diversity for retrieval, or TikTok campaign."
+description: "TikTok Ads deep analysis covering creative quality, tracking, bidding, campaign structure, and TikTok Shop under the TikTok USDS Joint Venture (post Jan 2026 divestiture). Evaluates 46 checks with emphasis on creative-first strategy, safe zone compliance, creative diversity for retrieval, and Smart+ campaigns. Use when user says TikTok Ads, TikTok marketing, TikTok Shop, Spark Ads, Smart+, USDS, creative diversity for retrieval, or TikTok campaign."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -11,7 +11,7 @@ tested_with: claude-code v2.x
 ## Process
 
 1. Collect TikTok Ads data (Ads Manager export, Pixel/Events API status)
-2. Read `ads/references/tiktok-audit.md` for full 28-check audit
+2. Read `ads/references/tiktok-audit.md` for full 46-check audit
 3. Read `ads/references/benchmarks.md` for TikTok-specific benchmarks
 4. Read `ads/references/platform-specs.md` for creative specifications
 5. Read `ads/references/scoring-system.md` for weighted scoring algorithm
@@ -170,7 +170,7 @@ Performance:       XX/100  ████████░░  (10%)
 ```
 
 ### Deliverables
-- `TIKTOK-ADS-REPORT.md`: Full 28-check findings with pass/warning/fail
+- `TIKTOK-ADS-REPORT.md`: Full 46-check findings with pass/warning/fail
 - Creative scorecard per ad (hook quality, safe zone, native feel)
 - Smart+ vs manual performance comparison
 - TikTok Shop readiness assessment (if e-commerce)

@@ -2,7 +2,7 @@
 name: ads-server-side-tracking
 description: "Server-side tracking pipeline audit covering server-side Google Tag Manager (sGTM), Meta CAPI Gateway, Conversions API health, event deduplication via event_id, server-side hit ratio targets, pixel debugging, and PII hashing discipline. Use when user says server-side tracking, sGTM, server-side GTM, server-side tagging, CAPI, Conversions API, CAPI Gateway, Meta Conversions API, event deduplication, event_id, pixel debug, pixel health, Pixel/CAPI audit, first-party tracking, iOS 14.5 recovery, or server-side hit ratio."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -116,6 +116,29 @@ When deployed, validate every event end-to-end:
 - **NEVER send plain PII server-side** — only hashed
 - **GDPR / CPRA / CDPA compliance**: confirm consent state is read before
   sending PII server-side, even hashed
+
+### v1.8.0 refresh — agentic commerce + MCP governance
+
+The server-side pipeline now sits underneath an agentic-commerce layer. See the rewritten
+`ads/references/mcp-integration.md` for the full picture.
+
+- **Universal Commerce Protocol (UCP)** (NRF Jan 11, 2026; Universal Cart US rollout May 19,
+  2026): discovery via a `/.well-known/ucp` JSON manifest, RS256/ES256 signing keys, webhook
+  endpoints for order lifecycle. `native_commerce` is the Merchant Center eligibility field.
+  If the account is UCP-eligible, confirm the manifest + webhook conversion events flow into
+  the server-side pipeline with `event_id` dedup like any other conversion source.
+- **Agent Payments Protocol (AP2)** donated to the FIDO Alliance (April 28, 2026); compatible
+  with A2A + MCP. Track for server-side conversion implications as agentic checkout matures.
+- **IAB Tech Lab AAMP + Agent Registry**: prefer Agent-Registry-validated MCP/A2A connectors
+  (validated against GPP + TCF ID); flag any unvalidated third-party MCP in the stack.
+- **MCP write-action governance**: if an MCP connection has write access to this account,
+  the server-side audit must hand off to the `audit-regulatory-compliance` agent's
+  C-MCP-1..6 checks (read-only-first, human approval gate, paused-by-default, ≤200 calls/hour,
+  no autonomous budget loops, ≥90-day audit-log retention). SurfaceLabs lost a Meta account
+  permanently in April 2026 for aggressive autonomous API behavior.
+- **iOS 26 server-side mandate**: with iOS 26 ATFP + Link Tracking Protection stripping click
+  IDs in all Safari, server-side APIs are no longer optional for any account with meaningful
+  iOS Safari traffic. See `ads/references/compliance-requirements.md` (C-iOS-1).
 
 ## Key Thresholds
 

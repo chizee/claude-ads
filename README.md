@@ -21,7 +21,7 @@ A manual audit of a single Google Ads account takes 4-6 hours of senior PPC time
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Experimental-yellow)](https://github.com/google-gemini/gemini-cli)
 [![Goose](https://img.shields.io/badge/Goose-Experimental-yellow)](https://block.github.io/goose/)
 
-> **Last updated:** 2026-05-18 · **Version:** v1.7.1 · [CHANGELOG](CHANGELOG.md) · [Blog: full ad audit breakdown](https://agricidaniel.com/blog/claude-code-ad-agency)
+> **Last updated:** 2026-05-26 · **Version:** v1.8.0 · [CHANGELOG](CHANGELOG.md) · [Blog: full ad audit breakdown](https://agricidaniel.com/blog/claude-code-ad-agency)
 
 > **Two versions of this skill.**
 > - 🌐 **Public open-source** → [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads): MIT, public releases, no membership. Best if you want stable + downloadable.
@@ -36,7 +36,7 @@ A manual audit of a single Google Ads account takes 4-6 hours of senior PPC time
 ## What's new in v1.7.0 (Wave 2)
 
 - **3 new sub-skills**: `/ads amazon` (Sponsored Products/Brands/Display, ACOS/TACOS), `/ads attribution` (AdAttributionKit + GA4 + Consent Mode V2), `/ads tracking` (sGTM + CAPI Gateway + dedup + hashing).
-- **41-test pytest eval harness** in `tests/`: routing snapshots, bidirectional 209-check catalog coverage, scoring math determinism, SSRF regression. Runs in CI on every commit.
+- **41-test pytest eval harness** in `tests/`: routing snapshots, bidirectional 300-check catalog coverage, scoring math determinism, SSRF regression. Runs in CI on every commit.
 - **Cross-runtime install matrix**: `install.sh` / `install.ps1 --target=<host>` with whitelist validation for Claude Code, Codex CLI, Cursor, Windsurf, Gemini CLI, Goose.
 - **Deep platform rewrites**: `/ads google` for the AI Max era (`ai_max_setting.enable_ai_max`, AI Brief, FUE, brand exclusions). `/ads meta` for the Andromeda + GEM + Lattice era with Entity-ID clustering detection.
 - **10-Principle Thinking Framework**: every audit, plan, and creative output runs under a shared cognitive discipline. See [`ads/references/thinking-framework.md`](ads/references/thinking-framework.md).
@@ -99,7 +99,7 @@ Plus a PDF version (`/ads report`) with health score gauge, platform comparison 
 - [Installation: 3 ways to add Claude Ads](#installation-3-ways-to-add-claude-ads)
 - [Quick Start](#quick-start)
 - [Commands](#commands)
-- [Features: what 250+ audit checks cover](#features-what-250-audit-checks-cover)
+- [Features: what 300+ audit checks cover](#features-what-300-audit-checks-cover)
 - [Compared to manual / agency / commercial tools](#compared-to-manual--agency--commercial-tools)
 - [Use cases](#use-cases)
 - [Eval harness: verified rigor](#eval-harness-verified-rigor)
@@ -116,7 +116,7 @@ Plus a PDF version (`/ads report`) with health score gauge, platform comparison 
 
 ## Installation: 3 ways to add Claude Ads
 
-> ℹ️ **Two install paths — pick the one that matches your access.**
+> ℹ️ **Two install paths: pick the one that matches your access.**
 >
 > The commands below default to the **community private mirror** at `AI-Marketing-Hub/claude-ads` (early access for Pro members). To use the **public release** at `AgriciDaniel/claude-ads` (MIT, no membership), swap `AI-Marketing-Hub/claude-ads` for `AgriciDaniel/claude-ads` and the plugin slug `claude-ads@ai-marketing-hub-claude-ads` for `claude-ads@agricidaniel-claude-ads` in every command.
 >
@@ -263,17 +263,18 @@ claude
 ### `/ads audit`
 **Full Multi-Platform Audit**
 
-Spawns 6 parallel subagents:
-- **audit-google**: 80 checks across Search, PMax, AI Max, Demand Gen, CTV, YouTube
-- **audit-meta**: 50 checks across Pixel/CAPI, Andromeda creative diversity, Structure, Audience
+Spawns 7 parallel subagents:
+- **audit-google**: 95 checks across Search, PMax, AI Max, Demand Gen, CTV, YouTube, GML 2026
+- **audit-meta**: 72 checks across Pixel/CAPI, Andromeda + GEM + Lattice + ARM, MCP governance, March-3 attribution rebuild, Structure, Audience
 - **audit-creative**: cross-platform creative quality with Andromeda Entity-ID and Symphony awareness
 - **audit-tracking**: conversion tracking + privacy infrastructure (Consent Mode V2, CAPI, Events API, AdAttributionKit)
 - **audit-budget**: budget and bidding across LinkedIn, TikTok, Microsoft
-- **audit-compliance**: compliance, settings, performance benchmarks across all platforms
+- **audit-policy-compliance**: platform ad policies, Special Ad Categories, deprecated features, performance benchmarks
+- **audit-regulatory-compliance**: *(new v1.8.0)* EU AI Act Article 50, 22-state US privacy, Privacy Sandbox shutdown, iOS 26 ATFP/LTP, DSA, MCP write-action governance
 
 Generates a unified **Ads Health Score (0-100)** with prioritized action plan.
 
-> **Wave 2 standalone sub-skills.** `/ads audit` parallel-delegates the 6 agents above. Amazon, attribution, and server-side tracking are standalone sub-skills (`/ads amazon`, `/ads attribution`, `/ads tracking`); invoke them directly. Wave 3 will add their paired audit agents.
+> **Standalone sub-skills.** `/ads audit` parallel-delegates the 7 agents above. Amazon, attribution, and server-side tracking are standalone sub-skills (`/ads amazon`, `/ads attribution`, `/ads tracking`); invoke them directly. Wave 3 will add their paired audit agents.
 
 <p align="center">
   <img src="assets/diagrams/02-pipeline-A.svg" alt="Audit pipeline: stage-by-stage execution from data intake through parallel sub-agent dispatch to scored report output" width="100%">
@@ -320,7 +321,7 @@ PDF audit reports for client deliverables: health score gauge, platform comparis
   <img src="assets/diagrams/16-pdf-pipeline.svg" alt="PDF Report Pipeline" width="100%">
 </p>
 
-## Features: what 250+ audit checks cover
+## Features: what 300+ audit checks cover
 
 What every check actually does: catches the platform-specific blind spots that cost you spend. Andromeda creative-similarity suppression on Meta. Negative-keyword discipline gaps on Google AI Max. Andromeda-aware creative diversity scoring. AdAttributionKit configurable-window gaps on Apple. ACOS/TACOS targets misaligned with margin on Amazon. Consent Mode V2 missing on the landing page (silent revenue leak). These are the items a manual audit misses because the analyst is mostly checking what *used* to matter, not what platforms changed in 2026.
 
@@ -338,7 +339,7 @@ What every check actually does: catches the platform-specific blind spots that c
 | Cross-platform | 3 | Privacy infrastructure, creative diversity, refresh cadence |
 | Attribution + server-side | 25+\* | AdAttributionKit, GA4, Consent Mode V2, sGTM, CAPI Gateway, hash quality |
 
-> \* **Verified vs estimated.** The 209 checks for Google (80), Meta (50), LinkedIn (27), TikTok (28), and Microsoft (24) are bidirectionally verified against `tests/fixtures/check-catalog.yaml`; they can't drift without failing CI. Apple, Amazon, Cross-platform, and Attribution + Server-side counts are inline thresholds in their respective SKILL.md files; corresponding audit reference files + catalog entries land in Wave 3.
+> \* **Verified vs estimated.** The 300 checks for Google (95), Meta (72), LinkedIn (46), TikTok (46), and Microsoft (41) are bidirectionally verified against `tests/fixtures/check-catalog.yaml`; they can't drift without failing CI. Apple, Amazon, Cross-platform, Attribution + Server-side, and the v1.8.0 regulatory-compliance checks (C01-C29) are inline thresholds in their respective SKILL.md / reference files; corresponding audit reference files + catalog entries land in Wave 3.x.
 
 <p align="center">
   <img src="assets/diagrams/15-platform-grid.svg" alt="Platform Coverage Grid" width="100%">
@@ -435,7 +436,7 @@ Runs entirely on your local machine via Claude Code. No ad account data is sent 
 **41 tests, 41 passing, CI on every commit.** Pytest suite in `tests/`:
 
 - **Routing snapshots**: every documented trigger phrase routes to its expected sub-skill (catches description regressions)
-- **Check-catalog coverage**: bidirectional check between `tests/fixtures/check-catalog.yaml` (209 IDs) and every audit reference file; no orphan IDs, no untracked rows
+- **Check-catalog coverage**: bidirectional check between `tests/fixtures/check-catalog.yaml` (300 IDs) and every audit reference file; no orphan IDs, no untracked rows
 - **Scoring math**: re-implements the weighted-score algorithm; asserts determinism across 10 runs and correct severity weighting
 - **SSRF regression suite**: 27 IPv4/IPv6 blocklist cases, non-HTTP scheme blocks, DNS fail-closed, credential redaction
 
@@ -456,7 +457,7 @@ Rare among Claude Code skills. Makes the project auditable end-to-end and preven
 ~/.claude/skills/ads/references/   # 26 RAG reference files
 ~/.claude/skills/ads-*/            # 22 sub-skills (incl. ads-math, ads-test, ads-amazon, ads-attribution, ads-server-side-tracking)
 ~/.claude/skills/ads-plan/assets/  # 12 industry templates
-~/.claude/agents/                  # 10 agents (6 audit + 4 creative)
+~/.claude/agents/                  # 11 agents (7 audit + 4 creative)
 ~/.claude/skills/ads/tests/        # 41-test pytest eval harness (Wave 2)
 ```
 
@@ -585,7 +586,7 @@ The 12-month delivery cadence from v1.5 stable through Wave 2 (v1.7.x, current) 
 
 ## Project info
 
-- [CHANGELOG](CHANGELOG.md): release history with full Wave 2 notes (v1.7.0 + v1.7.1)
+- [CHANGELOG](CHANGELOG.md): release history with full Wave 2 + Wave 3 notes (v1.7.0 → v1.8.0)
 - [CONTRIBUTING](CONTRIBUTING.md): bug reports, feature requests, sub-skill templates, testing discipline
 - [CODE OF CONDUCT](CODE_OF_CONDUCT.md): Contributor Covenant
 - [SECURITY](SECURITY.md): vulnerability disclosure, outbound network destinations table, error sanitization

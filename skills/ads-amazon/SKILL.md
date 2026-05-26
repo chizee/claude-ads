@@ -2,7 +2,7 @@
 name: ads-amazon
 description: "Amazon Ads deep analysis covering Sponsored Products, Sponsored Brands (incl. Sponsored Brands Video), Sponsored Display (audiences + contextual), and basic Amazon DSP. Evaluates campaign structure, ACOS/TACOS targets, search-term harvesting, negative keyword discipline, Brand Analytics signals, day-parting, bid management, auto vs manual campaign mix, ASIN targeting, and DSP retargeting. Use when user says Amazon Ads, Amazon advertising, Amazon PPC, Amazon search ads, Sponsored Products, Sponsored Brands, Sponsored Display, Amazon DSP, ACOS, TACOS, retail media audit, Amazon Marketing Services, AMS, or Amazon seller advertising."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -129,6 +129,103 @@ vendors. Detailed Amazon DSP audit (programmatic / Twitch / Fire TV / Freevee
   strategy
 - **Amazon Attribution** (off-Amazon traffic) tracked if running external
   ads driving to Amazon listings
+
+## v1.8.0 deltas — UCM + Collections + Prompts + Brand+/Performance+ (AMZ-new-1..17)
+
+These checks cover the platform changes that landed after the core sub-skill
+shipped (unBoxed 2025 Nashville, unBoxed Toronto 2026, and the public launches
+between Nov 2025 and Mar 2026). Where a capability changes how earlier checks
+read — Multi-Touch Attribution, Full-Funnel Campaigns — the delta note says so.
+
+### Unified platform, AI agents & new placements (AMZ-new-1..7)
+
+- **AMZ-new-1 — Unified Campaign Manager (UCM)**: Sponsored Ads + Amazon DSP
+  in one platform (beta announced Nov 11 2025, live early 2026). Exposes
+  **15 months of daily data + 6 years of monthly data** — the deepest history
+  any major ad platform offers. For accounts that previously split Sponsored
+  and DSP reporting, treat UCM as the canonical reporting layer; the data depth
+  makes multi-year seasonality and long-tail ASIN decay checks feasible.
+- **AMZ-new-2 — Ads Agent**: conversational chat assistant for campaign
+  creation, targeting, and AMC (Amazon Marketing Cloud) analytics, available to
+  anyone with AMC access. Detect adoption; verify it is not running unattended
+  write actions.
+- **AMZ-new-3 — Creative Agent**: agentic AI ad creation, expanded Nov 11 2025
+  to Streaming TV and Sponsored TV. For CTV campaigns, verify Creative Agent
+  outputs are reviewed before launch (paused-by-default).
+- **AMZ-new-4 — Full-Funnel Campaigns**: new AI campaign type (2026) spanning
+  Sponsored Products, Sponsored Brands, display, and streaming TV in a single
+  campaign. Detect adoption — if Full-Funnel is in use, the channel-level
+  breakouts that worked for single-product campaigns no longer apply.
+- **AMZ-new-5 — Multi-Touch Attribution (MTA)**: deployed across Campaign
+  Manager (early 2026), materially different from the prior last-click-only
+  model. Verify MTA is the selected attribution model and that the user
+  understands historical reports are not like-for-like.
+- **AMZ-new-6 — Sponsored Products Video in search results**: native video
+  format inside Sponsored Products. Detect adoption; flag missing video assets
+  in the product catalog for video-eligible categories.
+- **AMZ-new-7 — Reimagined homepage hero + top-of-search pre-purchase**: new
+  high-visibility placements. Pre-purchase targets users who have not bought
+  yet — high leverage for cold-prospecting campaigns.
+
+### Amazon Ads MCP Server (AMZ-new-8)
+
+- **AMZ-new-8 — Amazon Ads MCP Server**: closed beta Nov 13 2025, public beta
+  Feb 2 2026. Supports Claude, ChatGPT, Gemini, Amazon Q, and Bedrock. Verify
+  scope is minimum-necessary (one account, not all-account access) and
+  read-only first.
+
+### Sponsored Brands Collections (AMZ-new-9)
+
+- **AMZ-new-9 — Sponsored Brands Collections** (launched Jan 28 2026,
+  replacing the old Product Collections format): **minimum 3 ASINs, maximum 10
+  ASINs**, with **Auto (AI) and Manual** product-selection modes. Auto mode
+  supports **up to 1,000 ASIN exclusions**. The format **removes custom
+  headlines, lifestyle images, and branded creative** — a notable retreat from
+  advertiser creative control, so flag brands that relied on custom SB creative.
+  **US only** at launch.
+
+  > **Citation caveat:** The **"+143% click-attributed sales"** figure
+  > circulating in coverage belongs to Sponsored Brands **Reserve Share of
+  > Voice**, NOT Collections (Amazon's Reserve Share of Voice page reports
+  > top-of-search impression share rising 62.7% → 99.3%, click-attributed sales
+  > +143%, and lost top-of-search sales falling 10.3% → 0.3%). Do not attribute
+  > it to Collections. The **"2.5x more unique products purchased"** Auto-vs-
+  > Manual figure is third-party (sentrykit.com) beta-test data only and does
+  > **not** appear on Amazon's official launch page — flag as not-yet-
+  > corroborated by a primary source.
+
+### Sponsored Products / Sponsored Brands Prompts (AMZ-new-10)
+
+- **AMZ-new-10 — SP & SB Prompts**: moved from open beta to general
+  availability in the US on **March 25 2026**, with **CPC billing** beginning at
+  GA and auto-enrollment for SP and SB campaigns. A **dedicated Prompts report**
+  (Campaign → Ad Group → Ads → Prompts tab) lists prompt text, impressions,
+  clicks, and orders; practitioner coverage extends it to CTR / CPC / spend /
+  sales / ACOS / ROAS / 7-day orders & units. Detect Prompts adoption, review
+  prompt-level CTR and ACOS, and flag prompts spending without conversions for
+  early kill.
+
+### Brand+ and Performance+ (AMZ-new-11..13)
+
+These are Amazon-supplied case figures — present them as vendor benchmarks, not
+independently verified results.
+
+- **AMZ-new-11 — Brand+ (prospecting AI)**: Amazon reports **+71% PDP views,
+  +42% brand discovery, +64% purchases** vs non-Brand+ tactics.
+- **AMZ-new-12 — Performance+ (conversion AI)**: Amazon reports **+34% ROAS
+  in-store and +68% CPA improvement off-Amazon**.
+- **AMZ-new-13 — Brand+ / Performance+ combined (H&R Block case)**: **144%
+  full-funnel CVR lift and 35% CPA improvement** when run together.
+
+### CTV / Prime Video (AMZ-new-14..17)
+
+- **AMZ-new-14 — Prime Video ads 2026 expansion**: adds Belgium, Denmark,
+  Norway, and Turkey.
+- **AMZ-new-15 — Direct Netflix and Spotify integrations** via Amazon DSP.
+- **AMZ-new-16 — NBA on Prime Video**: started Oct 2025; expanded packages from
+  May 2026.
+- **AMZ-new-17 — Complete TV**: cross-publisher streaming TV management across
+  Prime Video and premium publishers, with linear TV data integration.
 
 ## Key Thresholds
 

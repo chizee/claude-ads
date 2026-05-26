@@ -1,8 +1,8 @@
 ---
 name: ads-google
-description: "Google Ads deep analysis covering Search, Performance Max, AI Max, Display, YouTube, and Demand Gen campaigns. Evaluates 80 checks across conversion tracking, wasted spend, account structure, keywords, ads, and settings. Includes AI Max (search-term-matching, AI Brief, text customization, FUE, brand exclusions) and Smart Bidding signals. Use when user says Google Ads, Google PPC, search ads, PMax, Performance Max, AI Max, AI Brief, broad match audit, Quality Score check, search terms audit, Smart Bidding, or Google campaign."
+description: "Google Ads deep analysis covering Search, Performance Max, AI Max, Display, YouTube, and Demand Gen campaigns. Evaluates 95 checks across conversion tracking, wasted spend, account structure, keywords, ads, and settings. Includes AI Max (search-term-matching, AI Brief, text customization, FUE, brand exclusions) and Smart Bidding signals. Use when user says Google Ads, Google PPC, search ads, PMax, Performance Max, AI Max, AI Brief, broad match audit, Quality Score check, search terms audit, Smart Bidding, or Google campaign."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -12,11 +12,11 @@ tested_with: claude-code v2.x
 
 1. Collect Google Ads account data (export, Change History, Search Terms Report)
 2. **Validate**: confirm data covers ≥30 days and includes Search Terms Report before proceeding
-3. Read `ads/references/google-audit.md` for full 80-check audit
+3. Read `ads/references/google-audit.md` for full 95-check audit
 4. Read `ads/references/benchmarks.md` for Google-specific benchmarks
 5. Read `ads/references/scoring-system.md` for weighted scoring
 6. Evaluate all applicable checks as PASS, WARNING, or FAIL
-7. **Validate**: confirm all 80 checks evaluated before calculating score
+7. **Validate**: confirm all 95 checks evaluated before calculating score
 8. Calculate Google Ads Health Score (0-100)
 9. Generate findings report with action plan
 
@@ -250,7 +250,7 @@ Settings:            XX/100  ██████████  (10%)
 ```
 
 ### Deliverables
-- `GOOGLE-ADS-REPORT.md`: Full 80-check findings with pass/warning/fail
+- `GOOGLE-ADS-REPORT.md`: Full 95-check findings with pass/warning/fail
 - Wasted spend estimate (monthly $ value)
 - Quick Wins sorted by impact
 - PMax-specific recommendations (if applicable)

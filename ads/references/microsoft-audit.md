@@ -1,8 +1,8 @@
 # Microsoft Ads Audit Checklist
 
-<!-- Updated: 2026-04-13 | v1.5 -->
+<!-- Updated: 2026-05-26 | v1.8.0 -->
 <!-- Sources: Google Research PDF 1 (MS01-MS20), Claude Research, Gemini Research, Seer Interactive -->
-<!-- Total Checks: 24 | Categories: 6 | See scoring-system.md for weights and algorithm -->
+<!-- Total Checks: 41 | v1.8.0: AI Max for Search + Activate 2026 (MS25-MS41) -->
 
 ## Quick Reference
 
@@ -14,6 +14,7 @@
 | Creative & Extensions | 20% | MS11-MS13 + MS19-MS20 (5 checks) |
 | Settings & Performance | 15% | MS14-MS18 (5 checks) |
 | Import Safety, Compliance & Video (v1.5) | N/A | MS-SI1, MS-CM1, MS-CT1, MS-VD1 (4 checks) |
+| AI Max for Search + Activate 2026 (v1.8.0) | N/A | MS25-MS41 (17, scored within existing categories) |
 
 ---
 
@@ -156,3 +157,29 @@ Ensure PMax campaigns have Copilot placement enabled to capture this growing cha
 - **Smart Shopping to PMax (Aug 2025)**: All Smart Shopping auto-upgraded
 - **Copilot ads**: Show beneath AI responses with "Sponsored" labels in Copilot conversations
 - **9:16 vertical video (Apr 2025)**: 90-second duration support added
+
+---
+
+## AI Max for Search + Activate 2026 (v1.8.0, MS25-MS41, scored within existing categories)
+
+Microsoft's spring 2026 announcements (about.ads.microsoft.com, Apr 22 2026) plus the Activate 2026 conference (May 19 2026). Source: `research/notes-microsoft.md`. These 17 checks are scored within the six existing weighted categories; they do not add a new category weight.
+
+| ID | Check | Severity | Pass | Warning | Fail |
+|----|-------|----------|------|---------|------|
+| MS25 | AI Max for Search (Microsoft) | High | Microsoft AI Max for Search (pilot May 2026; DISTINCT from Google's AI Max) evaluated or piloted with guardrails configured. Expands query matching across Copilot Search / Copilot Answers / Bing. Guardrails: brand inclusions/exclusions, term exclusions, messaging constraints. Early: +5% CTR; PMax users +8% incremental conversions | Piloted but guardrails only partially configured | Enabled with no brand/term guardrails |
+| MS26 | Offer Highlights in Copilot | Low | Offer Highlights (free shipping, in-store pickup) evaluated for Copilot conversations (Best Buy launch partner; English retail) | Eligible English retailer not evaluating Offer Highlights | English retailer with shipping/pickup offers ignoring Offer Highlights in Copilot |
+| MS27 | Audience Generation | Low | Audience Generation (plain-language to targeting; closed pilot US + Canada) evaluated where eligible | Pilot-eligible US/Canada account not evaluating Audience Generation | Manual audience-building despite Audience Generation pilot access |
+| MS28 | PMax Final URL reporting | Medium | Performance Max Final URL reporting (Apr 2026) reviewed for PMax: spend / impressions / clicks / ROAS by Final URL | Reporting available but not reviewed | Not reviewed despite PMax campaigns active |
+| MS29 | Clarity AI Visibility | Low | Clarity AI Visibility (how brands appear in AI interfaces) evaluated | Clarity available but AI Visibility not reviewed | Brand running AI-surface spend with no Clarity AI Visibility tracking |
+| MS30 | Brand Agents on commerce platforms | Low | Brand Agents embed on Shopify / WooCommerce evaluated for commerce accounts | Shopify/WooCommerce store not evaluating Brand Agents | Commerce account ignoring Brand Agents despite Shopify/WooCommerce storefront |
+| MS31 | UCP in Merchant Center | Medium | UCP support in Merchant Center (US live Apr 22 2026) evaluated for commerce accounts; Shopify Catalog real-time sync utilized | UCP available but not evaluated | N/A |
+| MS32 | Copilot Checkout | Low | Copilot Checkout evaluated (500k+ US merchants; Target Circle loyalty linking) | US merchant not evaluating Copilot Checkout | High-volume US retailer ignoring Copilot Checkout + Target Circle loyalty linking |
+| MS33 | Rewarded Portals | Low | Rewarded Portals (in-game opt-in ad format) evaluated where relevant | Gaming/app inventory available but Rewarded Portals not evaluated | Gaming advertiser ignoring Rewarded Portals despite clear in-game fit |
+| MS34 | Import Center | Low | Import Center (consolidated import workflow) adopted for import management | Still importing via the legacy per-source flow | Fragmented imports causing drift vs Google because Import Center not adopted |
+| MS35 | Automated bidding + custom columns | Low | Automated bidding updates and custom columns adopted | Updates available but automated bidding / custom columns not adopted | Manual bidding and default columns despite sufficient conversion data |
+| MS36 | Performance Shift Root Cause Analysis | Low | Performance Shift Root Cause Analysis (Copilot diagnostic) used to investigate performance changes | Diagnostic available but not used to investigate shifts | Unexplained performance swings left undiagnosed despite Root Cause Analysis access |
+| MS37 | Conversion Tracking Diagnostics | Medium | Conversion Tracking Diagnostics run; UET / conversion issues resolved | Diagnostics run but issues unresolved | Diagnostics not run despite tracking concerns |
+| MS38 | Data-Driven Attribution adoption | Medium | Data-Driven Attribution selected where conversion volume supports it | DDA eligible but not selected | N/A |
+| MS39 | Conversion API (CAPI) | High | Conversion API (CAPI) server-to-server conversions implemented | Server-side planned but not deployed | No server-side conversions (signal loss on iOS / ITP) |
+| MS40 | Ad Studio Brand Kit | Low | Ad Studio Brand Kit set up for consistent creative | Ad Studio available but Brand Kit not set up | Inconsistent creative across assets despite Ad Studio Brand Kit access |
+| MS41 | SOAP to REST migration | Medium | SOAP API integrations migrated or migration-planned off SOAP (deprecation in favor of REST) | Migration in progress | Production tooling still SOAP-only with no plan |

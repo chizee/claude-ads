@@ -8,18 +8,20 @@ abstract: >
   Codex CLI, Cursor, Windsurf, Gemini CLI, and Goose. Covers Google Ads
   (including AI Max), Meta Ads (including Andromeda + GEM + Lattice with
   Entity-ID clustering prediction), YouTube Ads, LinkedIn Ads, TikTok Ads,
-  Microsoft Ads, Apple Ads, and Amazon Ads with 250+ audit checks, 22
-  sub-skills, 10 parallel agents, 12 industry templates, cross-platform
-  attribution and server-side tracking deep dives, PPC math, A/B test design,
-  PDF report generation, and a 41-test pytest eval harness.
+  Microsoft Ads, Apple Ads, and Amazon Ads with 300+ audit checks, 22
+  sub-skills, 11 parallel agents (including a regulatory-compliance agent
+  covering the EU AI Act and the 22-state US privacy landscape), 12 industry
+  templates, cross-platform attribution and server-side tracking deep dives,
+  PPC math, A/B test design, PDF report generation, and a 41-test pytest eval
+  harness.
 authors:
   - alias: AgriciDaniel
     name-particle: ""
 repository-code: "https://github.com/AI-Marketing-Hub/claude-ads"
 url: "https://github.com/AI-Marketing-Hub/claude-ads"
 license: MIT
-version: "1.7.0"
-date-released: "2026-05-17"
+version: "1.8.0"
+date-released: "2026-05-26"
 keywords:
   - paid advertising
   - google ads

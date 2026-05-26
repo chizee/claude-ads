@@ -1,8 +1,8 @@
 # TikTok Ads Audit Checklist
 
-<!-- Updated: 2026-04-13 | v1.5 -->
+<!-- Updated: 2026-05-26 | v1.8.0 -->
 <!-- Sources: Google Research PDF 1 (T01-T25), Claude Research, Gemini Research -->
-<!-- Total Checks: 28 | Categories: 6 | See scoring-system.md for weights and algorithm -->
+<!-- Total Checks: 46 | v1.8.0: TikTok World 2026 (T29-T46) -->
 
 ## Quick Reference
 
@@ -14,6 +14,7 @@
 | Structure & Settings | 15% | T03-T04 + T14-T16 (5 checks) |
 | Performance | 10% | T17-T19 (3 checks) |
 | Search, Commerce & Tracking | N/A | T-SR1, T-GM1, T-EA1 (3 checks, v1.5) |
+| TikTok World 2026 (v1.8.0) | N/A | T29-T46 (18, scored within existing categories) |
 
 ---
 
@@ -130,6 +131,33 @@ Without ttclid, attribution breaks for many conversions. This is TikTok's key te
 | T-SR1 | Search Ads alongside In-Feed | High | Search Ads enabled alongside In-Feed campaigns (20% conversion uplift when combined; 18% of non-converters from in-feed convert via Search; 2x purchase lift). Supports keyword targeting with exact/phrase/broad, negative keywords, search term reports | N/A | Search Ads not enabled despite available budget (missing 18-20% incremental conversions) |
 | T-GM1 | GMV Max for Shop campaigns | Critical | All TikTok Shop campaigns use GMV Max (mandatory since July 2025). Three ad types: Video Shopping Ads, LIVE Shopping Ads, Product Shopping Ads | Non-GMV Max Shop campaigns still transitioning | Non-GMV Max Shop campaigns active (non-compliant with July 2025 mandate) |
 | T-EA1 | Events API Gateway setup | High | Events API Gateway configured for simplified server-side tracking (recovers 13%+ of missed conversions vs pixel-only). SKAN 4 integration with coarse conversion values active for iOS | Events API planned but not deployed | No server-side tracking (pixel-only, missing 13%+ of conversions) |
+
+---
+
+## TikTok World 2026 (v1.8.0, T29-T46, scored within existing categories)
+
+TikTok World 2026 ran May 13-15, 2026, two days before the v1.7.0 cut. Source: `research/notes-tiktok.md`. These checks fold into the existing six categories (creative, structure, tracking, commerce, performance) rather than forming a new weighted bucket. Separately, the TikTok USDS divestiture closed January 22, 2026 (80.1% non-Chinese ownership); it produced no measurable disruption to advertiser operations, so no migration or continuity check is warranted.
+
+| ID | Check | Severity | Pass | Warning | Fail |
+|----|-------|----------|------|---------|------|
+| T29 | TikTok Ads MCP Server | Medium | TikTok Ads MCP Server (official, announced May 13 2026; last of the four majors) connection detected and inventoried | MCP Server known but not yet connected | No MCP Server usage despite agentic workflow opportunity |
+| T30 | TikTok Ads Skills | Low | TikTok Ads Skills developer building blocks adopted for custom automation | Aware but not yet building | Not adopted despite developer resources in account |
+| T31 | Smart+ One Buying Experience module control | High | Audit recognizes module-level granularity: targeting, budget, and placements can each be toggled on/off PER MODULE (not all-or-nothing automation) | Smart+ One in use but module-level controls not reviewed | Treated as all-or-nothing; module-level levers ignored |
+| T32 | Smart+ Music Autofix | Low | Smart+ Music Autofix enabled so flagged audio is auto-relicensed | N/A | Eligible Smart+ campaigns with Music Autofix off, risking takedowns |
+| T33 | Smart+ creative reporting + multi-URL | Low | Smart+ creative reporting, multi-URL, and the higher asset-group limit in use | Partial adoption (e.g., single URL only) | N/A |
+| T34 | Smart+ for app objectives | Low | Smart+ used for app-install / app-event objectives where applicable | N/A | App-objective campaigns not testing Smart+ despite eligibility |
+| T35 | TopReach + Creative Sequencing | Low | TopReach with Creative Sequencing (unified TopView + TopFeed) used for sequenced reach plays | Running TopView/TopFeed separately, not as a sequenced buy | Large reach budget with no narrative sequencing despite eligibility |
+| T36 | Branded Buzz | Low | Branded Buzz large-scale creator collaboration format evaluated for awareness pushes | Awareness objective live but Branded Buzz not evaluated | Awareness/reach push ignores Branded Buzz despite clear creator-collab fit |
+| T37 | Search Hubs | Medium | Brand-owned sponsored Search Hubs pages evaluated where branded search demand exists | Branded demand present but Search Hubs not evaluated | N/A |
+| T38 | Symphony AI creative stack | Low | Symphony AI / Dreamina Seedance 2.0 / Reference to Video used to scale creative variations | N/A | Manual-only creative refresh despite stack availability |
+| T39 | TikTok GO booking integration | Low | TikTok GO booking integration live for travel partners (Booking.com, Expedia, Viator, GetYourGuide, Tiqets, Trip.com) | Travel advertiser not evaluating TikTok GO booking integration | Travel/booking account ignoring TikTok GO despite partner availability |
+| T40 | Mini Series & Mini Games | Low | Mini Series and Mini Games formats evaluated; Growth Max used for Mini Games where relevant | Entertainment/gaming advertiser not evaluating Mini Series or Mini Games | Gaming/entertainment objective ignores Mini Games + Growth Max despite clear fit |
+| T41 | Collage Carousel | Low | Collage Carousel (hero + 3 product visuals; US Q2 2026) tested for product storytelling | US product advertiser eligible but Collage Carousel not tested | Multi-product US catalog ignores Collage Carousel despite market eligibility |
+| T42 | One Asset Manager | Low | One Asset Manager used for unified asset management across campaigns | N/A | Assets fragmented across tools despite One Asset Manager availability |
+| T43 | View+ for Pulse Core Max | Low | View+ premium reach upgrade applied to Pulse Core Max placements where reach goals warrant | Pulse Core Max running but View+ upgrade not evaluated | Reach-goal campaigns on Pulse Core Max skip View+ despite eligibility |
+| T44 | TikTok Market Scope | Low | TikTok Market Scope used for competitive intelligence and category benchmarking | Market Scope available but not used for benchmarking | Optimizing blind with no Market Scope competitive intelligence despite access |
+| T45 | TikTok Real + UK Ad-Free Subscription | Medium | UK measurement plan accounts for users opted OUT of advertising data use via the UK Ad-Free Subscription (£3.99/mo); TikTok Real counterfeit/IP protections understood | UK audience present but opt-out measurement impact not modeled | UK campaigns ignore Ad-Free Subscription opt-outs, overstating measured conversions |
+| T46 | GMV Max market expansion | Low | GMV Max market expansion adopted in newly eligible markets | N/A | Newly eligible markets not using GMV Max for Shop Ads |
 
 ---
 

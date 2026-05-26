@@ -5,6 +5,99 @@ All notable changes to claude-ads are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-05-26
+
+Substantive Wave 3 release. Adds 91 net-new catalog-tracked platform checks across the five
+catalog platforms (Google, Meta, TikTok, LinkedIn, Microsoft), a new regulatory-compliance
+audit agent (C01-C29 + C-MCP-1..6 + C-iOS-1), three new reference docs rewritten for the
+agentic / MCP / regulatory era, seven per-platform research notes, and a regulatory-exposure
+scoring band. Sourced from `research/RESEARCH-NOTES-MAY-2026.md` (primary-source cited).
+
+### Added
+
+#### `/ads google` — Google Marketing Live 2026 (May 20, 2026) addendum (G81-G95, +15 checks)
+
+* Ask Advisor governance, Business Agent for Leads, Direct Offers, AI Mode ad formats (G81-G84)
+* Journey-aware bidding, Smart Bidding Exploration on PMax + Shopping, total budgets, demand-led pacing (G85-G88)
+* Meridian in GA360, Qualified Future Conversions, Attributed Branded Searches, Asset Studio Gemini Omni, Demand Gen stack, Ads Advisor 3 (G89-G94)
+* **G95: DSA → AI Max forced migration P0 gate (September 2026)** — no opt-out; pre-migration AI Brief / FUE / brand-exclusion readiness check
+
+#### `/ads meta` — MCP + March 3 attribution rebuild + Q1 2026 AI-stack refresh (M51-M72, +22 checks)
+
+* Meta Ads MCP (`mcp.facebook.com/ads`, 29 tools), paused-by-default, **MCP write-action governance** with the SurfaceLabs cautionary tale (M51-M53)
+* March 3, 2026 attribution rebuild: link-clicks-only click-through, engage-through column, 10s→5s engaged-view, new default windows, YoY-not-comparable warning (M54-M59)
+* Q1 2026 AI-stack metrics + **ARM (Adaptive Ranking Model)** + Incremental Attribution Q4 2025 model (M60-M64)
+* Ad-level placement control, AI Instant Forms, **730-day audience + Pixel auto-include governance flags**, Advantage+ Creative Categories (M65-M69)
+* **M70: Comscore Markets P0 gate — June 22, 2026 automotive cutoff** (`dma_code` → `comscore_market_codes`); DST fees; CAPI one-click + EMQ ≥ 7 (M70-M72)
+
+#### `/ads tiktok` — TikTok World 2026 (May 13-15, 2026) (T29-T46, +18 checks)
+
+* TikTok Ads MCP + Ads Skills; **Smart+ One Buying Experience module-level automation classifier** (T29-T31)
+* Music Autofix, creative reporting, TopReach + Creative Sequencing, Branded Buzz, Search Hubs, Symphony / Dreamina, TikTok GO, Mini Series, Collage Carousel, One Asset Manager, View+, Market Scope, TikTok Real, GMV Max (T32-T46)
+
+#### `/ads linkedin` — Off-Platform Event Ads + Campaign Manager rename (L28-L46, +19 checks)
+
+* **L28: Off-Platform Event Ads** (no LinkedIn Event Page; Cvent / ON24 / Integrate)
+* **L29: Campaign Manager terminology rename trap** (UI "Campaign Group"→"Campaign" vs unchanged API; UTM mismatch warning)
+* Career Journey, Reserved / First Impression Ads, BrandLink, Wire, Thought Leader, CTV, Company Attribution, Company Intelligence API, Agency Certification, Depth Score organic algorithm (L30-L46)
+
+#### `/ads microsoft` — AI Max for Search + Activate 2026 (MS25-MS41, +17 checks)
+
+* **MS25: Microsoft AI Max for Search** (Copilot Search / Answers / Bing; distinct from Google)
+* Offer Highlights, Audience Generation, PMax transparency, Clarity AI Visibility, Brand Agents, UCP in Merchant Center, Copilot Checkout, Rewarded Portals, Import Center, diagnostics, DDA, CAPI, Brand Kit, **SOAP API deprecation** (MS26-MS41)
+
+#### `/ads compliance` — NEW `audit-regulatory-compliance` agent (C01-C29 + C-MCP-1..6 + C-iOS-1, +36 checks)
+
+A new parallel audit agent dedicated to the regulatory surface, dispatched by `/ads audit`
+alongside the existing agents.
+
+* **C01-C05**: EU AI Act Article 50 — Aug 2, 2026 baseline; Dec 2, 2026 watermarking grandfathered; €15M / 3% penalties; multi-layered watermarking; provider vs deployer obligations
+* **C06-C17**: US state privacy — 22 states; 12-state GPC list; CCPA §7025(c)(6) visible confirmation; Connecticut neural data (July 1, 2026); Maryland MODPA; CA Delete Act DROP
+* **C18-C21**: Privacy Sandbox October 17, 2025 retirement; remaining CHIPS / FedCM / Private State Tokens; UK CMA 85% inaccuracy / 30% revenue-decline citation
+* **C-iOS-1**: iOS 26 ATFP / Link Tracking Protection — server-side tracking mandatory for >5% iOS Safari traffic
+* **C22-C29**: DSA enforcement / HIPAA / LegitScript / Special Ad Categories / PIPL / LGPD / DPDPA / TCF v2.3 + GPP
+* **C-MCP-1..6**: MCP write-action governance — read-only-first, human approval gate, paused-by-default, rate-limit, no autonomous budget loops, ≥90-day audit-log retention
+
+#### Cross-platform 2026 landscape (X01-X25, research notes)
+
+* Reddit Max / Dual Attribution / App Event Optimization; Pinterest tvScientific + CTV Audiences; Snap Smart Solutions / AI Sponsored Snaps; CTV/OTT shifts; Universal Commerce Protocol (NRF + AP2 → FIDO); IAB Tech Lab AAMP + Agent Registry. Documented in `research/RESEARCH-NOTES-MAY-2026.md`; surfaced via `/ads attribution`, `/ads server-side-tracking`, and the orchestrator (narrative/awareness, not yet catalog-tracked).
+
+#### `/ads amazon` + `/ads apple` deltas (inline)
+
+* Amazon: Unified Campaign Manager, Ads/Creative Agents, Full-Funnel Campaigns, MTA, Sponsored Brands Collections (Jan 28, 2026), SP/SB Prompts GA (March 25, 2026), Brand+ / Performance+, Prime Video expansion, Complete TV (AMZ-new-1..17, inline in `skills/ads-amazon/SKILL.md`)
+* Apple: Multiple Search Ad Placements (no position-level reporting), AdAttributionKit refresh, Custom Product Pages, iOS 26 ATFP/LTP, WWDC 2026 watch list (A36-A42, inline in `skills/ads-apple/SKILL.md`)
+
+#### New reference + research docs
+
+* `references/mcp-integration.md` — full rewrite for the agentic era (Google / Amazon / Meta / Microsoft / TikTok MCPs, IAB AAMP + Agent Registry, write-action governance policy + SurfaceLabs precedent)
+* `references/compliance-requirements.md` — EU AI Act + 22-state US privacy + Privacy Sandbox + iOS 26 + DSA + HIPAA / LegitScript + global frameworks
+* `references/meta-ai-stack.md` — consolidated Andromeda + GEM + Lattice + ARM with Q1 2026 metrics + the four operational principles
+* `research/RESEARCH-NOTES-MAY-2026.md` + `research/notes-{google,meta,tiktok,linkedin,microsoft,apple,amazon}.md` — per-platform research notes with primary-source citations
+* `references/automation-tier-classifier.md` — module-level automation classification (Smart+ One Buying Experience, Advantage+, AI Max, Accelerate, Microsoft AI Max)
+
+### Changed
+
+* **Compliance agent split** — `audit-compliance` renamed to `audit-policy-compliance` (platform ad policy, Special Ad Categories, deprecated features, performance benchmarks); new `audit-regulatory-compliance` added for the regulatory surface. Agents 10 → **11** (7 audit + 4 creative). Sub-skill count is **unchanged at 22** (the new compliance unit is an audit agent, not a sub-skill).
+* **`tests/fixtures/check-catalog.yaml`** — 5-platform catalog extended from 209 to **300** verified checks (Google 95, Meta 72, LinkedIn 46, TikTok 46, Microsoft 41), bidirectionally enforced by the eval harness. Apple, Amazon, the X01-X25 landscape, and attribution + server-side remain inline pending Wave 3.x catalog extraction.
+* **`scoring-system.md`** — adds the **regulatory-exposure band** (P0/P1/P2 → severity multipliers, scored at 100% aggregate weight) and the five hard regulatory clocks; refreshed Total Check Counts table to v1.8.0.
+* **README.md** — "250+ checks" → "300+ checks"; "10 agents" → "11 agents (7 audit + 4 creative)"; `/ads audit` now spawns 7 parallel subagents incl. `audit-regulatory-compliance`.
+* **Version metadata** — `plugin.json`, `marketplace.json`, `CITATION.cff`, and `scripts/generate_report.py` bumped to 1.8.0.
+
+### Deprecated
+
+* References to Privacy Sandbox APIs as a future tracking direction (October 17, 2025 retirement)
+* Pre-March-3-2026 Meta YoY comparison framing in `audit-meta` reporting
+
+### Fixed
+
+* Citation accuracy captured in `research/notes-amazon.md`: the "+143% click-attributed sales" figure is re-attributed from Sponsored Brands Collections to Sponsored Brands Reserve Share of Voice (per Amazon's official Reserve Share of Voice page); Google AI Max case studies flagged as vendor-supplied (JumpFly April 2026 independent analysis shows neutral-to-negative)
+
+### Security
+
+* MCP write-action governance defaults documented in `references/mcp-integration.md` and enforced by `audit-regulatory-compliance` (C-MCP-1..6): paused-by-default, ≤200 calls/hour, ≥90-day audit-log retention, human approval gate for budget changes above a configurable threshold. Encodes the SurfaceLabs April 2026 permanent-account-ban precedent.
+
+---
+
 ## [1.7.1] - 2026-05-18
 
 Patch release covering the post-v1.7.0 polish wave: a comprehensive README

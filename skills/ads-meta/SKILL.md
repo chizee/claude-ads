@@ -1,8 +1,8 @@
 ---
 name: ads-meta
-description: "Meta Ads deep analysis covering Facebook, Instagram, and Threads advertising in the Andromeda + GEM + Lattice era. Evaluates 50 checks across Pixel/CAPI health, creative diversity and Entity-ID clustering risk, account structure, ASC/AAC defaults for Sales/Leads/App, and audience targeting. Includes Advantage+ assessment and creative-as-targeting scoring. Use when user says Meta Ads, Facebook Ads, Instagram Ads, Threads ads, Advantage+, ASC, AAC, Andromeda, GEM, Lattice, Entity-ID clustering, creative diversity, Sales optimization, Leads optimization, App optimization, or Meta campaign."
+description: "Meta Ads deep analysis covering Facebook, Instagram, and Threads advertising in the Andromeda + GEM + Lattice era. Evaluates 72 checks across Pixel/CAPI health, creative diversity and Entity-ID clustering risk, account structure, ASC/AAC defaults for Sales/Leads/App, and audience targeting. Includes Advantage+ assessment and creative-as-targeting scoring. Use when user says Meta Ads, Facebook Ads, Instagram Ads, Threads ads, Advantage+, ASC, AAC, Andromeda, GEM, Lattice, Entity-ID clustering, creative diversity, Sales optimization, Leads optimization, App optimization, or Meta campaign."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -101,7 +101,7 @@ default. Audit confirms:
 ## Process
 
 1. Collect Meta Ads data (Ads Manager export, Events Manager screenshot, EMQ scores)
-2. Read `ads/references/meta-audit.md` for full 50-check audit
+2. Read `ads/references/meta-audit.md` for the full 72-check audit (M01-M72) and `ads/references/meta-ai-stack.md` for the Andromeda + GEM + Lattice + ARM stack with Q1 2026 metrics
 3. Read `ads/references/benchmarks.md` for Meta-specific benchmarks
 4. Read `ads/references/scoring-system.md` for weighted scoring
 5. Evaluate all applicable checks as PASS, WARNING, or FAIL
@@ -211,7 +211,7 @@ Audience:            XX/100  █████░░░░░  (20%)
 ```
 
 ### Deliverables
-- `META-ADS-REPORT.md`: Full 50-check findings with pass/warning/fail
+- `META-ADS-REPORT.md`: Full 72-check findings with pass/warning/fail
 - EMQ improvement roadmap
 - Creative fatigue alerts (any creative with CTR declining >20%)
 - Quick Wins sorted by impact

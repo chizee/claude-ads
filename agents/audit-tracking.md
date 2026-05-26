@@ -65,6 +65,13 @@ When given ad account data:
 | MS02 | Enhanced conversions enabled | High |
 | MS03 | Google Ads import validated (URLs, extensions, bids, goals) | High |
 
+### v1.8.0 platform additions (scored within your tracking categories)
+
+Read the "v1.8.0" section of `linkedin-audit.md`, `tiktok-audit.md`, and `microsoft-audit.md` and evaluate these new measurement / attribution / conversion-API checks where they apply:
+- **LinkedIn:** L29 (Campaign Manager rename / UTM mapping trap), L39 (Company Attribution), L44 (real-time CRM data)
+- **TikTok:** T45 (UK Ad-Free Subscription opt-out measurement impact)
+- **Microsoft:** MS28 (PMax Final URL reporting), MS29 (Clarity AI Visibility), MS31 (UCP in Merchant Center), MS36 (Performance Shift Root Cause Analysis), MS37 (Conversion Tracking Diagnostics), MS38 (Data-Driven Attribution), MS39 (Conversion API / CAPI)
+
 ## Cross-Platform Privacy Infrastructure (X-PI1)
 
 X-PI1: Verify complete tracking stack per platform:

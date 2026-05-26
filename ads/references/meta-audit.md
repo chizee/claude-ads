@@ -1,8 +1,9 @@
 # Meta Ads Audit Checklist
 
-<!-- Updated: 2026-04-13 | v1.5 -->
+<!-- Updated: 2026-05-26 | v1.8.0 -->
 <!-- Sources: Google Research PDF 1 (M01-M40), Claude Research (42-item extended), Gemini Research -->
-<!-- Total Checks: 50 | Categories: 5 | See scoring-system.md for weights and algorithm -->
+<!-- Total Checks: 72 | v1.8.0: MCP + attribution rebuild + Q1 2026 AI-stack (M51-M72) -->
+<!-- Categories: 5 | See scoring-system.md for weights and algorithm -->
 
 ## Quick Reference
 
@@ -12,6 +13,7 @@
 | Creative (Diversity & Fatigue) | 30% | M25-M32 (8 checks) + M-CR1 through M-CR4 (4 extended) |
 | Account Structure | 20% | M11-M18 + M33-M40 (16 checks) + M-ST1, M-ST2 (2 extended) |
 | Audience & Targeting | 20% | M19-M24 (6 checks) |
+| Meta MCP + Attribution + AI-Stack (v1.8.0) | N/A | M51-M72 (22, scored within existing categories) |
 
 ---
 
@@ -97,6 +99,37 @@
 | M-AT1 | Attribution window post-Jan 2026 | High | Attribution windows verified and aligned with business model after Jan 2026 removal of 7-day/28-day view-through options | Using default settings without review | Attribution settings not configured or still expecting removed windows |
 | M-IA1 | Incremental Attribution testing | Medium | Meta Incremental Attribution (launched April 2025) evaluated or active for measuring real causal impact via AI-powered holdout testing | N/A | Not evaluated despite sufficient budget (>$5K/month) |
 | M-TH1 | Threads placement evaluation | Low | Threads placement reviewed (GA Jan 2026, 400M+ MAU). Lower CPMs but only ~0.04% of ad spend in Q3 2025. Worth testing for incremental reach | N/A | Not evaluated |
+
+---
+
+## Meta MCP + March 3 Attribution Rebuild + Q1 2026 AI-Stack (v1.8.0, M51-M72, scored within existing categories)
+
+Three forces that the v1.7.x release content did not capture: the Meta Ads MCP server (open beta, April 29 2026), the March 3 2026 attribution rebuild that breaks pre-boundary baselines, and Meta's Q1 2026 AI-stack disclosures (Andromeda compute tripling, ARM, GEM/Lattice benchmarks). Sources: `research/notes-meta.md` and `ads/references/meta-ai-stack.md`. Vendor-supplied efficiency figures (GEM, Lattice, Incremental Attribution lifts) are flagged as benchmark awareness, not independently audited.
+
+| ID | Check | Severity | Pass | Warning | Fail |
+|----|-------|----------|------|---------|------|
+| M51 | Meta Ads MCP server inventory | Medium | MCP server at `mcp.facebook.com/ads` (open beta Apr 29 2026; 29 tools / 5 categories; OAuth, ~200 calls/hr) connection detected and tools inventoried | Connection present but tools/scopes not catalogued | N/A |
+| M52 | MCP paused-by-default enforcement | High | All MCP-created campaigns launch PAUSED and pass human review before activation | Manual activation policy exists but not enforced in workflow | MCP campaigns auto-activating without human review |
+| M53 | MCP write-action governance | Critical | Start at `ads_read`; `ads_management` write scope only behind a human approval gate. (SurfaceLabs permanently banned Apr 2026 for aggressive autonomous API behavior, no appeal) | Write scope granted but approval gate informal/undocumented | `ads_management` without an approval gate, or autonomous budget loops running |
+| M54 | March 3 2026 click-through redefinition | Medium | Reporting interpreted under new definition: click-through now counts ONLY link clicks | Aware of change but reports not yet re-baselined | Click-through still read under pre-March-3 definition |
+| M55 | Engage-through attribution column | Medium | New engage-through column (likes / shares / saves / expansions / video views) present and used in reporting | Column available but ignored | Engage-through signal not surfaced in reporting |
+| M56 | Engaged-view threshold | Low | Engaged-view threshold understood as 5s (dropped from 10s) | N/A | Reporting still assumes the old 10s threshold |
+| M57 | Default attribution windows | Medium | Default 7-day click / 1-day engage-through / 1-day view validated against sales cycle | Defaults accepted without validation | Windows misaligned with sales cycle |
+| M58 | Pre-March-3-2026 baseline guard | High | YoY comparisons across the March 3 2026 boundary are flagged as non-comparable (analyst consensus, not Meta's stated position) | Boundary noted informally but not flagged in reports | Reporting compares across the boundary with no flag |
+| M59 | View-through integration (Northbeam / Triple Whale) | Low | Northbeam + Triple Whale view-through integration evaluated or active | Integration available but not connected | Running with no view-through visibility while a connected tool would expose it |
+| M60 | GEM benchmark awareness | Low | GEM Q1 2026 figures understood as benchmark context (+13% CTR / +16% CVR; "4x more efficient") | Q1 2026 figures noted but benchmark bands not updated | Interpreting performance against stale pre-2026 benchmark bands |
+| M61 | Lattice benchmark awareness | Low | Lattice Q1 2026 figures understood as benchmark context (+6% landing-page-view ad CVR; 20% infra savings) | Q1 2026 figures noted but benchmark bands not updated | Interpreting performance against stale pre-2026 benchmark bands |
+| M62 | Andromeda compute scaling awareness | Low | Andromeda compute tripling (Jan 2026 disclosure) understood when interpreting retrieval/creative behavior | Q1 2026 figures noted but benchmark bands not updated | Interpreting performance against stale pre-2026 benchmark bands |
+| M63 | ARM (Adaptive Ranking Model) readiness | Medium | Broad targeting + campaigns >=30 days so ARM (newest layer; +3% CVR / +5% CTR; removes truncation ceiling for long-history users) has depth signal; returning-customer audiences segmented. See meta-ai-stack.md | Some campaigns short-lived or narrowly targeted, limiting ARM depth | Narrow targeting and short campaigns starving ARM of signal |
+| M64 | Incremental Attribution as reporting view | High | Incremental Attribution (Q4 2025 model; +24% incremental conversions vs standard) used as a reporting view | Evaluated but not adopted as a standing view | Not used, causing over-counting / over-spend on last-click tactics |
+| M65 | Ad-level placement control | Low | Placement control applied at ad level where useful (was ad-set level) | Still managing placements only at ad-set level | Forcing uniform placements where ad-level control would cut waste |
+| M66 | AI-generated Instant Forms | Low | AI-generated Instant Forms from URL/prompt evaluated for lead campaigns | Feature available but not tested on lead campaigns | Hand-building lead forms where AI-generated Instant Forms would speed launch and lift completion |
+| M67 | 730-day purchase audience retention governance | High | 730-day purchase audience retention with auto-expansion (was 180) detected, surfaced, and put through explicit review | Detected but review pending | Enabled without governance review |
+| M68 | Pixel auto-include detailed info governance | High | New Pixel "auto-include detailed page/product info" setting (often default ON; sends product/page metadata to Meta) detected and reviewed | Detected but review pending | ON without governance review |
+| M69 | Advantage+ Creative Image Generation Categories | Low | Advantage+ Creative Image Generation Categories ("Refined product look", "Popular in your niche", "High ROAS") evaluated | Categories available but not tested | Ignoring Advantage+ Creative categories on high-volume ecommerce where they lift ROAS |
+| M70 | Comscore migration for automotive (HARD GATE June 22 2026) | Critical | Automotive model ads migrated from `dma_code` to `comscore_market_codes` before the June 22 2026 cutoff (Comscore Markets replaces Nielsen DMA). After cutoff, DMA-targeted automotive campaigns are PAUSED | Migration plan exists but `dma_code` automotive campaigns not yet moved | Automotive campaign still on `dma_code` with no migration plan |
+| M71 | Digital Services Tax pass-through | Low | DST pass-through fees (up to 5%: Austria, France, Italy, Spain, Turkey, UK) accounted for in budget math where applicable | DST-affected markets active but fees not modeled in budget math | Spending in DST markets while treating list budgets as final, understating true cost |
+| M72 | CAPI one-click setup + EMQ | High | CAPI one-click setup (Apr 2026) verified enabled and Event Match Quality >= 7 on purchase events | CAPI enabled but EMQ 6.0-6.9 on purchase events | No CAPI, or EMQ < 7 on purchase events |
 
 ---
 

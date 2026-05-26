@@ -79,6 +79,13 @@ When given ad account data:
 | MS19 | Action Extension utilized (unique to Microsoft) | Medium |
 | MS20 | Filter Link Extension tested | Medium |
 
+### v1.8.0 platform additions (scored within your creative categories)
+
+Read the "v1.8.0" section of `linkedin-audit.md`, `tiktok-audit.md`, and `microsoft-audit.md` and evaluate these new creative-format / ad-unit / creative-tooling checks where they apply:
+- **LinkedIn:** L31 (AI Ad Variants), L33 (Reserved Ads), L34 (First Impression Ads), L35 (BrandLink), L36 (Wire video), L37 (Thought Leader Event Ads), L38 (CTV), L42 (Flexible Ad Creation)
+- **TikTok:** T32 (Music Autofix), T33 (creative reporting / multi-URL), T35 (TopReach + Creative Sequencing), T36 (Branded Buzz), T37 (Search Hubs), T38 (Symphony / Dreamina), T39 (TikTok GO), T40 (Mini Series / Games), T41 (Collage Carousel), T42 (One Asset Manager), T43 (View+)
+- **Microsoft:** MS26 (Offer Highlights), MS33 (Rewarded Portals), MS40 (Ad Studio Brand Kit)
+
 ## TikTok Safe Zone
 
 All critical text, logos, and CTAs must be within:

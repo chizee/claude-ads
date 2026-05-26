@@ -2,7 +2,7 @@
 name: ads-apple
 description: "Apple Ads (formerly Apple Search Ads) deep analysis for mobile app advertisers. Evaluates campaign structure, bid health, Custom Product Pages (CPPs), AdAttributionKit (view-through attribution 24h post-impression), MMP attribution, budget pacing, TAP coverage (Today/Search/Product Pages), Maximize Conversions bidding, and goal CPA benchmarks by country. Use when user says Apple Ads, Apple Search Ads, ASA, App Store ads, Apple ads, Search Ads, AdAttributionKit, view-through attribution, or is advertising a mobile app on iOS."
 user-invokable: false
-tested_date: 2026-05-17
+tested_date: 2026-05-26
 tested_with: claude-code v2.x
 ---
 
@@ -63,7 +63,7 @@ tested_with: claude-code v2.x
 > **Creative Sets fully deprecated.** CPPs are now the sole ad variation mechanism. CPP limit doubled to **70** in October 2025.
 
 **Custom Product Pages (CPP):**
-- CPPs created in App Store Connect? (up to 70 per app as of Oct 2025)
+- CPPs created in App Store Connect? (up to 35 per app)
 - At least 3 CPP variants tested per campaign type (different value props per audience)
 - CPP assets aligned with ad group keyword themes (e.g. fitness keywords → fitness screenshots)
 - CPPs increase conversion rates ~8% for games, ~6.6% for non-gaming apps (per [AppTweak CPP guide](https://www.apptweak.com/en/aso-blog/guide-to-custom-product-pages-cpp))
@@ -169,9 +169,25 @@ ASA offers 4 placement types; evaluate coverage and performance:
 | ASA-MA1 | Multiple ads per query readiness | Medium | Rolling out March 2026: up to 2 ads per search query (was 1). Changes competitive dynamics: more search results real estate available. Evaluate bid strategy for increased competition |
 
 **Deprecated:**
-- Creative Sets: fully deprecated. Only CPPs now (up to 70 per app)
+- Creative Sets: fully deprecated. Only CPPs now (up to 35 per app)
 - CPA Cap: being retired in favor of Target CPA via Maximize Conversions
 - Demographic audience targeting as primary strategy: 78% of App Store search volume comes from devices with Personalized Ads off (Apple's Q1 2022 internal data; conversion rate is nearly identical between opted-in and opted-out users — 62.1% vs 62.5%)
+
+## v1.8.0 — Multiple Search Ad Placements + iOS 26 (A36-A42)
+
+Apple Ads updates from late 2025 through Q1 2026. The iOS 26 privacy items (A40, A41) affect every iOS attribution pipeline, not just Apple Ads, so they cross-reference `ads/references/compliance-requirements.md` (C-iOS-1) and the `/ads server-side-tracking` sub-skill.
+
+| ID | Check | Severity | Notes |
+|----|-------|----------|-------|
+| A36 | Multiple Search Ad Placements live | High | Up to 2 ads per single search query. UK + Japan first on March 3, 2026; global rollout to all 91 Apple Ads markets by end of March 2026. Existing campaigns auto-enrolled (no opt-out, no separate setup); requires iOS/iPadOS 26.2+ (older OS still shows a single placement). CPT/CPI pricing unchanged; relevance-first auction applies to both positions. 65% of App Store downloads happen after a search, so this is high-leverage real estate. **CRITICAL CAVEAT:** no position-level reporting in AdAttributionKit initially. Audits cannot separate position 1 from position 2 — only aggregate. Any TAP (Today/Search/Product Pages) placement-coverage report must caveat that position-level breakdown is unavailable ([9to5Mac, Jan 22, 2026](https://9to5mac.com/); Apple Ads documentation, Dec 18, 2025) |
+| A37 | App Store registered with AdAttributionKit | Medium | The App Store itself has been registered with AdAttributionKit since it went live April 10, 2025 — a precondition for postback / view-through attribution from App Store ad surfaces. Verify the user's app includes the AdAttributionKit framework in its App Store metadata |
+| A38 | AdAttributionKit feature surface up to date | Medium | WWDC 2025 / iOS 18.4+ production features: configurable attribution windows (per ad network / interaction type / global); configurable cooldowns to prevent install vs re-engagement cannibalization; country codes in postbacks (subject to crowd anonymity threshold); overlapping re-engagement conversion windows via Conversion Tags; Development Postbacks settings test tool for QA. Refresh check thresholds and add postback-decoding examples for the country-code field. Core coverage lives in `/ads attribution` ([WWDC25 session 221](https://developer.apple.com/videos/play/wwdc2025/221/)) |
+| A39 | Custom Product Pages within limit | Medium | CPPs replace the deprecated Creative Sets — up to 35 per app, each targetable with a distinct creative combination. Verify usage is within the 35-per-app limit; flag accounts using fewer than 5 CPPs for product-page testing (indicates underutilization) |
+| A40 | iOS 26 Advanced Fingerprinting Protection (ATFP) | High | Default ON in ALL Safari browsing as of iOS 26 (was Private Browsing only). Up to ~90% reduction in fingerprinting effectiveness per early WebProNews testing. Breaks device-graph attribution, probabilistic match modeling, and server-side identity resolution across **all iOS attribution pipelines**, not just Apple Ads. Server-side conversion APIs become the only reliable signal pathway for iOS Safari conversion measurement. See `compliance-requirements.md` (C-iOS-1) ([WebProNews, iOS 26 Safari fingerprinting protection](https://www.webpronews.com/apple-enhances-safari-privacy-with-default-fingerprinting-protection-in-ios-26/)) |
+| A41 | iOS 26 Expanded Link Tracking Protection | Critical | Strips gclid / fbclid / msclkid in ALL Safari browsing as of iOS 26 (was Private + Mail only) — affects every iOS Safari user, not just the privacy-conscious minority. For accounts with iOS Safari traffic share above 5%, server-side conversion APIs are mandatory for iOS Safari conversion measurement. Audit and remediate via `/ads server-side-tracking`; see `compliance-requirements.md` (C-iOS-1) ([WITHIN, iOS 26 Link Tracking Protection](https://www.within.co/blog/ios-26/)) |
+| A42 | WWDC 2026 watch list | Low | WWDC 2026 keynote is in June 2026. Likely Apple Ads / AdAttributionKit announcements to monitor: further AdAttributionKit window / cooldown granularity; possible SKAN (SKAdNetwork) sunset roadmap; iOS 27; possible Apple News ad expansion. **Action:** schedule a v1.8.x addendum within 14 days of the keynote to fold in whatever ships |
+
+**iOS 26 cross-reference:** A40 and A41 are platform-wide privacy changes. When either applies, route server-side remediation through `/ads server-side-tracking` and confirm the requirement is logged against `ads/references/compliance-requirements.md` (C-iOS-1) so the fix is tracked at the account level, not just in this Apple audit.
 
 ## Output Format
 
