@@ -9,8 +9,9 @@ consultants, and in-house performance teams.
 
 Claude Ads turns authorized account exports or reads into source-grounded audits,
 plans, experiments, creative workflows, monitoring, and client reports. Versioned
-JSON is the system of record; Markdown and HTML are deterministic renderings, and
-PDF is rendered from the same HTML through the declared WeasyPrint dependency.
+JSON is the system of record; Markdown and HTML are deterministic renderings.
+PDF can be rendered from the same HTML when the execution host also satisfies
+the separately managed WeasyPrint native-library requirements.
 Live account changes are disabled by default and released per platform only after
 approval, idempotency, verification, audit, and rollback pass.
 
@@ -93,6 +94,22 @@ git clone https://github.com/AI-Marketing-Hub/claude-ads.git
 cd claude-ads
 bash install.sh --source=local
 ```
+
+Managed Python wheels install only on the CPython 3.11/3.12 resolution matrix:
+glibc 2.17+/manylinux-compatible x86_64, macOS 11+ x86_64/arm64, and Windows
+amd64. This matrix attests exact Python wheel selection and installer behavior;
+it does not attest browser or PDF feature execution on every tuple. Other
+interpreters fail before destination mutation; use `--no-deps`/`-NoDeps` for a
+skill-only install. The installer uses the exact union-hash lock and never falls
+back to moving requirement ranges.
+
+Browser capture additionally requires an operator-installed Playwright browser
+payload on a Playwright-supported host (Windows 11/Server 2019+, macOS 14+,
+Debian 12/13, or Ubuntu 22.04/24.04/26.04). PDF rendering additionally requires
+the host's WeasyPrint/Pango system libraries. These external payloads are not
+Python packages, are not installed by the base lock, and are intentionally not
+represented as Python components in the CycloneDX SBOM. Their machine-readable
+boundary is `control-plane/manifests/external-runtime-dependencies.json`.
 
 Select another host explicitly:
 
@@ -194,8 +211,11 @@ remote CI demote the current state.
 Create a virtual environment and run the complete suite:
 
 ```bash
-python -m venv .venv
-.venv/bin/python -m pip install -e . -r requirements.txt -r requirements-dev.txt
+python3.12 -m venv .venv
+.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m pip install --require-hashes --only-binary=:all: -r requirements.lock
+.venv/bin/python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
+.venv/bin/python -m pip check
 .venv/bin/python -m pytest -q
 ```
 

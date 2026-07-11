@@ -128,7 +128,7 @@ Overrides:
   --agent-dir=<path>   Override the target's default agent install root
   --source=<mode>      auto uses this checkout when available, otherwise authenticated Git
   --repo-dir=<path>    Local checkout to install (implies --source=local)
-  --no-deps            Do not create the managed Python virtual environment
+  --no-deps            Do not create the verified managed Python environment
 
 Examples:
   bash install.sh
@@ -278,6 +278,32 @@ main() {
         }
     fi
 
+    # Fail before any destination mutation or dependency network access when
+    # the requested managed runtime is outside the supported wheel-lock matrix.
+    if [ "${ALLOW_PIP}" = "1" ] && [ "$INSTALL_DEPS" = "1" ]; then
+        command -v python3 >/dev/null 2>&1 || {
+            echo "✗ python3 not found. Re-run with --no-deps to install without Python helpers." >&2
+            return 1
+        }
+        PYTHON_TARGET=$(python3 -c 'import platform,sys
+system=platform.system().lower(); machine=platform.machine().lower(); libc_name,libc_version=platform.libc_ver(); mac_version=platform.mac_ver()[0]
+def pair(value):
+    try: return tuple(int(part) for part in value.split(".")[:2])
+    except ValueError: return (0,0)
+boundary_ok=(system=="linux" and libc_name=="glibc" and pair(libc_version)>=(2,17)) or (system=="darwin" and pair(mac_version)>=(11,0))
+print("|".join((sys.implementation.name, f"{sys.version_info.major}.{sys.version_info.minor}", system, machine, libc_name or "none", libc_version or mac_version or "none", "supported" if boundary_ok else "unsupported")))')
+        case "$PYTHON_TARGET" in
+            cpython\|3.11\|linux\|x86_64\|glibc\|*\|supported) DEPENDENCY_TARGET_ID="runtime-linux-cp311" ;;
+            cpython\|3.12\|linux\|x86_64\|glibc\|*\|supported) DEPENDENCY_TARGET_ID="runtime-linux-cp312" ;;
+            cpython\|3.11\|darwin\|x86_64\|*\|*\|supported) DEPENDENCY_TARGET_ID="runtime-macos-x86-cp311" ;;
+            cpython\|3.12\|darwin\|x86_64\|*\|*\|supported) DEPENDENCY_TARGET_ID="runtime-macos-x86-cp312" ;;
+            cpython\|3.11\|darwin\|arm64\|*\|*\|supported) DEPENDENCY_TARGET_ID="runtime-macos-arm-cp311" ;;
+            cpython\|3.12\|darwin\|arm64\|*\|*\|supported) DEPENDENCY_TARGET_ID="runtime-macos-arm-cp312" ;;
+            *\|linux\|*\|musl\|*\|unsupported) echo "✗ Managed dependencies require glibc >=2.17; musl Linux is unsupported. Re-run with --no-deps." >&2; return 1 ;;
+            *) echo "✗ No verified dependency lock target for ${PYTHON_TARGET}. Re-run with --no-deps; moving-range fallback is disabled." >&2; return 1 ;;
+        esac
+    fi
+
     echo "════════════════════════════════════════"
     echo "║   Claude Ads - Installer             ║"
     echo "║   Target: ${HOST_LABEL}"
@@ -404,50 +430,78 @@ main() {
             install_file "$source_file" "${SCRIPTS_DIR}/$(basename -- "$source_file")"
         done
         install_file "${SOURCE_DIR}/requirements.txt" "${SKILL_DIR}/requirements.txt"
+        install_file "${SOURCE_DIR}/requirements.lock" "${SKILL_DIR}/requirements.lock"
+        CORE_DIR=$(ensure_owned_dir "${SCRIPTS_DIR}/claude_ads_core")
+        for source_file in "${SOURCE_DIR}/claude_ads_core/"*.py; do
+            [ -f "$source_file" ] || continue
+            install_file "$source_file" "${CORE_DIR}/$(basename -- "$source_file")"
+        done
+        ADAPTERS_DIR=$(ensure_owned_dir "${CORE_DIR}/adapters")
+        for source_file in "${SOURCE_DIR}/claude_ads_core/adapters/"*.py; do
+            [ -f "$source_file" ] || continue
+            install_file "$source_file" "${ADAPTERS_DIR}/$(basename -- "$source_file")"
+        done
+        SCHEMAS_DIR=$(ensure_owned_dir "${CORE_DIR}/schemas/v1")
+        for source_file in "${SOURCE_DIR}/claude_ads_core/schemas/v1/"*.json; do
+            [ -f "$source_file" ] || continue
+            install_file "$source_file" "${SCHEMAS_DIR}/$(basename -- "$source_file")"
+        done
+        record_dir "$SCHEMAS_DIR"
+        record_dir "$ADAPTERS_DIR"
+        record_dir "$CORE_DIR"
         record_dir "${SCRIPTS_DIR}"
     fi
+
+    # Commit ownership before dependency installation. A later pip failure is
+    # therefore recoverable with uninstall and never leaves unowned files.
+    if [ "${ALLOW_PIP}" = "1" ] && [ "$INSTALL_DEPS" = "1" ]; then
+        VENV_DIR="${SKILL_DIR}/.venv"
+        printf 'R\t%s\n' "$VENV_DIR" >> "$MANIFEST_TMP"
+        record_file "${SKILL_DIR}/managed-runtime-receipt.json"
+    fi
+    record_dir "${SKILL_DIR}"
+    mv -f "$MANIFEST_TMP" "$MANIFEST_PATH"
+    MANIFEST_TMP=""
+    echo "✓ Ownership manifest: ${MANIFEST_PATH}"
 
     # Install Python dependencies — only for hosts that explicitly support
     # Python execution (claude, codex). Other targets skip the pip step.
     echo ""
     if [ "${ALLOW_PIP}" = "1" ] && [ "$INSTALL_DEPS" = "1" ]; then
-        echo "→ Installing Python dependencies into a managed virtual environment..."
+        RECEIPT_PATH="${SKILL_DIR}/managed-runtime-receipt.json"
+        if ! rm -f -- "$RECEIPT_PATH"; then
+            echo "✗ Could not invalidate the prior managed runtime receipt." >&2
+            return 1
+        fi
+        echo "→ Installing exact hashed Python dependencies into a managed virtual environment..."
         if command -v python3 >/dev/null 2>&1; then
-            VENV_DIR="${SKILL_DIR}/.venv"
             if python3 -m venv "${VENV_DIR}" \
-                && "${VENV_DIR}/bin/python" -m pip install -q "${SOURCE_DIR}" -r "${SKILL_DIR}/requirements.txt"; then
-                printf 'R\t%s\n' "$VENV_DIR" >> "$MANIFEST_TMP"
-                echo "  ✓ Python dependencies installed in ${VENV_DIR}"
+                && "${VENV_DIR}/bin/python" -m pip install -q --ignore-installed --report "${VENV_DIR}/install-report.json" --require-hashes --only-binary=:all: -r "${SKILL_DIR}/requirements.lock" \
+                && SITE_PACKAGES=$("${VENV_DIR}/bin/python" -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])') \
+                && printf '%s\n' "${SCRIPTS_DIR}" > "${SITE_PACKAGES}/claude-ads-core.pth" \
+                && "${VENV_DIR}/bin/python" -m pip check \
+                && "${VENV_DIR}/bin/python" "${SCRIPTS_DIR}/write_install_receipt.py" --inventory "${SOURCE_DIR}/control-plane/manifests/dependency-inventory.json" --lock "${SKILL_DIR}/requirements.lock" --evidence "${SOURCE_DIR}/control-plane/dependency-evidence/${DEPENDENCY_TARGET_ID}.json" --pip-report "${VENV_DIR}/install-report.json" --target-id "${DEPENDENCY_TARGET_ID}" --output "${SKILL_DIR}/managed-runtime-receipt.json"; then
+                echo "  ✓ Exact locked Python dependencies installed in ${VENV_DIR}"
             else
                 rm -rf "$VENV_DIR"
-                echo "  ⚠ Dependency install failed. Create a virtual environment and install ${SKILL_DIR}/requirements.txt manually." >&2
+                rm -f -- "$RECEIPT_PATH"
+                echo "✗ Exact hashed dependency installation failed; no moving-range fallback was attempted." >&2
+                return 1
             fi
         else
-            echo "  ⚠ python3 not found. Python helper dependencies were not installed."
+            echo "✗ python3 not found. Use --no-deps to install without Python helpers." >&2
+            return 1
         fi
     elif [ "$INSTALL_DEPS" = "0" ]; then
         echo "ℹ Skipping Python dependencies (--no-deps)."
     else
         echo "ℹ Skipping Python dependencies — ${HOST_LABEL} host runtime may not execute Python skills directly."
-        echo "  If you need PDF reports / landing-page analysis / screenshots, install manually:"
-        echo "    python -m venv <env> && <env>/bin/python -m pip install -r ${SKILL_DIR}/requirements.txt"
+        echo "  Python helpers require the packaged exact-hash lock on a supported CPython wheel target."
     fi
 
-    # Check for banana-claude (image generation provider)
     echo ""
-    if [ -d "${SKILL_BASE}/banana" ] || [ -f "${SKILL_BASE}/banana/SKILL.md" ]; then
-        echo "  ✓ banana-claude detected (image generation ready)"
-    else
-        echo "  ⚠ banana-claude not installed. Image generation (/ads generate, /ads photoshoot) requires it."
-        echo "    Install through your host marketplace, or clone a tagged release and verify its checksum:"
-        echo "    https://github.com/AgriciDaniel/banana-claude"
-        echo "    Then run: /banana setup (to configure API key)"
-    fi
-
-    record_dir "${SKILL_DIR}"
-    mv -f "$MANIFEST_TMP" "$MANIFEST_PATH"
-    MANIFEST_TMP=""
-    echo "✓ Ownership manifest: ${MANIFEST_PATH}"
+    echo "ℹ Image generation requires an explicitly configured eligible provider/model"
+    echo "  with capability evidence; Claude Ads does not probe or recommend a default."
 
     echo ""
     echo "✓ Claude Ads installed successfully for ${HOST_LABEL}!"

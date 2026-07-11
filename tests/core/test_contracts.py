@@ -166,6 +166,16 @@ def test_manifest_requires_matching_data_lifecycle_classification():
         validate_contract("run-manifest", payload)
 
 
+@pytest.mark.parametrize("invalid", [0.5, 0.0, True, False, "0", None, -1])
+def test_run_manifest_embedded_lifecycle_requires_strict_nonnegative_integer_retention(
+    invalid
+):
+    payload = run_manifest()
+    payload["data_lifecycle"]["retention"]["minimum_seconds"] = invalid
+    with pytest.raises(ContractError, match="integer|must be >="):
+        validate_contract("run-manifest", payload)
+
+
 def test_pass_or_fail_requires_evidence():
     payload = finding()
     payload["evidence"] = []

@@ -177,6 +177,19 @@ function Main {
         Write-Host "X Git is required for -Source git." -ForegroundColor Red
         exit 1
     }
+    $ManagedPython = $null
+    $PythonTarget = $null
+    if ($AllowPip -and -not $NoDeps) {
+        $ManagedPython = Get-Command python -ErrorAction SilentlyContinue
+        if (-not $ManagedPython) {
+            throw "python not found. Re-run with -NoDeps to install without Python helpers."
+        }
+        $PythonTarget = & $ManagedPython.Source -c "import platform,sys; print('|'.join((sys.implementation.name, f'{sys.version_info.major}.{sys.version_info.minor}', platform.system().lower(), platform.machine().lower())))"
+        if ($PythonTarget -notin @("cpython|3.11|windows|amd64", "cpython|3.12|windows|amd64")) {
+            throw "No verified dependency lock target for $PythonTarget. Re-run with -NoDeps; moving-range fallback is disabled."
+        }
+        $DependencyTargetId = if ($PythonTarget -eq "cpython|3.11|windows|amd64") { "runtime-windows-cp311" } else { "runtime-windows-cp312" }
+    }
     Write-Host "OK Distribution source: $Source" -ForegroundColor Green
 
     # Create directories
@@ -263,37 +276,30 @@ function Main {
             }
             Copy-Item "$SourceDir\requirements.txt" -Destination "$SkillDirResolved\requirements.txt" -Force
             [void]$OwnedFiles.Add((Join-Path $SkillDirResolved "requirements.txt"))
+            Copy-Item "$SourceDir\requirements.lock" -Destination "$SkillDirResolved\requirements.lock" -Force
+            [void]$OwnedFiles.Add((Join-Path $SkillDirResolved "requirements.lock"))
+            $CoreSource = Join-Path $SourceDir "claude_ads_core"
+            $CoreDir = Join-Path $ScriptsDir "claude_ads_core"
+            Get-ChildItem $CoreSource -File -Recurse | Where-Object {
+                $_.Extension -in @(".py", ".json") -and $_.FullName -notmatch "[\\/]__pycache__[\\/]"
+            } | ForEach-Object {
+                $Relative = [System.IO.Path]::GetRelativePath($CoreSource, $_.FullName)
+                $Destination = Join-Path $CoreDir $Relative
+                New-Item -ItemType Directory -Path (Split-Path $Destination -Parent) -Force | Out-Null
+                Copy-Item $_.FullName -Destination $Destination -Force
+                [void]$OwnedFiles.Add($Destination)
+            }
+            [void]$OwnedDirs.Add($CoreDir)
             [void]$OwnedDirs.Add($ScriptsDir)
         }
 
-        Write-Host ""
+        # Commit ownership before dependency installation so a later pip
+        # failure is always recoverable with uninstall.
+        $VenvDir = Join-Path $SkillDirResolved ".venv"
         if ($AllowPip -and -not $NoDeps) {
-            Write-Host "Installing Python dependencies into a managed virtual environment..."
-            $ErrorActionPreference = "Continue"
-            $Python = Get-Command python -ErrorAction SilentlyContinue
-            $VenvDir = Join-Path $SkillDirResolved ".venv"
-            if ($Python) {
-                & $Python.Source -m venv $VenvDir
-                if ($LASTEXITCODE -eq 0) {
-                    & "$VenvDir\Scripts\python.exe" -m pip install -q $SourceDir -r "$SkillDirResolved\requirements.txt"
-                }
-            }
-            if ($Python -and $LASTEXITCODE -eq 0) {
-                [void]$RecursiveDirs.Add($VenvDir)
-                Write-Host "  OK Python dependencies installed in $VenvDir" -ForegroundColor Green
-            } else {
-                Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue
-                Write-Host "  Warning: dependency install failed; create a virtual environment manually." -ForegroundColor Yellow
-            }
-            $ErrorActionPreference = "Stop"
-        } elseif ($NoDeps) {
-            Write-Host "i  Skipping Python dependencies (-NoDeps)." -ForegroundColor Yellow
-        } else {
-            Write-Host "i  Skipping Python dependencies - $HostLabel host runtime may not execute Python skills directly." -ForegroundColor Yellow
-            Write-Host "   If you need PDF reports / landing-page analysis / screenshots, install manually:"
-            Write-Host "     python -m venv <env>; <env>\Scripts\python.exe -m pip install -r $SkillDirResolved\requirements.txt"
+            [void]$RecursiveDirs.Add($VenvDir)
+            [void]$OwnedFiles.Add((Join-Path $SkillDirResolved "managed-runtime-receipt.json"))
         }
-
         [void]$OwnedDirs.Add($SkillDirResolved)
         $Manifest = @{
             version = 1
@@ -305,16 +311,44 @@ function Main {
         $Manifest | ConvertTo-Json -Depth 4 | Set-Content -Path $ManifestPath -Encoding UTF8
         Write-Host "OK Ownership manifest: $ManifestPath" -ForegroundColor Green
 
-        # Check for banana-claude (image generation provider)
         Write-Host ""
-        $BananaPath = Join-Path $SkillBase "banana\SKILL.md"
-        if (Test-Path $BananaPath) {
-            Write-Host "  OK banana-claude detected (image generation ready)" -ForegroundColor Green
+        if ($AllowPip -and -not $NoDeps) {
+            $ReceiptPath = Join-Path $SkillDirResolved "managed-runtime-receipt.json"
+            Remove-Item $ReceiptPath -Force -ErrorAction SilentlyContinue
+            Write-Host "Installing exact hashed Python dependencies into a managed virtual environment..."
+            $ErrorActionPreference = "Continue"
+            if ($ManagedPython) {
+                & $ManagedPython.Source -m venv $VenvDir
+                if ($LASTEXITCODE -eq 0) {
+                    & "$VenvDir\Scripts\python.exe" -m pip install -q --ignore-installed --report "$VenvDir\install-report.json" --require-hashes --only-binary=:all: -r "$SkillDirResolved\requirements.lock"
+                }
+                if ($LASTEXITCODE -eq 0) {
+                    $SitePackages = & "$VenvDir\Scripts\python.exe" -c "import sysconfig; print(sysconfig.get_paths()['purelib'])"
+                    $ScriptsDir | Set-Content -Path (Join-Path $SitePackages "claude-ads-core.pth") -Encoding UTF8
+                    & "$VenvDir\Scripts\python.exe" -m pip check
+                }
+                if ($LASTEXITCODE -eq 0) {
+                    & "$VenvDir\Scripts\python.exe" "$ScriptsDir\write_install_receipt.py" --inventory "$SourceDir\control-plane\manifests\dependency-inventory.json" --lock "$SkillDirResolved\requirements.lock" --evidence "$SourceDir\control-plane\dependency-evidence\$DependencyTargetId.json" --pip-report "$VenvDir\install-report.json" --target-id $DependencyTargetId --output "$SkillDirResolved\managed-runtime-receipt.json"
+                }
+            }
+            if ($ManagedPython -and $LASTEXITCODE -eq 0) {
+                Write-Host "  OK Exact locked Python dependencies installed in $VenvDir" -ForegroundColor Green
+            } else {
+                Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue
+                Remove-Item $ReceiptPath -Force -ErrorAction SilentlyContinue
+                throw "Exact hashed dependency installation failed; no moving-range fallback was attempted."
+            }
+            $ErrorActionPreference = "Stop"
+        } elseif ($NoDeps) {
+            Write-Host "i  Skipping Python dependencies (-NoDeps)." -ForegroundColor Yellow
         } else {
-            Write-Host "  Warning: banana-claude not installed. Image generation requires it." -ForegroundColor Yellow
-            Write-Host "    Install: https://github.com/AgriciDaniel/banana-claude"
-            Write-Host "    Then run: /banana setup (to configure API key)"
+            Write-Host "i  Skipping Python dependencies - $HostLabel host runtime may not execute Python skills directly." -ForegroundColor Yellow
+            Write-Host "   Python helpers require the packaged exact-hash lock on a supported CPython wheel target."
         }
+
+        Write-Host ""
+        Write-Host "i  Image generation requires an explicitly configured eligible provider/model"
+        Write-Host "   with capability evidence; Claude Ads does not probe or recommend a default."
 
         Write-Host ""
         Write-Host "Claude Ads installed successfully for $HostLabel!" -ForegroundColor Green

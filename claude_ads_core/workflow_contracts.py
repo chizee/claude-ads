@@ -100,6 +100,21 @@ def _number(value: Any, path: str, *, minimum: float | None = None) -> float:
     return result
 
 
+def _integer(value: Any, path: str, *, minimum: int | None = None) -> int:
+    """Validate a schema ``integer`` without Python's bool/int coercion.
+
+    JSON contract inputs must carry an actual integer token. Floats, including
+    integral-looking values such as ``100.0``, are rejected deliberately so the
+    dependency-free validator cannot silently widen the public contract.
+    """
+
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise WorkflowContractError(f"{path} must be an integer")
+    if minimum is not None and value < minimum:
+        raise WorkflowContractError(f"{path} must be >= {minimum}")
+    return value
+
+
 def _list(value: Any, path: str, *, minimum: int = 0) -> list[Any]:
     if not isinstance(value, list):
         raise WorkflowContractError(f"{path} must be an array")
@@ -175,7 +190,7 @@ def _validate_data_lifecycle_at(value: Any, path: str) -> Mapping[str, Any]:
         doc["retention"], f"{path}.retention",
         ("minimum_seconds", "mode", "delete_after", "purpose", "exception_reason"),
     )
-    _number(retention["minimum_seconds"], f"{path}.retention.minimum_seconds", minimum=0)
+    _integer(retention["minimum_seconds"], f"{path}.retention.minimum_seconds", minimum=0)
     mode = _enum(retention["mode"], f"{path}.retention.mode", {"ephemeral", "operator-defined", "policy-defined", "exception"})
     delete_after = retention["delete_after"]
     if delete_after is not None:
@@ -405,8 +420,8 @@ def _validate_generation(payload: Mapping[str, Any]) -> None:
         _relative_path(output["path"], f"$.outputs[{index}].path")
         _sha256(output["sha256"], f"$.outputs[{index}].sha256")
         _string(output["media_type"], f"$.outputs[{index}].media_type")
-        _number(output["width"], f"$.outputs[{index}].width", minimum=1)
-        _number(output["height"], f"$.outputs[{index}].height", minimum=1)
+        _integer(output["width"], f"$.outputs[{index}].width", minimum=1)
+        _integer(output["height"], f"$.outputs[{index}].height", minimum=1)
         _string(output["prompt_version"], f"$.outputs[{index}].prompt_version")
         _sha256(output["prompt_sha256"], f"$.outputs[{index}].prompt_sha256")
         if output["prompt_summary"] != "[redacted: raw prompt is ephemeral and is not persisted]":

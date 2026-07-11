@@ -171,6 +171,13 @@ def test_pdf_bridge_fails_clearly_when_optional_dependency_is_unavailable(monkey
         render_pdf(load_bundle())
 
 
+def test_real_pdf_render_smoke_when_runtime_dependencies_are_installed():
+    pytest.importorskip("weasyprint")
+    rendered = render_pdf(load_bundle())
+    assert rendered.startswith(b"%PDF-")
+    assert len(rendered) > 1_000
+
+
 def test_cli_render_writes_validated_report_under_safe_root(tmp_path, capsys):
     root = tmp_path / "runs"
     assert main(["render", str(BUNDLE_PATH), "--format", "html", "--root", str(root)]) == 0

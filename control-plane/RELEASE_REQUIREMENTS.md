@@ -76,13 +76,26 @@ capability loses its test evidence, or required remote CI does not pass.
 
 ## Installation and packaging gates
 
-- Install, upgrade, and uninstall are tested on Linux, macOS, and Windows for
-  every advertised runtime.
+- Python-wheel resolution, install, upgrade, and uninstall are tested on the
+  declared Linux, macOS, and Windows interpreter tuples. This is not a claim of
+  cross-platform Playwright browser or WeasyPrint PDF feature execution.
 - Installation does not silently mutate global Python or execute unverified
   network content.
 - Uninstall removes only ownership-manifest entries and leaves no unowned files.
 - A clean checkout reproducibly builds the release archive, release manifest,
   SHA-256 checksums, SBOM, and license notices.
+- Runtime and development locks use exact versions plus the union of publisher
+  wheel hashes for every declared CPython 3.11/3.12 Linux, macOS, and Windows
+  target. Installers use `--require-hashes --only-binary=:all:`, run `pip check`,
+  and fail before mutation when the interpreter target is not in that matrix.
+- The CycloneDX release SBOM contains the application and runtime closure only;
+  the separate development lock/inventory remains audit evidence, not an
+  application dependency.
+- Playwright browser payloads and WeasyPrint native/system libraries are modeled
+  in `control-plane/manifests/external-runtime-dependencies.json`; they remain
+  outside the Python lock/SBOM. Browser execution requires separate host/payload
+  attestation. Real PDF rendering is smoke-tested on the Ubuntu full-test job,
+  not across the full wheel matrix.
 - Archive paths are portable and contain no invalid, absolute, or traversal
   names.
 

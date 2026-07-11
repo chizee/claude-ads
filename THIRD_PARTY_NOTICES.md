@@ -23,18 +23,32 @@ owners and are not relicensed by this repository.
 
 Dependencies are installed from their publishers and retain their own licenses:
 
-- Requests and urllib3: Apache-2.0.
+- Requests: Apache-2.0.
+- urllib3: MIT.
 - Playwright for Python: Apache-2.0.
 - Cryptography: Apache-2.0 or BSD-3-Clause.
-- Pillow: HPND-style license.
-- ReportLab: BSD-style license.
-- WeasyPrint: BSD-style license.
-- Matplotlib: PSF-based license.
+- Pillow: MIT-CMU.
+- ReportLab and WeasyPrint code: BSD-3-Clause. ReportLab wheels also include
+  DarkGarden under GPL-2.0-or-later with a document-embedding exception and
+  Bitstream Vera font terms.
+- Matplotlib: the Matplotlib 1.3+ license (`LicenseRef-Matplotlib-1.3`), plus
+  bundled font/style/colormap notices including OFL-1.1, Apache-2.0, MIT, and
+  BSD-style terms.
 - PyYAML and pytest: MIT.
 
-The release package must generate an SBOM and license inventory from the versions
-actually resolved for that release. This notice is not a substitute for that
-machine-generated inventory.
+The transitive closure is part of the release inventory, not exhausted by this
+summary. In particular, Pyphen code offers GPL-2.0-or-later OR
+LGPL-2.1-or-later OR MPL-1.1 alternatives and its dictionaries have
+language-specific terms. The dependency inventory preserves the exact path,
+SHA-256, text, and artifact assignment for every license/notice-like file found
+across all 119 selected wheels. The webencodings 0.5.1 wheel contains no matching
+embedded path and is explicitly recorded as documentless rather than assigned
+invented notice text.
+
+The release SBOM is generated from the checked-in, publisher-metadata-backed
+dependency inventory and validates every declared direct requirement and locked
+transitive edge. This notice is not a substitute for that machine-generated
+inventory.
 
 ## Platform interfaces
 

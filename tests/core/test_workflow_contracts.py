@@ -24,6 +24,56 @@ def _contract_name(fixture_name: str) -> str:
     return fixture_name
 
 
+INTEGER_SCHEMA_FIELDS = (
+    ("data-lifecycle", ("retention", "minimum_seconds"), 0),
+    ("generation-manifest", ("outputs", 0, "width"), 1),
+    ("generation-manifest", ("outputs", 0, "height"), 1),
+)
+DATA_LIFECYCLE_REFERENCE_CONTRACTS = {
+    "run-manifest",
+    "setup-profile",
+    "brand-profile",
+    "media-plan",
+    "creative-brief",
+    "generation-manifest",
+    "monitoring-bundle",
+    "experiment-artifact",
+    "mutation-plan",
+    "orchestration-run",
+}
+
+
+def _set_path(payload: dict, path: tuple[str | int, ...], value) -> None:
+    target = payload
+    for part in path[:-1]:
+        target = target[part]
+    target[path[-1]] = value
+
+
+def _declared_integer_fields(repo_root: Path) -> set[tuple[str, tuple[str | int, ...], int]]:
+    declared: set[tuple[str, tuple[str | int, ...], int]] = set()
+    for contract in CONTRACT_NAMES:
+        if contract in {"account-snapshot", "control-definition", "finding", "report-bundle", "run-manifest"}:
+            continue
+        schema = json.loads(schema_path(contract).read_text(encoding="utf-8"))
+
+        def walk(node, path=()):
+            if not isinstance(node, dict):
+                return
+            if node.get("type") == "integer":
+                declared.add((contract, path, node.get("minimum")))
+            properties = node.get("properties", {})
+            if isinstance(properties, dict):
+                for name, child in properties.items():
+                    walk(child, (*path, name))
+            items = node.get("items")
+            if isinstance(items, dict):
+                walk(items, (*path, 0))
+
+        walk(schema)
+    return declared
+
+
 def test_all_workflow_fixtures_validate_and_have_strict_schemas(workflow_fixtures):
     for fixture_name, payload in workflow_fixtures.items():
         contract = _contract_name(fixture_name)
@@ -33,6 +83,85 @@ def test_all_workflow_fixtures_validate_and_have_strict_schemas(workflow_fixture
         assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
         assert schema["additionalProperties"] is False
         assert set(schema["required"]) == set(schema["properties"])
+
+
+def test_integer_parity_inventory_covers_every_workflow_orchestration_schema_field(repo_root):
+    assert _declared_integer_fields(repo_root) == set(INTEGER_SCHEMA_FIELDS)
+    lifecycle_refs = set()
+    for contract in CONTRACT_NAMES:
+        schema = json.loads(schema_path(contract).read_text(encoding="utf-8"))
+        lifecycle = schema.get("properties", {}).get("data_lifecycle", {})
+        if lifecycle.get("$ref") == "data-lifecycle.schema.json":
+            lifecycle_refs.add(contract)
+    assert lifecycle_refs == DATA_LIFECYCLE_REFERENCE_CONTRACTS
+
+
+@pytest.mark.parametrize(("fixture_name", "path", "minimum"), INTEGER_SCHEMA_FIELDS)
+@pytest.mark.parametrize("invalid_kind", ("bool-true", "bool-false", "fraction", "float", "string", "null", "below-minimum"))
+def test_every_schema_integer_field_rejects_non_integer_or_below_minimum(
+    workflow_fixtures, fixture_name, path, minimum, invalid_kind
+):
+    payload = copy.deepcopy(workflow_fixtures[fixture_name])
+    values = {
+        "bool-true": True,
+        "bool-false": False,
+        "fraction": minimum + 0.5,
+        "float": float(minimum),
+        "string": str(minimum),
+        "null": None,
+        "below-minimum": minimum - 1,
+    }
+    _set_path(payload, path, values[invalid_kind])
+    with pytest.raises(ContractError, match="integer|must be >="):
+        validate_contract(fixture_name, payload)
+
+
+@pytest.mark.parametrize(("fixture_name", "path", "minimum"), INTEGER_SCHEMA_FIELDS)
+@pytest.mark.parametrize("offset", (0, 1, 10_000))
+def test_every_schema_integer_field_accepts_integer_values_at_or_above_minimum(
+    workflow_fixtures, fixture_name, path, minimum, offset
+):
+    payload = copy.deepcopy(workflow_fixtures[fixture_name])
+    _set_path(payload, path, minimum + offset)
+    validate_contract(fixture_name, payload)
+
+
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        "setup-profile",
+        "brand-profile",
+        "media-plan",
+        "creative-brief",
+        "generation-manifest",
+        "monitoring-bundle",
+        "experiment-setup",
+        "experiment-readout",
+        "mutation-plan",
+        "orchestration-run",
+    ],
+)
+def test_embedded_data_lifecycle_integer_validation_is_identical_across_contracts(
+    workflow_fixtures, fixture_name
+):
+    payload = copy.deepcopy(workflow_fixtures[fixture_name])
+    payload["data_lifecycle"]["retention"]["minimum_seconds"] = 0.5
+    with pytest.raises(ContractError, match="minimum_seconds must be an integer"):
+        validate_contract(_contract_name(fixture_name), payload)
+
+
+def test_schema_number_fields_still_accept_fractional_values(workflow_fixtures):
+    media_plan = copy.deepcopy(workflow_fixtures["media-plan"])
+    media_plan["channels"][0]["budget_amount"] = 0.5
+    validate_contract("media-plan", media_plan)
+
+    generation = copy.deepcopy(workflow_fixtures["generation-manifest"])
+    generation["outputs"][0]["cost"] = {"currency": "USD", "amount": 0.5}
+    validate_contract("generation-manifest", generation)
+
+    mutation = copy.deepcopy(workflow_fixtures["mutation-plan"])
+    mutation["ceilings"][0]["value"] = 0.5
+    validate_contract("mutation-plan", mutation)
 
 
 @pytest.mark.parametrize(

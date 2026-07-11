@@ -57,7 +57,9 @@ jobs:
           cache: pip
 
       - name: Install core test dependencies
-        run: python -m pip install -e . -r requirements-dev.txt
+        run: |
+          python -m pip install --no-deps -e .
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
 
       - name: Run core tests
         run: python -m pytest tests/core tests/release -v --tb=short
@@ -77,7 +79,11 @@ jobs:
           cache: pip
 
       - name: Install runtime and test dependencies
-        run: python -m pip install -e . -r requirements.txt -r requirements-dev.txt
+        run: |
+          python -m pip install --no-deps -e .
+          python -m pip install --require-hashes --only-binary=:all: -r requirements.lock
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
+          python -m pip check
 
       - name: Run full test suite
         run: python -m pytest tests -v --tb=short
@@ -85,16 +91,18 @@ jobs:
       - name: Audit dependencies for known vulnerabilities
         run: |
           python -m pip install pip-audit==2.10.0
-          python -m pip_audit -r requirements.txt --strict
+          python -m pip_audit -r requirements.lock --strict
+          python -m pip_audit -r requirements-dev.lock --strict
 
   installer-matrix:
-    name: Installer tests (${{ matrix.os }})
+    name: Installer tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-15, macos-15-intel, windows-latest]
+        python-version: ["3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6
@@ -102,14 +110,80 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
           cache: pip
 
       - name: Install installer-test dependencies
-        run: python -m pip install -e . -r requirements-dev.txt
+        run: |
+          python -m pip install --no-deps -e .
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
+
+      - name: Produce and verify native target dependency evidence
+        run: |
+          python -c "from pathlib import Path; Path('target-evidence/runtime-wheels').mkdir(parents=True); Path('target-evidence/development-wheels').mkdir(parents=True)"
+          python -m pip install --dry-run --ignore-installed --report target-evidence/runtime-pip-report.json --require-hashes --only-binary=:all: -r requirements.lock
+          python -m pip download --dest target-evidence/runtime-wheels --require-hashes --only-binary=:all: -r requirements.lock
+          python scripts/verify_target_lock.py --profile runtime --pip-report target-evidence/runtime-pip-report.json --wheel-dir target-evidence/runtime-wheels --output target-evidence/runtime-attestation.json
+          python -m pip install --dry-run --ignore-installed --report target-evidence/development-pip-report.json --require-hashes --only-binary=:all: -r requirements-dev.lock
+          python -m pip download --dest target-evidence/development-wheels --require-hashes --only-binary=:all: -r requirements-dev.lock
+          python scripts/verify_target_lock.py --profile development --pip-report target-evidence/development-pip-report.json --wheel-dir target-evidence/development-wheels --output target-evidence/development-attestation.json
+
+      - name: Upload exact native target evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: dependency-evidence-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            target-evidence/*-pip-report.json
+            target-evidence/*-attestation.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Run installer security and ownership tests
         run: python -m pytest tests/scripts/test_installer_security.py -v --tb=short
+
+      - name: Exercise real managed install, repeat install, and uninstall (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          probe="$RUNNER_TEMP/claude-ads-managed-install"
+          for pass in 1 2; do
+            bash install.sh --target=claude --source=local --skill-dir="$probe/skills" --agent-dir="$probe/agents"
+            python scripts/verify_managed_install.py --skill-dir "$probe/skills/ads"
+          done
+          "$probe/skills/ads/.venv/bin/python" -c "import pathlib,sysconfig; p=pathlib.Path(sysconfig.get_paths()['purelib'])/'unexpected_probe-1.0.dist-info'; p.mkdir(exist_ok=True); (p/'METADATA').write_text('Metadata-Version: 2.1\nName: unexpected-probe\nVersion: 1.0\n')"
+          if bash install.sh --target=claude --source=local --skill-dir="$probe/skills" --agent-dir="$probe/agents"; then
+            echo "poisoned managed environment unexpectedly passed repeat install" >&2
+            exit 1
+          fi
+          test ! -e "$probe/skills/ads/managed-runtime-receipt.json"
+          test ! -e "$probe/skills/ads/.venv"
+          bash uninstall.sh --target=claude --skill-dir="$probe/skills" --agent-dir="$probe/agents"
+          test ! -e "$probe/skills/ads/managed-runtime-receipt.json"
+          test ! -e "$probe/skills/ads/.venv"
+
+      - name: Exercise real managed install, repeat install, and uninstall (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:RUNNER_TEMP "claude-ads-managed-install"
+          foreach ($pass in 1, 2) {
+            ./install.ps1 -Target claude -Source local -SkillDir "$probe/skills" -AgentDir "$probe/agents"
+            python scripts/verify_managed_install.py --skill-dir "$probe/skills/ads"
+            if ($LASTEXITCODE -ne 0) { throw "managed install verification failed" }
+          }
+          & "$probe/skills/ads/.venv/Scripts/python.exe" -c 'import pathlib,sysconfig; p=pathlib.Path(sysconfig.get_paths()["purelib"])/"unexpected_probe-1.0.dist-info"; p.mkdir(exist_ok=True); (p/"METADATA").write_text("Metadata-Version: 2.1\nName: unexpected-probe\nVersion: 1.0\n")'
+          $failedClosed = $false
+          try {
+            ./install.ps1 -Target claude -Source local -SkillDir "$probe/skills" -AgentDir "$probe/agents"
+          } catch {
+            $failedClosed = $true
+          }
+          if (-not $failedClosed) { throw "poisoned managed environment unexpectedly passed repeat install" }
+          if (Test-Path "$probe/skills/ads/managed-runtime-receipt.json") { throw "stale receipt survived failed repeat install" }
+          if (Test-Path "$probe/skills/ads/.venv") { throw "failed managed environment survived repeat install" }
+          ./uninstall.ps1 -Target claude -SkillDir "$probe/skills" -AgentDir "$probe/agents"
+          if (Test-Path "$probe/skills/ads/managed-runtime-receipt.json") { throw "receipt survived uninstall" }
+          if (Test-Path "$probe/skills/ads/.venv") { throw "managed environment survived uninstall" }
 
   package-smoke:
     name: Reproducible package smoke test
@@ -126,15 +200,16 @@ jobs:
           python-version: "3.12"
 
       - name: Install packaging dependency
-        run: python -m pip install "pyyaml>=6.0,<7.0"
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
 
       - name: Build and verify twice
         run: |
-          python scripts/release.py package --output-dir dist/first
-          python scripts/release.py package --output-dir dist/second
-          python scripts/release.py verify --output-dir dist/first
-          python scripts/release.py verify --output-dir dist/second
-          cmp dist/first/*.zip dist/second/*.zip
-          cmp dist/first/release-manifest.json dist/second/release-manifest.json
-          cmp dist/first/sbom.cdx.json dist/second/sbom.cdx.json
-          cmp dist/first/SHA256SUMS dist/second/SHA256SUMS
+          python scripts/release.py package --output-dir /tmp/claude-ads-first
+          python scripts/release.py package --output-dir /tmp/claude-ads-second
+          python scripts/release.py verify --output-dir /tmp/claude-ads-first --expected-commit "${{ github.sha }}"
+          python scripts/release.py verify --output-dir /tmp/claude-ads-second --expected-commit "${{ github.sha }}"
+          cmp /tmp/claude-ads-first/*.zip /tmp/claude-ads-second/*.zip
+          cmp /tmp/claude-ads-first/release-manifest.json /tmp/claude-ads-second/release-manifest.json
+          cmp /tmp/claude-ads-first/sbom.cdx.json /tmp/claude-ads-second/sbom.cdx.json
+          cmp /tmp/claude-ads-first/SHA256SUMS /tmp/claude-ads-second/SHA256SUMS
