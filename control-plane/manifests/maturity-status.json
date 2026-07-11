@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-07-11",
+  "current": "inventory-baselined",
+  "levels": [
+    {
+      "id": "inventory-baselined",
+      "ordinal": 1,
+      "requirements": [
+        "Current skills, agents, scripts, tests, commands, issues, pull requests, and security risks are inventoried.",
+        "Product boundaries and v2 target contracts are explicit."
+      ],
+      "satisfied": true,
+      "evidence": [
+        "control-plane/PRODUCT_BOUNDARIES.md",
+        "control-plane/manifests/capability-manifest.json",
+        "control-plane/manifests/ecosystem-dispositions.json"
+      ]
+    },
+    {
+      "id": "source-grounded",
+      "ordinal": 2,
+      "requirements": [
+        "All load-bearing platform, policy, API, regulation, specification, and benchmark claims have current dated sources.",
+        "Claim coverage, confidence, contradictions, licenses, and refresh dates pass audit."
+      ],
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "id": "domain-integrated",
+      "ordinal": 3,
+      "requirements": [
+        "All twelve platform contracts have normalized ingestion, findings, reports, fixtures, and tests.",
+        "Capability status matches executable behavior and adapter evidence."
+      ],
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "id": "eval-verified",
+      "ordinal": 4,
+      "requirements": [
+        "Deterministic, routing, safety, replay, rendering, and model evaluations meet release thresholds.",
+        "A fresh-context verifier confirms completion claims from artifacts."
+      ],
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "id": "release-ready",
+      "ordinal": 5,
+      "requirements": [
+        "All release requirements pass locally and in required remote CI.",
+        "Packaging, installation, security, privacy, licensing, and reproducibility gates pass with no critical blocker."
+      ],
+      "satisfied": false,
+      "evidence": []
+    }
+  ],
+  "automatic_demotion": [
+    "A load-bearing source passes refresh_due without re-verification.",
+    "A critical security, privacy, or licensing finding opens.",
+    "A declared capability loses implementation, fixture, or test evidence.",
+    "A required deterministic, routing, safety, or model evaluation regresses.",
+    "Required remote CI is skipped, unavailable, or failing."
+  ],
+  "blockers": [
+    "The paid-advertising source and claim pack is not yet complete.",
+    "All twelve guidance contracts exist, but not every platform capability has complete source, normalized-ingestion, fixture, and contract-test evidence.",
+    "The capability manifest has not reached fixture-verified status for every platform.",
+    "The full v2 evaluation and release matrix has not passed."
+  ]
+}

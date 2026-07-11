@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "snapshot_at": "2026-07-11",
+  "default_mutation_mode": "read-only",
+  "platforms": [
+    {
+      "id": "google",
+      "display_name": "Google Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-google/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-google/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "meta",
+      "display_name": "Meta Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-meta/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-meta/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "youtube",
+      "display_name": "YouTube Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-youtube/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-youtube/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "linkedin",
+      "display_name": "LinkedIn Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-linkedin/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-linkedin/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "tiktok",
+      "display_name": "TikTok Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-tiktok/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-tiktok/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "microsoft",
+      "display_name": "Microsoft Advertising",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-microsoft/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-microsoft/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "apple",
+      "display_name": "Apple Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-apple/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-apple/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "amazon",
+      "display_name": "Amazon Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-amazon/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-amazon/SKILL.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["claude-ads-v181-tree"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "reddit",
+      "display_name": "Reddit Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-reddit/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-reddit/SKILL.md", "ads/references/reddit-audit.md", "agents/audit-reddit.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["reddit-business-help"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "pinterest",
+      "display_name": "Pinterest Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-pinterest/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-pinterest/SKILL.md", "ads/references/pinterest-audit.md", "agents/audit-pinterest.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["pinterest-conversions-api"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "snapchat",
+      "display_name": "Snapchat Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-snapchat/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-snapchat/SKILL.md", "ads/references/snapchat-audit.md", "agents/audit-snapchat.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["snap-marketing-api"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    },
+    {
+      "id": "x",
+      "display_name": "X Ads",
+      "target_tier": "first-class",
+      "skill_path": "skills/ads-x/SKILL.md",
+      "capabilities": [
+        {"id": "skill-guidance", "mode": "export-read", "status": "implemented", "implementation_paths": ["skills/ads-x/SKILL.md", "ads/references/x-audit.md", "agents/audit-x.md"], "fixture_paths": [], "test_paths": [], "source_ids": ["x-conversion-tracking"]},
+        {"id": "account-mutation", "mode": "live-write", "status": "disabled", "implementation_paths": [], "fixture_paths": [], "test_paths": [], "source_ids": [], "disabled_reason": "No approved v2 write adapter lifecycle."}
+      ]
+    }
+  ]
+}

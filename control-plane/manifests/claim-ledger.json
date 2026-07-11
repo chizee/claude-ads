@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-11",
+  "claims": [
+    {
+      "id": "CLM-0001",
+      "statement": "The v1.8.1 baseline contains 22 focused sub-skills, 11 agent prompts, and dedicated skill surfaces for eight named advertising platforms.",
+      "scope": "repository inventory at git commit 86690b6",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["claude-ads-v181-tree"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "repository-maintainers"
+    },
+    {
+      "id": "CLM-0002",
+      "statement": "Claude Ads v2 targets first-class contracts for twelve named advertising platforms and cross-platform paid-media workflows.",
+      "scope": "v2 product decision, not a current capability claim",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["claude-ads-product-contract"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "product-owner"
+    },
+    {
+      "id": "CLM-0003",
+      "statement": "Claude Ads v2 is read-only by default and requires capability-specific approval and rollback controls before any account write.",
+      "scope": "v2 safety decision",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["claude-ads-product-contract"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "security-owner"
+    },
+    {
+      "id": "CLM-0004",
+      "statement": "The v2 instruction architecture uses original clean-room implementations of explicit checklists, effort calibration, examples, repeated safety constraints, instruction precedence, and artifact-backed verification.",
+      "scope": "instruction design provenance",
+      "classification": "practitioner",
+      "verdict": "verified",
+      "source_ids": ["fable-private-cleanroom"],
+      "load_bearing": false,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "prompt-architecture-owner"
+    },
+    {
+      "id": "CLM-0005",
+      "statement": "The v2 control plane adopts source, capability, maturity, orchestration, and release-gate patterns through original domain-specific contracts.",
+      "scope": "control-plane design provenance",
+      "classification": "practitioner",
+      "verdict": "verified",
+      "source_ids": ["brainstein-private-doctrine"],
+      "load_bearing": false,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-10-09",
+      "owner": "architecture-owner"
+    }
+  ]
+}
