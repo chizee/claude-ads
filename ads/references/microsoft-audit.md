@@ -1,200 +1,73 @@
-# Microsoft Ads Audit Checklist
+# Microsoft Advertising audit control catalog
 
-<!-- Grounded: 2026-07-11 | source IDs: microsoft-advertising-api-official, microsoft-uet-official, microsoft-conversions-api-official, microsoft-google-import-official -->
-<!-- Total Checks: 41 | v1.8.0: AI Max for Search + Activate 2026 (MS25-MS41) -->
+<!-- Catalog IDs preserved from the legacy runtime; current platform facts require dated source or account evidence. -->
 
 ## Runtime evaluation contract
 
-- Establish objective, geography, network, import history, conversion lag, spend, sample size, and feature access before evaluation. Missing evidence is `unknown`; ineligible surfaces are `not_applicable`.
-- Budget ratios, cross-platform discounts, demographic assumptions, and vendor lift figures are context prompts, not universal health thresholds.
-- MS25-MS41 are unscored product discovery. AI, Copilot, commerce, pilot, diagnostic, and creative-tool adoption are not health requirements. Confirm live account/API support before recommendation.
-- Imported settings require explicit field-by-field validation because Microsoft documents mappings, limitations, and pilot behavior that can differ from Google Ads.
+- Start with objective, geography, account type, campaign type, data window, conversion lag, sample size, and feature access.
+- Return `not_applicable` when the surface or requirement does not apply and `unknown` when the required evidence is absent.
+- A conditional control can affect health only when current account evidence, owner-defined economics, and an applicable official source establish the expectation.
+- Product adoption, availability, beta access, announcement awareness, and vendor-reported performance are not health controls. Record them only as unscored discovery.
+- Do not use fixed platform-wide thresholds, broad benchmarks, launch dates, sunset dates, or universal network, bidding, budget, audience, creative, or attribution rules from this catalog.
+- Validate mutable facts at run time. A confirmed policy, support-state, or migration requirement needs its own current claim coverage before it can create a finding.
+
+## Source coverage boundary
+
+The registered sources below cover only the measurement, API, and import foundations stated in the claim ledger. They do not support every named product or control in this catalog. Until a narrower current claim exists, treat those names as routing labels and gather fresh official or in-account evidence.
 
 ## Official evidence
 
 - `microsoft-advertising-api-official`: [Microsoft Advertising API overview](https://learn.microsoft.com/en-us/advertising/guides/?view=bingads-13)
-- `microsoft-uet-official`: [Set up Universal Event Tracking](https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_uet_setup_master)
-- `microsoft-conversions-api-official`: [Conversions API guide](https://learn.microsoft.com/en-us/advertising/guides/uet-conversion-api-integration?view=bingads-13)
-- `microsoft-google-import-official`: [What gets imported from Google Ads](https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_importwhatinfo)
+- `microsoft-uet-official`: [Microsoft UET setup](https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_uet_setup_master)
+- `microsoft-conversions-api-official`: [Microsoft Conversions API guide](https://learn.microsoft.com/en-us/advertising/guides/uet-conversion-api-integration?view=bingads-13)
+- `microsoft-google-import-official`: [Microsoft Google Ads import mapping](https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_importwhatinfo)
 
-## Quick Reference
+## Control registry
 
-| Category | Weight | Check Count |
-|----------|--------|-------------|
-| Technical Setup | 25% | MS01-MS03 (3 checks) |
-| Syndication & Bidding | 20% | MS04-MS07 (4 checks) |
-| Structure & Audience | 20% | MS08-MS10 (3 checks) |
-| Creative & Extensions | 20% | MS11-MS13 + MS19-MS20 (5 checks) |
-| Settings & Performance | 15% | MS14-MS18 (5 checks) |
-| Import Safety, Compliance & Video (v1.5) | N/A | MS-SI1, MS-CM1, MS-CT1, MS-VD1 (4 checks) |
-| Product-launch discovery | Unscored | MS25-MS41 (17 applicability, opportunity, or migration questions) |
+| ID | Audit intent | Runtime disposition |
+|---|---|---|
+| MS01 | UET tag installed | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS02 | Enhanced conversions | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS03 | Google Ads import validation | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS04 | Brand syndication control | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS05 | Audience Network settings | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS06 | Bid strategy alignment | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS07 | New-customer optimization applicability | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS08 | Campaign structure | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS09 | Budget allocation | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS10 | LinkedIn profile targeting applicability | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS11 | RSA asset count | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS12 | Multimedia Ads | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS13 | Ad copy uniqueness | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS19 | Action Extension | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS20 | Filter Link Extension | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS14 | Copilot and new-placement applicability | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS15 | Conversion goals | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS16 | Cross-platform CPC context | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS17 | Conversion rate comparison | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS18 | Impression share | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS-SI1 | Scheduled import status | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS-CM1 | Consent Mode compliance | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS-CT1 | CTV ad inventory coverage | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS-VD1 | Video ad inventory utilization | Conditional evidence control: establish applicability and evaluate from current account evidence; otherwise return `unknown` or `not_applicable`. |
+| MS25 | AI Max for Search applicability | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS26 | Offer Highlights in Copilot | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS27 | Audience Generation | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS28 | PMax Final URL reporting | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS29 | Clarity AI Visibility | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS30 | Brand Agents on commerce platforms | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS31 | UCP in Merchant Center | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS32 | Copilot Checkout | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS33 | Rewarded Portals | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS34 | Import Center | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS35 | Automated bidding + custom columns | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS36 | Performance Shift Root Cause Analysis | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS37 | Conversion Tracking Diagnostics | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS38 | Data-Driven Attribution adoption | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS39 | Conversion API | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS40 | Ad Studio Brand Kit | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
+| MS41 | API transport migration evidence | Unscored source-refresh discovery: verify current official availability, account eligibility, and governance need; non-adoption is never a failure. |
 
----
+## Recommendation boundary
 
-## Technical Setup (25% weight)
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS01 | UET tag installed | Critical | Universal Event Tracking tag firing on all pages | Firing on most pages (>90%) | UET tag not installed or broken |
-| MS02 | Enhanced conversions | High | Enhanced conversions enabled for improved matching | N/A | Not enabled |
-| MS03 | Google Ads import validation | High | Imported entities, goals, URLs, bids, budgets, targeting, assets, and schedules are reconciled against the current official mapping and owner intent | Reconciliation is incomplete | Confirmed import drift can alter delivery, measurement, or spend without review |
-
-### Import Validation Critical Note
-Google Ads imports are the most common Microsoft Ads setup method. Common import issues:
-- Conversion goals often break during import
-- Tracking templates may not transfer
-- Extensions may be partially imported
-- Bid adjustments may not match
-- **Scheduled auto-imports can re-enable paused campaigns** (a common billing surprise)
-- ALWAYS validate conversion tracking after import
-- **Choose scheduled-import behavior intentionally.** Record ownership, imported fields, update cadence, exclusions, alerts, and rollback; do not assume every schedule must be disabled.
-
----
-
-## Syndication & Bidding (20% weight)
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS04 | Brand syndication control | Critical | Brand campaigns excluded from syndicated partners OR low-performers excluded | Partners enabled, monitored regularly | Brand campaigns on syndicated partners, never reviewed (massive budget waste risk) |
-| MS05 | Audience Network settings | High | Network use is intentional and evaluated separately by publisher, placement, objective, and conversion quality | Network is active but evidence is incomplete | Confirmed low-quality inventory persists without review or controls |
-| MS06 | Bid strategy alignment | High | Strategy and target match the objective, conversion lag, volume, and Microsoft-specific history | Fit or evidence is incomplete | Strategy demonstrably prevents delivery or violates owner-approved economics |
-| MS07 | New-customer optimization applicability | Low | Availability, identity definition, value, and measurement were evaluated | Evaluation is incomplete | N/A; feature absence or non-adoption is not a health failure |
-
----
-
-## Structure & Audience (20% weight)
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS08 | Campaign structure | High | Mirrors Google structure (if imported) or follows best practices | Minor structural issues | Disorganized structure, no naming convention |
-| MS09 | Budget allocation | Medium | Allocation follows marginal qualified return, available demand, and owner-approved channel role | Evidence is incomplete | Allocation conflicts with observed economics or approved priorities |
-| MS10 | LinkedIn profile targeting applicability | Low | Current account eligibility and B2B fit were evaluated with an observation or controlled-test plan | Evaluation is incomplete | N/A; non-adoption is an opportunity |
-
----
-
-## Creative & Extensions (20% weight)
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS11 | RSA asset count | High | ≥8 headlines, ≥3 descriptions per RSA | 3-7 headlines, 2 descriptions | <3 headlines (minimum) |
-| MS12 | Multimedia Ads | Medium | Multimedia Ads tested (unique rich visual format) | N/A | Not tested |
-| MS13 | Ad copy uniqueness | Medium | Ad copy optimized for Bing demographics (older, affluent, educated) | Same copy as Google, untested | N/A |
-| MS19 | Action Extension | Medium | Action Extension utilized (unique to Microsoft) | N/A | Not tested |
-| MS20 | Filter Link Extension | Medium | Filter Link Extension tested for product/service categories | N/A | Not tested |
-
-### Microsoft-Unique Formats
-These extensions are ONLY available on Microsoft Ads:
-- **Action Extension**: Predefined action buttons (clickable CTAs)
-- **Filter Link Extension**: Category-based deep links (product filters)
-- **Multimedia Ads**: Rich visual search ads (image + headline + description)
-- **Review Extension**: Third-party review quotes in ads
-
----
-
-## Settings & Performance (15% weight)
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS14 | Copilot and new-placement applicability | Low | Current account evidence confirms placement access and performance is reported separately | Availability or evidence is incomplete | N/A; non-adoption is an opportunity |
-| MS15 | Conversion goals | High | Goals configured natively (not relying on Google-imported goals) | Imported goals verified and working | Imported goals not verified |
-| MS16 | Cross-platform CPC context | Medium | CPC is compared only after normalizing query, match type, device, geography, auction window, and conversion quality | Comparison is incomplete | Higher cost also produces worse qualified economics at adequate sample |
-| MS17 | Conversion rate comparison | Medium | Microsoft CVR comparable to Google | CVR 25-50% lower | CVR >50% lower than Google |
-| MS18 | Impression share | Medium | IS tracked for brand and top non-brand terms | Partially tracked | Not tracked |
-
----
-
-## Quick Wins (Microsoft)
-
-| Check | Fix | Time |
-|-------|-----|------|
-| MS10: LinkedIn targeting | Enable LinkedIn profile targeting for B2B campaigns | 5 min |
-| MS14: Copilot placement | Enable Copilot chat placement in PMax settings | 2 min |
-| MS04: Partner network | Review syndicated partner performance, exclude low-performers | 10 min |
-| MS19: Action Extension | Add Action Extension to campaigns | 5 min |
-| MS12: Multimedia Ads | Create Multimedia Ad from existing assets | 10 min |
-| MS03: Import validation | Verify conversion goals and tracking post-import | 10 min |
-
----
-
-## Microsoft-Specific Context
-
-| Fact | Value |
-|------|-------|
-| Average CPC | $1.20-$1.55 (20-35% discount vs Google) |
-| Average CTR | 2.83-3.1% (higher than Google's ~2.0%) |
-| US desktop share | 16.75-17.58%; with partners ~25% |
-| Copilot CTR lift | 73% higher than traditional search |
-| Copilot CVR lift | 16% stronger conversion rates |
-| Copilot journey | 33% shorter customer journeys |
-| Purchase intent | 194% more likely to purchase in Copilot |
-| Copilot Checkout | Launched Jan 2026 (in-conversation commerce) |
-| 37% of advertisers | Report higher ROAS vs Google |
-| Bing users click paid ads | 25% more often than Google users |
-| Audience skew | Affluent (~50% top 25% HHI), educated (34% degrees), older (45-64: 38%) |
-| Import options | Quick Import, Smart Import, Advanced Import (Feb 2025) |
-| API version | v13 stable, SOAP-based with REST emerging |
-
----
-
-## Copilot Integration (2026)
-
-Microsoft's Copilot represents the biggest unique advantage:
-
-1. **Copilot Chat Placement**: Ads appear within conversational search
-2. **Copilot Checkout** (Jan 2026); Full commerce within conversations
-3. **Higher engagement**: 73% CTR lift, 16% CVR lift, 33% shorter journeys
-4. **Shopping intent**: Users 194% more likely to purchase
-5. **Launch partners**: Urban Outfitters, Etsy, Ashley Furniture
-
-Ensure PMax campaigns have Copilot placement enabled to capture this growing channel.
-
----
-
-## Import Safety, Compliance & Video (v1.5)
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS-SI1 | Scheduled import status | Critical | Scheduled Google Ads imports disabled or closely monitored. Auto-imports can silently re-enable paused campaigns and overwrite manual bid/budget changes | Imports active with manual review schedule | Scheduled imports running unmonitored (risk of re-enabling paused campaigns and unexpected spend) |
-| MS-CM1 | Consent Mode compliance (EEA/UK) | High | Consent Mode implemented by May 5, 2025 deadline for EEA/UK/Switzerland audiences. Required for behavioral modeling and conversion recovery | Implementation in progress | Not implemented for EEA/UK/CH audiences (non-compliant since May 2025) |
-| MS-CT1 | CTV ad inventory coverage | Medium | CTV placements evaluated for brand/awareness campaigns. Microsoft CTV now serves on Netflix, Max, Hulu, Roku, discovery+. 30-second non-skippable format available | N/A | CTV not evaluated despite brand awareness objectives |
-| MS-VD1 | Video ad inventory utilization | Medium | Video formats tested: 9:16 vertical video (available since Apr 2025), up to 90-second duration. Copilot Image Animation (Nov 2025 pilot) evaluated for static-to-video conversion | N/A | No video assets despite available inventory and video-capable campaigns |
-
----
-
-## Context Notes
-
-- **PMax on Microsoft**: Up to 300 campaigns per account (vs 100 on Google). LinkedIn profile data integration. No video placements. Self-serve negative keywords in open beta (Feb 2026)
-- **Scheduled imports danger**: Can re-enable paused campaigns silently. Deactivate after initial setup
-- **CTV inventory (2025-2026)**: Netflix, Max, Hulu, Roku, discovery+. 30-second non-skippable on CTV
-- **Auto-generated RSA (Jan 2026)**: Enabled by default globally. 5% CTR increase
-- **Smart Shopping to PMax (Aug 2025)**: All Smart Shopping auto-upgraded
-- **Copilot ads**: Show beneath AI responses with "Sponsored" labels in Copilot conversations
-- **9:16 vertical video (Apr 2025)**: 90-second duration support added
-
----
-
-## Product-launch discovery (MS25-MS41, unscored)
-
-These IDs are retained for catalog compatibility. Re-verify product existence, pilot status,
-market, account access, and eligibility through current official documentation or account
-evidence. Missing access and non-adoption are `not_applicable` or opportunities, never health failures.
-
-| ID | Check | Severity | Pass | Warning | Fail |
-|----|-------|----------|------|---------|------|
-| MS25 | AI Max for Search applicability | Medium | Current account evidence confirms access and any pilot has brand, term, message, budget, measurement, and rollback guardrails | Access or guardrails are incomplete | An enabled automation surface can expand spend or messaging without effective controls; otherwise `not_applicable` |
-| MS26 | Offer Highlights in Copilot | Low | Offer Highlights (free shipping, in-store pickup) evaluated for Copilot conversations (Best Buy launch partner; English retail) | Eligible English retailer not evaluating Offer Highlights | English retailer with shipping/pickup offers ignoring Offer Highlights in Copilot |
-| MS27 | Audience Generation | Low | Audience Generation (plain-language to targeting; closed pilot US + Canada) evaluated where eligible | Pilot-eligible US/Canada account not evaluating Audience Generation | Manual audience-building despite Audience Generation pilot access |
-| MS28 | PMax Final URL reporting | Medium | Performance Max Final URL reporting (Apr 2026) reviewed for PMax: spend / impressions / clicks / ROAS by Final URL | Reporting available but not reviewed | Not reviewed despite PMax campaigns active |
-| MS29 | Clarity AI Visibility | Low | Clarity AI Visibility (how brands appear in AI interfaces) evaluated | Clarity available but AI Visibility not reviewed | Brand running AI-surface spend with no Clarity AI Visibility tracking |
-| MS30 | Brand Agents on commerce platforms | Low | Brand Agents embed on Shopify / WooCommerce evaluated for commerce accounts | Shopify/WooCommerce store not evaluating Brand Agents | Commerce account ignoring Brand Agents despite Shopify/WooCommerce storefront |
-| MS31 | UCP in Merchant Center | Medium | UCP support in Merchant Center (US live Apr 22 2026) evaluated for commerce accounts; Shopify Catalog real-time sync utilized | UCP available but not evaluated | N/A |
-| MS32 | Copilot Checkout | Low | Copilot Checkout evaluated (500k+ US merchants; Target Circle loyalty linking) | US merchant not evaluating Copilot Checkout | High-volume US retailer ignoring Copilot Checkout + Target Circle loyalty linking |
-| MS33 | Rewarded Portals | Low | Rewarded Portals (in-game opt-in ad format) evaluated where relevant | Gaming/app inventory available but Rewarded Portals not evaluated | Gaming advertiser ignoring Rewarded Portals despite clear in-game fit |
-| MS34 | Import Center | Low | Import Center (consolidated import workflow) adopted for import management | Still importing via the legacy per-source flow | Fragmented imports causing drift vs Google because Import Center not adopted |
-| MS35 | Automated bidding + custom columns | Low | Automated bidding updates and custom columns adopted | Updates available but automated bidding / custom columns not adopted | Manual bidding and default columns despite sufficient conversion data |
-| MS36 | Performance Shift Root Cause Analysis | Low | Performance Shift Root Cause Analysis (Copilot diagnostic) used to investigate performance changes | Diagnostic available but not used to investigate shifts | Unexplained performance swings left undiagnosed despite Root Cause Analysis access |
-| MS37 | Conversion Tracking Diagnostics | Medium | Conversion Tracking Diagnostics run; UET / conversion issues resolved | Diagnostics run but issues unresolved | Diagnostics not run despite tracking concerns |
-| MS38 | Data-Driven Attribution adoption | Medium | Data-Driven Attribution selected where conversion volume supports it | DDA eligible but not selected | N/A |
-| MS39 | Conversion API (CAPI) | High | Conversion API (CAPI) server-to-server conversions implemented | Server-side planned but not deployed | No server-side conversions (signal loss on iOS / ITP) |
-| MS40 | Ad Studio Brand Kit | Low | Ad Studio Brand Kit set up for consistent creative | Ad Studio available but Brand Kit not set up | Inconsistent creative across assets despite Ad Studio Brand Kit access |
-| MS41 | API transport migration evidence | Medium | A current official deprecation notice applies and each affected integration has an owner, compatibility test, and migration plan | Applicability or plan is incomplete | A confirmed deadline applies to production tooling with no plan; otherwise `not_applicable` |
+A recommendation must identify the observed evidence, account-specific baseline or owner threshold, expected mechanism, confidence, reversible next step, measurement window, and rollback condition. Do not infer a recommendation from the control name alone.

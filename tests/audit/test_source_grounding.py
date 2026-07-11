@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from urllib.parse import urlparse
 
 
@@ -31,6 +32,19 @@ PLATFORM_SOURCES = {
     },
 }
 
+UNSCORED_DISCOVERY_IDS = {
+    "google": {"G-AI1", *{f"G{i}" for i in range(81, 96)}},
+    "meta": {"M-AN1", "M-IA1", "M-TH1", *{f"M{i}" for i in range(51, 73)}},
+    "linkedin": {f"L{i}" for i in range(28, 47)},
+    "tiktok": {f"T{i}" for i in range(29, 47)},
+    "microsoft": {f"MS{i}" for i in range(25, 42)},
+}
+
+_CONTROL_ROW_RE = re.compile(
+    r"^\|\s*([A-Z]+(?:-[A-Z]+)?[0-9]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|$",
+    re.MULTILINE,
+)
+
 
 def _manifest(repo_root, name: str) -> dict:
     path = repo_root / "control-plane" / "manifests" / name
@@ -58,6 +72,64 @@ def test_launch_discovery_is_explicitly_unscored(repo_root):
         assert "discovery" in text.lower()
         assert "unscored" in text.lower()
         assert "scored within existing categories" not in text.lower()
+
+
+def test_every_legacy_row_has_one_safe_runtime_disposition(repo_root):
+    for platform, expected_unscored in UNSCORED_DISCOVERY_IDS.items():
+        text = (repo_root / "ads" / "references" / f"{platform}-audit.md").read_text(
+            encoding="utf-8"
+        )
+        rows = {check_id: (intent, disposition) for check_id, intent, disposition in _CONTROL_ROW_RE.findall(text)}
+        assert rows, f"{platform} has no control rows"
+        actual_unscored = {
+            check_id
+            for check_id, (_, disposition) in rows.items()
+            if disposition.startswith("Unscored source-refresh discovery:")
+        }
+        assert actual_unscored == expected_unscored
+        for check_id, (_, disposition) in rows.items():
+            assert disposition.startswith(
+                (
+                    "Conditional evidence control:",
+                    "Unscored source-refresh discovery:",
+                )
+            ), f"{platform} {check_id} has unsafe disposition: {disposition}"
+
+
+def test_registry_rows_contain_no_brittle_thresholds_or_mutable_dates(repo_root):
+    forbidden_intent = re.compile(
+        r"(?:\b20[0-9]{2}\b|\b[0-9]+(?:\.[0-9]+)?%|\$[0-9]|[<>]=?|[≥≤]|"
+        r"\b[0-9]+(?:\.[0-9]+)?x\b)",
+        re.IGNORECASE,
+    )
+    forbidden_legacy_phrases = (
+        "expert consensus",
+        "quick win",
+        "always uncheck",
+        "mandatory since",
+        "scored within existing categories",
+        "higher roas",
+        "lower cpa",
+        "conversion lift",
+        "ctr lift",
+        "cpl reduction",
+        "pass | warning | fail",
+    )
+    for platform in PLATFORM_SOURCES:
+        text = (repo_root / "ads" / "references" / f"{platform}-audit.md").read_text(
+            encoding="utf-8"
+        )
+        rows = _CONTROL_ROW_RE.findall(text)
+        for check_id, intent, disposition in rows:
+            assert not forbidden_intent.search(intent), (
+                f"{platform} {check_id} retains brittle precision in {intent!r}"
+            )
+            assert not forbidden_intent.search(disposition), (
+                f"{platform} {check_id} retains brittle precision in its disposition"
+            )
+        lowered = text.lower()
+        for phrase in forbidden_legacy_phrases:
+            assert phrase not in lowered, f"{platform} retains legacy phrase {phrase!r}"
 
 
 def test_source_and_claim_ledgers_are_reciprocal_and_unique(repo_root):
