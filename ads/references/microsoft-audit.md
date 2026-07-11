@@ -1,8 +1,21 @@
 # Microsoft Ads Audit Checklist
 
-<!-- Updated: 2026-05-26 | v1.8.0 -->
-<!-- Sources: Google Research PDF 1 (MS01-MS20), Claude Research, Gemini Research, Seer Interactive -->
+<!-- Grounded: 2026-07-11 | source IDs: microsoft-advertising-api-official, microsoft-uet-official, microsoft-conversions-api-official, microsoft-google-import-official -->
 <!-- Total Checks: 41 | v1.8.0: AI Max for Search + Activate 2026 (MS25-MS41) -->
+
+## Runtime evaluation contract
+
+- Establish objective, geography, network, import history, conversion lag, spend, sample size, and feature access before evaluation. Missing evidence is `unknown`; ineligible surfaces are `not_applicable`.
+- Budget ratios, cross-platform discounts, demographic assumptions, and vendor lift figures are context prompts, not universal health thresholds.
+- MS25-MS41 are unscored product discovery. AI, Copilot, commerce, pilot, diagnostic, and creative-tool adoption are not health requirements. Confirm live account/API support before recommendation.
+- Imported settings require explicit field-by-field validation because Microsoft documents mappings, limitations, and pilot behavior that can differ from Google Ads.
+
+## Official evidence
+
+- `microsoft-advertising-api-official`: [Microsoft Advertising API overview](https://learn.microsoft.com/en-us/advertising/guides/?view=bingads-13)
+- `microsoft-uet-official`: [Set up Universal Event Tracking](https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_uet_setup_master)
+- `microsoft-conversions-api-official`: [Conversions API guide](https://learn.microsoft.com/en-us/advertising/guides/uet-conversion-api-integration?view=bingads-13)
+- `microsoft-google-import-official`: [What gets imported from Google Ads](https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_importwhatinfo)
 
 ## Quick Reference
 
@@ -14,7 +27,7 @@
 | Creative & Extensions | 20% | MS11-MS13 + MS19-MS20 (5 checks) |
 | Settings & Performance | 15% | MS14-MS18 (5 checks) |
 | Import Safety, Compliance & Video (v1.5) | N/A | MS-SI1, MS-CM1, MS-CT1, MS-VD1 (4 checks) |
-| AI Max for Search + Activate 2026 (v1.8.0) | N/A | MS25-MS41 (17, scored within existing categories) |
+| Product-launch discovery | Unscored | MS25-MS41 (17 applicability, opportunity, or migration questions) |
 
 ---
 
@@ -24,7 +37,7 @@
 |----|-------|----------|------|---------|------|
 | MS01 | UET tag installed | Critical | Universal Event Tracking tag firing on all pages | Firing on most pages (>90%) | UET tag not installed or broken |
 | MS02 | Enhanced conversions | High | Enhanced conversions enabled for improved matching | N/A | Not enabled |
-| MS03 | Google Ads import validation | High | If imported: all settings verified (URLs, extensions, bids). Scheduled auto-imports deactivated after initial setup | Minor discrepancies found | Import errors not resolved (broken URLs, missing goals). Scheduled imports still active without monitoring |
+| MS03 | Google Ads import validation | High | Imported entities, goals, URLs, bids, budgets, targeting, assets, and schedules are reconciled against the current official mapping and owner intent | Reconciliation is incomplete | Confirmed import drift can alter delivery, measurement, or spend without review |
 
 ### Import Validation Critical Note
 Google Ads imports are the most common Microsoft Ads setup method. Common import issues:
@@ -34,7 +47,7 @@ Google Ads imports are the most common Microsoft Ads setup method. Common import
 - Bid adjustments may not match
 - **Scheduled auto-imports can re-enable paused campaigns** (a common billing surprise)
 - ALWAYS validate conversion tracking after import
-- **Deactivate auto-imports immediately after initial setup** to prevent silent campaign re-enablement and overwritten manual bid/budget changes
+- **Choose scheduled-import behavior intentionally.** Record ownership, imported fields, update cadence, exclusions, alerts, and rollback; do not assume every schedule must be disabled.
 
 ---
 
@@ -43,9 +56,9 @@ Google Ads imports are the most common Microsoft Ads setup method. Common import
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
 | MS04 | Brand syndication control | Critical | Brand campaigns excluded from syndicated partners OR low-performers excluded | Partners enabled, monitored regularly | Brand campaigns on syndicated partners, never reviewed (massive budget waste risk) |
-| MS05 | Audience Network settings | High | Audience Network enabled only if testing intentionally. Run Website URL publisher reports weekly and maintain account-level exclusion lists | Audience Network enabled with regular publisher report monitoring | Audience Network ON by default without review. B2B clients see CPA 2-4x higher from Audience Network than search alone (Seer Interactive). Microsoft auto-includes it by default |
-| MS06 | Bid strategy alignment | High | Strategy matches goal + conversion volume; targets 20-35% lower than Google | Strategy matches but targets not adjusted for Bing | Mismatched strategy for conversion volume |
-| MS07 | Target New Customers (PMax) | Medium | "Target New Customers" enabled for growth campaigns (Beta 2026) | N/A | Not tested for eligible PMax campaigns |
+| MS05 | Audience Network settings | High | Network use is intentional and evaluated separately by publisher, placement, objective, and conversion quality | Network is active but evidence is incomplete | Confirmed low-quality inventory persists without review or controls |
+| MS06 | Bid strategy alignment | High | Strategy and target match the objective, conversion lag, volume, and Microsoft-specific history | Fit or evidence is incomplete | Strategy demonstrably prevents delivery or violates owner-approved economics |
+| MS07 | New-customer optimization applicability | Low | Availability, identity definition, value, and measurement were evaluated | Evaluation is incomplete | N/A; feature absence or non-adoption is not a health failure |
 
 ---
 
@@ -54,8 +67,8 @@ Google Ads imports are the most common Microsoft Ads setup method. Common import
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
 | MS08 | Campaign structure | High | Mirrors Google structure (if imported) or follows best practices | Minor structural issues | Disorganized structure, no naming convention |
-| MS09 | Budget allocation | Medium | Budget proportional to Bing search volume (typically 20-30% of Google) | Slightly over/under-allocated | Budget >50% of Google budget (over-investment) |
-| MS10 | LinkedIn profile targeting | High | LinkedIn targeting utilized for B2B: up to 16% greater CTR and 64% greater conversion rate vs non-audience-targeted ads. Available across Search, DSA, Shopping, PMax, and Multimedia ads. Dimensions: Company (80,000+), Industry (148), Job Function (26). Use Observation (Bid Only) mode first. CPCs 30-70% cheaper than LinkedIn Ads directly | Partial LinkedIn targeting | No LinkedIn targeting for B2B campaigns (unique advantage missed) |
+| MS09 | Budget allocation | Medium | Allocation follows marginal qualified return, available demand, and owner-approved channel role | Evidence is incomplete | Allocation conflicts with observed economics or approved priorities |
+| MS10 | LinkedIn profile targeting applicability | Low | Current account eligibility and B2B fit were evaluated with an observation or controlled-test plan | Evaluation is incomplete | N/A; non-adoption is an opportunity |
 
 ---
 
@@ -82,9 +95,9 @@ These extensions are ONLY available on Microsoft Ads:
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
-| MS14 | Copilot placement | Medium | Copilot chat placement enabled for PMax campaigns. CTV ads now serve on Netflix, Max, Hulu, Roku, discovery+. Auto-generated RSA assets enabled by default globally Jan 2026 (5% CTR increase). Image Animation via Copilot pilot (Nov 2025): static images converted to video assets | N/A | Not enabled (73% higher CTR opportunity) |
+| MS14 | Copilot and new-placement applicability | Low | Current account evidence confirms placement access and performance is reported separately | Availability or evidence is incomplete | N/A; non-adoption is an opportunity |
 | MS15 | Conversion goals | High | Goals configured natively (not relying on Google-imported goals) | Imported goals verified and working | Imported goals not verified |
-| MS16 | CPC vs Google comparison | Medium | Microsoft CPC 20-40% lower than Google for same keywords | CPC within 0-20% of Google | CPC equal to or higher than Google |
+| MS16 | Cross-platform CPC context | Medium | CPC is compared only after normalizing query, match type, device, geography, auction window, and conversion quality | Comparison is incomplete | Higher cost also produces worse qualified economics at adequate sample |
 | MS17 | Conversion rate comparison | Medium | Microsoft CVR comparable to Google | CVR 25-50% lower | CVR >50% lower than Google |
 | MS18 | Impression share | Medium | IS tracked for brand and top non-brand terms | Partially tracked | Not tracked |
 
@@ -160,13 +173,15 @@ Ensure PMax campaigns have Copilot placement enabled to capture this growing cha
 
 ---
 
-## AI Max for Search + Activate 2026 (v1.8.0, MS25-MS41, scored within existing categories)
+## Product-launch discovery (MS25-MS41, unscored)
 
-Microsoft's spring 2026 announcements (about.ads.microsoft.com, Apr 22 2026) plus the Activate 2026 conference (May 19 2026). Source: `research/notes-microsoft.md`. These 17 checks are scored within the six existing weighted categories; they do not add a new category weight.
+These IDs are retained for catalog compatibility. Re-verify product existence, pilot status,
+market, account access, and eligibility through current official documentation or account
+evidence. Missing access and non-adoption are `not_applicable` or opportunities, never health failures.
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
-| MS25 | AI Max for Search (Microsoft) | High | Microsoft AI Max for Search (pilot May 2026; DISTINCT from Google's AI Max) evaluated or piloted with guardrails configured. Expands query matching across Copilot Search / Copilot Answers / Bing. Guardrails: brand inclusions/exclusions, term exclusions, messaging constraints. Early: +5% CTR; PMax users +8% incremental conversions | Piloted but guardrails only partially configured | Enabled with no brand/term guardrails |
+| MS25 | AI Max for Search applicability | Medium | Current account evidence confirms access and any pilot has brand, term, message, budget, measurement, and rollback guardrails | Access or guardrails are incomplete | An enabled automation surface can expand spend or messaging without effective controls; otherwise `not_applicable` |
 | MS26 | Offer Highlights in Copilot | Low | Offer Highlights (free shipping, in-store pickup) evaluated for Copilot conversations (Best Buy launch partner; English retail) | Eligible English retailer not evaluating Offer Highlights | English retailer with shipping/pickup offers ignoring Offer Highlights in Copilot |
 | MS27 | Audience Generation | Low | Audience Generation (plain-language to targeting; closed pilot US + Canada) evaluated where eligible | Pilot-eligible US/Canada account not evaluating Audience Generation | Manual audience-building despite Audience Generation pilot access |
 | MS28 | PMax Final URL reporting | Medium | Performance Max Final URL reporting (Apr 2026) reviewed for PMax: spend / impressions / clicks / ROAS by Final URL | Reporting available but not reviewed | Not reviewed despite PMax campaigns active |
@@ -182,4 +197,4 @@ Microsoft's spring 2026 announcements (about.ads.microsoft.com, Apr 22 2026) plu
 | MS38 | Data-Driven Attribution adoption | Medium | Data-Driven Attribution selected where conversion volume supports it | DDA eligible but not selected | N/A |
 | MS39 | Conversion API (CAPI) | High | Conversion API (CAPI) server-to-server conversions implemented | Server-side planned but not deployed | No server-side conversions (signal loss on iOS / ITP) |
 | MS40 | Ad Studio Brand Kit | Low | Ad Studio Brand Kit set up for consistent creative | Ad Studio available but Brand Kit not set up | Inconsistent creative across assets despite Ad Studio Brand Kit access |
-| MS41 | SOAP to REST migration | Medium | SOAP API integrations migrated or migration-planned off SOAP (deprecation in favor of REST) | Migration in progress | Production tooling still SOAP-only with no plan |
+| MS41 | API transport migration evidence | Medium | A current official deprecation notice applies and each affected integration has an owner, compatibility test, and migration plan | Applicability or plan is incomplete | A confirmed deadline applies to production tooling with no plan; otherwise `not_applicable` |

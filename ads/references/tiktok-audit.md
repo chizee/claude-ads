@@ -1,8 +1,20 @@
 # TikTok Ads Audit Checklist
 
-<!-- Updated: 2026-05-26 | v1.8.0 -->
-<!-- Sources: Google Research PDF 1 (T01-T25), Claude Research, Gemini Research -->
+<!-- Grounded: 2026-07-11 | source IDs: tiktok-business-api-official, tiktok-events-api-official, tiktok-pixel-official -->
 <!-- Total Checks: 46 | v1.8.0: TikTok World 2026 (T29-T46) -->
+
+## Runtime evaluation contract
+
+- Establish objective, market, placement, commerce/app/web surface, attribution, conversion lag, spend, sample size, and feature access first. Missing evidence is `unknown`; ineligible surfaces are `not_applicable`.
+- Creative counts, refresh days, frequency, budget-to-CPA ratios, learning volume, CTR, and watch-time bands are practitioner prompts. They affect health only when account-relative evidence and the selected optimization event justify them.
+- T29-T46 are unscored launch discovery. MCP, Skills, Smart+, Symphony, commerce, travel, gaming, premium reach, and research-tool adoption are never health requirements.
+- Vendor-reported lifts may motivate a measured experiment but must not be presented as an expected result.
+
+## Official evidence
+
+- `tiktok-business-api-official`: [TikTok API for Business](https://business-api.tiktok.com/portal)
+- `tiktok-events-api-official`: [About Events API](https://ads.tiktok.com/help/article/events-api)
+- `tiktok-pixel-official`: [About TikTok Pixel](https://ads.tiktok.com/help/article/tiktok-pixel)
 
 ## Quick Reference
 
@@ -14,7 +26,7 @@
 | Structure & Settings | 15% | T03-T04 + T14-T16 (5 checks) |
 | Performance | 10% | T17-T19 (3 checks) |
 | Search, Commerce & Tracking | N/A | T-SR1, T-GM1, T-EA1 (3 checks, v1.5) |
-| TikTok World 2026 (v1.8.0) | N/A | T29-T46 (18, scored within existing categories) |
+| Product-launch discovery | Unscored | T29-T46 (18 applicability or opportunity questions) |
 
 ---
 
@@ -22,12 +34,12 @@
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
-| T05 | Creative volume | Critical | ≥6 creative assets per ad group | 3-5 creatives | <3 creatives per ad group |
+| T05 | Creative test capacity | High | Distinct creative concepts are sufficient for the approved spend and experiment cadence | Capacity is thin or repetitive | Delivery concentration or exhausted tests confirm a material creative bottleneck |
 | T06 | Vertical video format | Critical | All video assets 9:16 (1080x1920) | Mixed ratios with some vertical | No vertical video (landscape only) |
 | T07 | Native-looking content | High | Ads look organic / creator-style (not polished corporate) | Semi-native style | Clearly corporate/polished ads |
 | T08 | Hook strategy | High | First 1-2 seconds have attention-grabbing hook | Decent hook but not optimized | No clear hook in opening |
-| T09 | Creative lifespan | High | No creative active >7 days with declining CTR (7-10 day avg lifespan). Frequency <2.5x. Campaigns with 10+ unique creatives achieve 1.3x higher ad recall, 3.0x purchase intent, 1.5x higher awareness vs <5 | 7-14 days with minor decline; frequency approaching 2.5x | >14 days with significant CTR decline. Frequency >2.5x causes 30-40% CVR drops |
-| T10 | Spark Ads utilization | High | Spark Ads tested and active (+30% completion rate, +142% engagement rate, +43% CVR, -4% CPM vs non-Spark). Profile landing page = 69% higher CVR and 37% lower CPA. Strategy: test with dark ads first, identify top performers, convert winners to Spark | Tested but paused | No Spark Ads tested (~3% CTR vs ~2% standard) |
+| T09 | Creative fatigue | High | Same-cohort performance, frequency, reach, and conversion quality show no credible fatigue | Directional decline lacks enough data | Sustained account-relative decline is confirmed after excluding auction, budget, audience, and tracking changes |
+| T10 | Spark Ads applicability | Low | Authorization, brand risk, format fit, and account-relative experiment evidence were evaluated | Experiment is incomplete | N/A; absence is not a health failure |
 | T20 | TikTok Shop integration | Medium | Shop catalog connected (for e-commerce) | N/A | Eligible but not connected |
 | T21 | Video Shopping Ads (VSA) | Medium | VSA tested for product catalog accounts | N/A | Not tested despite eligible catalog |
 | T22 | Caption SEO | High | Captions include high-intent keywords for search discovery | Some keywords in captions | No keyword optimization in captions |
@@ -59,8 +71,8 @@ Without ttclid, attribution breaks for many conversions. This is TikTok's key te
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
 | T11 | Bid strategy | High | Lowest Cost for volume; Cost Cap for efficiency | N/A | Bid Cap set too aggressively (severe under-delivery) |
-| T12 | Budget sufficiency | High | Daily budget ≥50x target CPA per ad group. GMV Max mandatory for all Shop Ads (July 2025). For first-time VSA campaigns, budget ≥50x target CPA. Evaluate holistically: Shop total GMV / (Ads cost + affiliate commission) | 20-49x CPA | <20x CPA per ad group |
-| T13 | Learning phase | High | Ad groups achieving ≥50 conversions/week | 25-50 conversions/week | <25 conversions/week (stuck in learning) |
+| T12 | Budget sufficiency | High | Budget is justified by target economics, conversion lag, expected event volume, and experiment duration | Delivery or sample is inconclusive | Budget makes the approved objective or test infeasible |
+| T13 | Learning evidence | High | Delivery status and event volume are interpreted from the current account surface and selected optimization event | Learning status or cause is unclear | Repeated disruptive edits or preventable fragmentation blocks learning |
 
 ### Learning Phase Rules
 - Exit criteria: ~50 conversions in 7 days per ad group
@@ -76,8 +88,8 @@ Without ttclid, attribution breaks for many conversions. This is TikTok's key te
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
 | T03 | Campaign structure | High | Separate campaigns for prospecting vs retargeting | N/A | Prospecting and retargeting mixed |
-| T04 | Smart+ utilization | Medium | Smart+ campaigns tested with modular control. Advertisers can lock specific modules (targeting, creative, budget, placement) while automating others. Supports up to 30 ad groups/campaign, 30 asset groups/ad group, 50 creatives/asset group | N/A | Not tested (42% adoption, 1.41-1.67 median ROAS; modular control since 2025) |
-| T14 | Search Ads Toggle | High | Search Ads Toggle enabled for all campaigns (20% increase in conversions when combined with In-Feed; 18% of in-feed non-converters convert via Search Ad; 2x higher purchase lift; 57% of TikTok users use search). Max 1,000 keywords per ad group | N/A | Search Ads Toggle OFF (missing significant incremental conversions) |
+| T04 | Smart+ applicability | Low | Available automation modules were evaluated against control, measurement, and experiment needs | Evaluation is incomplete | N/A; non-adoption is an opportunity |
+| T14 | Search Ads applicability | Low | Search inventory was evaluated where market, objective, query demand, and feature access support it | Evaluation is incomplete | N/A; a disabled or unavailable toggle is not a health failure |
 | T15 | Placement selection | Medium | Appropriate placements selected (TikTok, Pangle, etc.) | Default placements without review | N/A |
 | T16 | Dayparting | Low | Ad schedule aligned with target audience activity | N/A | No schedule despite clear patterns |
 
@@ -87,8 +99,8 @@ Without ttclid, attribution breaks for many conversions. This is TikTok's key te
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
-| T17 | CTR benchmark | High | CTR ≥1.0% for in-feed ads | CTR 0.5-1.0% | CTR <0.5% |
-| T18 | CPA target | High | CPA within target range | CPA 1.5-3x target | CPA >3x target (trigger 3x Kill Rule) |
+| T17 | CTR benchmark | Medium | CTR is compared with a same-objective, placement, format, geography, and date-window cohort | Only a broad benchmark is available | A statistically credible account-relative decline is unexplained |
+| T18 | CPA target | High | Lag-adjusted CPA is within the owner-approved economic target at adequate sample | Sample or lag is inconclusive | Material target miss persists after quality, lag, and margin review; never apply a fixed kill multiple |
 | T19 | Video completion rate | Medium | Average video watch time ≥6 seconds | 3-6 seconds | <3 seconds average watch time |
 
 ---
@@ -134,13 +146,15 @@ Without ttclid, attribution breaks for many conversions. This is TikTok's key te
 
 ---
 
-## TikTok World 2026 (v1.8.0, T29-T46, scored within existing categories)
+## Product-launch discovery (T29-T46, unscored)
 
-TikTok World 2026 ran May 13-15, 2026, two days before the v1.7.0 cut. Source: `research/notes-tiktok.md`. These checks fold into the existing six categories (creative, structure, tracking, commerce, performance) rather than forming a new weighted bucket. Separately, the TikTok USDS divestiture closed January 22, 2026 (80.1% non-Chinese ownership); it produced no measurable disruption to advertiser operations, so no migration or continuity check is warranted.
+These IDs are retained for catalog compatibility. Re-verify feature existence, market,
+account access, and eligibility through current official documentation or in-account evidence.
+Missing access and non-adoption are `not_applicable` or opportunities, never health failures.
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
-| T29 | TikTok Ads MCP Server | Medium | TikTok Ads MCP Server (official, announced May 13 2026; last of the four majors) connection detected and inventoried | MCP Server known but not yet connected | No MCP Server usage despite agentic workflow opportunity |
+| T29 | TikTok Ads MCP Server | Medium | Any connected integration's endpoint, owner, tools, scopes, and mutation authority are inventoried from live evidence | Connection exists but inventory is incomplete | N/A; absence is not a health failure |
 | T30 | TikTok Ads Skills | Low | TikTok Ads Skills developer building blocks adopted for custom automation | Aware but not yet building | Not adopted despite developer resources in account |
 | T31 | Smart+ One Buying Experience module control | High | Audit recognizes module-level granularity: targeting, budget, and placements can each be toggled on/off PER MODULE (not all-or-nothing automation) | Smart+ One in use but module-level controls not reviewed | Treated as all-or-nothing; module-level levers ignored |
 | T32 | Smart+ Music Autofix | Low | Smart+ Music Autofix enabled so flagged audio is auto-relicensed | N/A | Eligible Smart+ campaigns with Music Autofix off, risking takedowns |
@@ -152,7 +166,7 @@ TikTok World 2026 ran May 13-15, 2026, two days before the v1.7.0 cut. Source: `
 | T38 | Symphony AI creative stack | Low | Symphony AI / Dreamina Seedance 2.0 / Reference to Video used to scale creative variations | N/A | Manual-only creative refresh despite stack availability |
 | T39 | TikTok GO booking integration | Low | TikTok GO booking integration live for travel partners (Booking.com, Expedia, Viator, GetYourGuide, Tiqets, Trip.com) | Travel advertiser not evaluating TikTok GO booking integration | Travel/booking account ignoring TikTok GO despite partner availability |
 | T40 | Mini Series & Mini Games | Low | Mini Series and Mini Games formats evaluated; Growth Max used for Mini Games where relevant | Entertainment/gaming advertiser not evaluating Mini Series or Mini Games | Gaming/entertainment objective ignores Mini Games + Growth Max despite clear fit |
-| T41 | Collage Carousel | Low | Collage Carousel (hero + 3 product visuals; US Q2 2026) tested for product storytelling | US product advertiser eligible but Collage Carousel not tested | Multi-product US catalog ignores Collage Carousel despite market eligibility |
+| T41 | Collage Carousel availability | Low | Current account evidence confirms access and an owner-approved test rationale | Availability or fit is unknown | N/A when unavailable; non-adoption is an opportunity |
 | T42 | One Asset Manager | Low | One Asset Manager used for unified asset management across campaigns | N/A | Assets fragmented across tools despite One Asset Manager availability |
 | T43 | View+ for Pulse Core Max | Low | View+ premium reach upgrade applied to Pulse Core Max placements where reach goals warrant | Pulse Core Max running but View+ upgrade not evaluated | Reach-goal campaigns on Pulse Core Max skip View+ despite eligibility |
 | T44 | TikTok Market Scope | Low | TikTok Market Scope used for competitive intelligence and category benchmarking | Market Scope available but not used for benchmarking | Optimizing blind with no Market Scope competitive intelligence despite access |

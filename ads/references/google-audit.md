@@ -1,8 +1,20 @@
 # Google Ads Audit Checklist
 
-<!-- Updated: 2026-05-26 | v1.8.0 update: Google Marketing Live 2026 addendum (G81-G95) -->
-<!-- Sources: Google Research PDF 1 (G01-G61), Claude Research (74-item extended), Gemini Research, 2026 Platform Research, research/notes-google.md (GML 2026) -->
+<!-- Grounded: 2026-07-11 | source IDs: google-ads-api-official, google-ads-conversion-goals-official, google-ads-enhanced-conversions-official -->
 <!-- Total Checks: 95 | Categories: 8 | See scoring-system.md for weights and algorithm -->
+
+## Runtime evaluation contract
+
+- Treat every row as an applicability-first evidence question. Return `not_applicable` when the campaign type, objective, geography, feature access, or required data is absent; return `unknown` when evidence is missing.
+- A number in this legacy catalog is a practitioner investigation prompt, not a universal pass/fail boundary. It may affect health only when objective, conversion lag, sample size, date window, and a relevant account baseline justify it.
+- Feature adoption, beta access, vendor-reported lift, and announcement awareness are opportunities, never account-health failures. The G81-G95 launch-discovery rows are unscored.
+- Use current account/API evidence for settings and eligibility. Do not infer availability from an announcement date or recommend a feature the account cannot enable.
+
+## Official evidence
+
+- `google-ads-api-official`: [Google Ads API documentation](https://developers.google.com/google-ads/api/docs/start)
+- `google-ads-conversion-goals-official`: [About conversion goals](https://support.google.com/google-ads/answer/10995103)
+- `google-ads-enhanced-conversions-official`: [About enhanced conversions](https://support.google.com/google-ads/answer/9888656)
 
 ## Quick Reference
 
@@ -16,7 +28,7 @@
 | Settings & Targeting | 10% | G50-G61 (12) |
 | Performance Max | N/A | G-PM1 through G-PM6 (6, scored within Ads & Assets) |
 | AI & Demand Gen | N/A | G-AI1 (1) + G-DG1 through G-DG3 (3, scored within Ads & Assets) |
-| Google Marketing Live 2026 (v1.8.0) | N/A | G81-G95 (15, scored within Ads & Assets + Settings) |
+| Product-launch discovery | Unscored | G81-G95 (15 opportunity or governance questions) |
 
 ---
 
@@ -25,10 +37,10 @@
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
 | G42 | Conversion actions defined | Critical | ≥1 primary conversion action configured | N/A | No active conversion actions |
-| G43 | Enhanced conversions enabled | Critical | Enhanced conversions active AND verified for primary conversions (~10% uplift, free setup) **[Quick Win: 5 min]** | Enabled but not verified (check verification status in settings) | Not enabled |
+| G43 | Enhanced conversions applicability and status | High | Eligible primary conversion actions use enhanced conversions and diagnostics are healthy | Eligible but diagnostics need review | Eligible, material first-party data is collected with valid consent, and enhanced conversions were rejected without documented reason |
 | G44 | Server-side tracking | High | Server-side GTM or Google Ads API conversion import active | Planned but not deployed | No server-side tracking |
-| G45 | Consent Mode v2 | Critical | Advanced Consent Mode v2 implemented (enforcement began July 21, 2025 for EEA/UK; recommended globally for signal recovery). Requires 700+ ad clicks/day over 7 days per country/domain for behavioral modeling to activate. Recovers 15-25% of lost conversions | Basic mode only (huge data loss. Upgrade to Advanced immediately) | Not implemented |
-| G46 | Conversion window appropriate | Medium | Window matches sales cycle (7d ecom, 30-90d B2B, 30d lead gen) | Default 30d without validation | Window mismatched to sales cycle |
+| G45 | Consent signals and regional requirements | Critical | Consent signals and tag behavior are verified against the account's geography, consent platform, and current Google requirements | Implementation exists but evidence or regional mapping is incomplete | Applicable traffic is sent without the required consent behavior |
+| G46 | Conversion window appropriate | Medium | Window is justified by observed conversion lag and the business sales cycle | Default window without validation | Window demonstrably excludes material conversions or obscures the decision window |
 | G47 | Micro vs macro separation | High | Only macro conversions (Purchase, Lead) set as "Primary" for bidding | Some micro events as Primary | All events including micro (AddToCart, TimeOnSite) as Primary |
 | G48 | Attribution model | Medium | Data-driven attribution (DDA) selected | Last Click (intentional, document reasoning) | Rule-based model active (first click, linear, time decay, position-based were ALL auto-upgraded to DDA. Any remaining rule-based is a legacy misconfiguration) |
 
@@ -47,21 +59,21 @@
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
 | G13 | Search term audit recency | Critical | Search terms reviewed within last 14 days | Reviewed within 30 days | Not reviewed in >30 days |
-| G14 | Negative keyword lists exist | Critical | ≥3 theme-based lists (Competitor, Jobs, Free, Irrelevant) | 1-2 lists exist | No negative keyword lists |
+| G14 | Negative-keyword governance | High | Search-term evidence supports maintained negative controls with documented exceptions | Controls exist but review ownership or recency is unclear | Material irrelevant queries recur without a reviewed control |
 | G15 | Account-level negatives applied | High | Negative lists applied at account or all-campaign level | Applied to some campaigns only | Not applied |
 
 **G14/G15 accuracy notes:** Count both campaign-level negatives AND Shared Negative Keyword Lists when evaluating coverage. Campaigns covered by shared lists should NOT be flagged as "missing negatives." Report per-campaign breakdown showing direct negatives vs. shared list assignments for clear remediation paths.
-| G16 | Wasted spend on irrelevant terms | Critical | <5% of spend on irrelevant search terms (last 30d) | 5-15% on irrelevant terms | >15% on irrelevant terms |
+| G16 | Material irrelevant search-term spend | Critical | No material spend on terms independently classified as irrelevant to the offer | Borderline terms require owner review | Material irrelevant spend is confirmed from complete search-term evidence |
 
 **G16/G-WS1 accuracy notes:** Only flag search terms as "wasted" if they have >$10 spend AND 0 conversions. Long-tail terms with minimal spend (<$10) are normal exploration, not waste. When reporting, show top 10 wasters with spend and click details.
-| G17 | Broad match + smart bidding pairing | Critical | No Broad Match keywords running on Manual CPC. Note: Google reports exact-to-broad upgrades in tCPA campaigns see 35% more conversions on average, but ONLY with solid conversion data, Smart Bidding, and aggressive negative keyword management | N/A | Broad Match + Manual CPC active (wastes budget without algorithmic bid control) |
+| G17 | Broad-match control | High | Broad match use is intentional, query quality is reviewed, and bidding/negative controls match the objective | Intent or evidence is incomplete | Broad match creates confirmed irrelevant spend without effective controls |
 
-**G17/FL04 legacy BMM heuristic:** Google stripped '+' prefixes from Broad Match Modified keywords during the 2021 migration but kept `matchType=BROAD` in the API. BROAD + Manual CPC almost always indicates legacy BMM (behaves as phrase match), NOT intentional broad match. True intentional broad match is always paired with Smart Bidding (tCPA, tROAS, Maximize Conversions/Value). Only flag BROAD keywords in Smart Bidding campaigns as needing review. Skip BROAD + Manual CPC; these are legacy BMM and should not be flagged as failures.
+**G17 evidence note:** Do not infer historical Broad Match Modified behavior or advertiser intent from the current `BROAD` enum. Inspect search terms, campaign history, bidding, negatives, and owner intent.
 | G18 | Close variant pollution | High | Exact/Phrase match not triggering irrelevant close variants | Minor close variant issues | Significant irrelevant close variant spend |
 | G19 | Search term visibility | Medium | >60% of search term spend is visible (not hidden) | 40-60% visible | <40% visible |
 
 **G19 accuracy notes:** When computing `totalVisibleSpend`, use ALL fetched search terms before any truncation or top-N limiting. A common error is summing cost from a truncated subset (e.g., top 500 of 2000 terms) which understates visibility. Fetch terms ordered by cost descending to ensure the highest-spend terms are captured first.
-| G-WS1 | Zero-conversion keywords | High | No keywords with >100 clicks and 0 conversions | 1-3 such keywords | >3 keywords with >100 clicks, 0 conversions |
+| G-WS1 | Zero-conversion keyword investigation | High | No keyword has material spend beyond the account's evidence threshold with zero lag-adjusted conversions | Sample or conversion lag is inconclusive | Material zero-conversion spend persists after lag, value, and search-term review |
 
 ---
 
@@ -71,22 +83,22 @@
 |----|-------|----------|------|---------|------|
 | G01 | Campaign naming convention | Medium | Consistent pattern (e.g., [Brand]_[Type]_[Geo]_[Target]) | Partially consistent | No naming convention |
 | G02 | Ad group naming convention | Medium | Matches campaign naming pattern | Partially consistent | No naming convention |
-| G03 | Single theme ad groups | High | Each ad group targets 1 keyword theme (≤10 keywords) | 11-20 keywords with consistent theme | Ad groups with 20+ unrelated keywords (theme drift) |
+| G03 | Ad-group theme coherence | High | Enabled, serving keywords and ads express a coherent intent | Mixed intent needs review | Unrelated serving intents share ads or landing pages and performance evidence shows harm |
 
 **G03 accuracy notes:** When evaluating theme coherence: (1) Only count keywords with impressions > 0; dormant zero-impression keywords don't affect ad serving and shouldn't inflate counts. (2) Exclude paused ad groups: `ENABLED` ad groups only (paused groups can have enabled keywords at criterion level but aren't visible in UI). (3) Deduplicate keywords by text per ad group; the same keyword with BROAD + PHRASE match types is one keyword, not two. (4) Exclude stopword-only keywords (e.g., 'attorney', 'lawyers') from coherence scoring; they carry no thematic signal and dilute coherence scores.
-| G04 | Campaign count per objective | High | ≤5 campaigns per funnel stage/objective | 6-8 campaigns per objective | >8 campaigns per objective (fragmented) |
+| G04 | Campaign fragmentation | High | Structure preserves needed controls without starving learning or duplicating intent | Possible duplication or thin data | Confirmed overlap or data fragmentation harms control or learning |
 
 **G04 accuracy notes:** For multi-location businesses, strip geographic identifiers (city names, state abbreviations, zip codes, metro areas, directional qualifiers like "North"/"South") from campaign names before counting unique objectives. A firm running "Divorce - Chicago", "Divorce - Schaumburg", "Divorce - Naperville" has 1 objective across 3 geos, not 3 separate objectives. Preserve PPC-meaningful terms (brand, nonbrand, pmax, remarketing, etc.).
 | G05 | Brand vs Non-Brand separation | Critical | Brand and non-brand in separate campaigns | N/A | Brand and non-brand mixed in same campaign |
 
 **G05/G07/G-PM3 brand detection:** Don't rely solely on campaign naming conventions. Derive brand tokens from the account/business name and scan actual keyword text for brand terms. Classify campaigns by keyword composition: >50% brand keywords = brand campaign. This catches mislabeled campaigns and provides accurate brand vs. non-brand separation.
-| G06 | PMax present for eligible accounts | Medium | PMax active for accounts with conversion history. Note: brand exclusions and campaign-level negative keywords are now available for ALL PMax advertisers (2025). Customer match lists are the strongest audience signal | PMax tested but paused | No PMax tested despite eligibility |
+| G06 | Performance Max applicability | Low | PMax was evaluated against objective, feed/asset readiness, measurement, and control needs | Evaluation is incomplete | N/A; absence is not a health failure |
 | G07 | Search + PMax overlap | High | Brand exclusions configured in PMax when Search brand campaign exists | Partial brand exclusions | No brand exclusions in PMax alongside brand Search |
 | G08 | Budget allocation matches priority | High | Top-performing campaigns not budget-limited | Minor budget constraints on top performers | Top performers severely budget-limited |
-| G09 | Campaign daily budget vs spend | Medium | No campaigns hitting budget cap before 6PM | 1-2 campaigns hitting cap early | Multiple campaigns capped before noon |
+| G09 | Budget pacing | Medium | Pacing matches timezone, demand pattern, objective, and budget period | Isolated or unexplained pacing constraint | Repeated constraint prevents the approved objective or creates runaway spend |
 | G10 | Ad schedule configured | Low | Ad schedule set if business has operating hours | N/A | No schedule despite clear business hours |
 | G11 | Geographic targeting accuracy | High | "People in" (not "People in or interested in") for local | N/A | "People in or interested in" for local business |
-| G12 | Network settings | High | Search Partners enabled for additional reach; Display Network disabled for Search (unless intentional) | Search Partners OFF (missing incremental reach) | Display Network ON for Search campaign |
+| G12 | Network settings | High | Search Partners and Display inventory are each configured intentionally and evaluated separately | Setting or evidence is unreviewed | Mixed inventory causes confirmed quality or budget-control harm |
 
 **G12 note:** Search Partners typically provides incremental reach at comparable CPA. Flag Search Partners OFF as a missed opportunity (Warning), not ON. Display Network on Search campaigns remains a Fail.
 
@@ -116,13 +128,13 @@
 | G28 | RSA description count | Medium | ≥3 descriptions per RSA (ideal: 4) | 2 descriptions | <2 descriptions |
 | G29 | RSA Ad Strength | High | All RSAs "Good" or "Excellent" | Some "Average" | Any RSA with "Poor" Ad Strength |
 | G30 | RSA pinning strategy | Medium | Strategic pinning (1-2 positions, 2-3 variants each) | Over-pinned (all positions) | N/A |
-| G31 | PMax asset group density | Critical | ≥20 images, ≥5 logos, ≥5 native videos per group (maximum density). PMax needs 30-50+ conversions/month minimum to optimize effectively. Flag auto-generated video from images as WARNING (typically poor quality. Upload native video) | 5-19 images, 1-4 logos, or 1-4 videos; OR <30 conv/month (insufficient data for PMax) | <5 images OR 0 logos OR 0 video |
+| G31 | PMax asset coverage | High | Eligible asset groups cover the required asset types and meaningful creative concepts for their inventory | Coverage or creative diversity is partial | Required assets are missing or policy/disapproval state prevents intended delivery |
 | G32 | PMax video assets present | High | Native video in all formats (16:9, 1:1, 9:16) | 1-2 formats only | No native video (auto-generated only) |
 | G33 | PMax asset group count | Medium | ≥2 asset groups per PMax (intent-segmented) | 1 asset group | N/A |
 | G34 | PMax final URL expansion | High | Configured intentionally (ON for discovery, OFF for control) | N/A | Default ON without review |
 | G35 | Ad copy relevance to keywords | High | Headlines contain primary keyword variants | Partial keyword inclusion | No keyword relevance in headlines |
 | G-AD1 | Ad freshness | Medium | New ad copy tested within last 90 days | N/A | No new ads in >90 days |
-| G-AD2 | CTR vs industry benchmark | High | CTR ≥ industry average | CTR 50-100% of industry average | CTR <50% of industry average |
+| G-AD2 | CTR context | Medium | CTR is interpreted against same-format, same-network, same-objective account cohorts | Only a broad external benchmark is available | A statistically credible account-relative decline is unexplained |
 
 ---
 
@@ -151,10 +163,10 @@
 |----|-------|----------|------|---------|------|
 | G-PM1 | Audience signals configured | High | Custom audience signals per asset group | Generic signals only | No audience signals |
 | G-PM2 | PMax Ad Strength | High | "Good" or "Excellent" | "Average" | "Poor" |
-| G-PM3 | Brand cannibalization | High | <15% of PMax conversions from brand terms | 15-30% from brand terms | >30% from brand terms |
+| G-PM3 | Brand incrementality review | High | Brand contribution and incrementality are measured with query, experiment, or holdout evidence | Brand share is known but incrementality is not | Confirmed cannibalization conflicts with the campaign objective |
 | G-PM4 | Search themes | Medium | Search themes configured (up to 50 per asset group) | <5 search themes | No search themes |
 | G-PM5 | Negative keywords | High | Brand + irrelevant negatives applied (up to 10,000) | Some negatives applied | No negative keywords in PMax |
-| G-PM6 | PMax negative keywords active | High | Campaign-level negative keywords configured (now available for ALL PMax advertisers). One client reported 15% immediate cost reduction after adding negatives **[Quick Win: 10 min]** | Account-level negatives only, no campaign-level | No negative keywords in PMax despite availability |
+| G-PM6 | PMax negative-keyword applicability | Medium | Campaign- or account-level negatives are used only where search-term evidence justifies them | Evidence exists but scope needs review | Confirmed irrelevant queries persist without appropriate controls |
 
 ---
 
@@ -162,7 +174,7 @@
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
-| G-AI1 | AI Max for Search evaluation | High | AI Max evaluated or active for accounts with sufficient conversion data (14% avg conversion lift). Strong negative keyword lists in place before enabling | N/A | AI Max not evaluated despite eligible account (>50 conv/month, established negative lists) |
+| G-AI1 | AI Max for Search evaluation | Low | Availability and fit were evaluated with measurement and query guardrails | Eligible but evaluation is incomplete | N/A; non-adoption is an opportunity, not a health failure |
 | G-DG1 | Demand Gen image assets | High | Demand Gen campaigns include BOTH video AND image assets (20% more conversions at same CPA vs video-only). DoorDash case study: 15x higher CVR, 50% lower CPA | Video assets only (missing image uplift) | No Demand Gen campaigns despite eligible account |
 | G-DG2 | VAC migration status | Critical | All Video Action Campaigns migrated to Demand Gen (auto-upgraded April 2026) | Migration in progress | VAC campaigns still active (deprecated and will be force-migrated) |
 | G-DG3 | Demand Gen frequency capping loss | High | Former VAC campaigns with frequency caps: alternative measurement strategy in place (Video Frequency Groups alpha, or manual frequency monitoring) | Frequency not monitored post-migration | Former VAC campaigns relied on frequency caps now lost in DG with no replacement strategy |
@@ -202,12 +214,12 @@
 
 ---
 
-## Google Marketing Live 2026 (v1.8.0, G81-G95, scored within Ads & Assets + Settings)
+## Product-launch discovery (G81-G95, unscored)
 
-GML 2026 (May 20, 2026) landed 3 days after the v1.7.0 cut. Source: `research/notes-google.md`.
-Google-supplied case-study figures (Lufthansa, IKEA, "+15% conversions") are flagged as
-vendor claims, not independently audited (JumpFly April 2026 analysis + an 84% advertiser
-survey show neutral-to-negative results).
+These IDs are retained for catalog compatibility. Use them only to discover eligibility,
+governance risk, or an experiment opportunity. A missing, announced, beta, future, or
+inaccessible feature is `not_applicable`, never a failed health control. Vendor lift figures
+must not determine a recommendation.
 
 | ID | Check | Severity | Pass | Warning | Fail |
 |----|-------|----------|------|---------|------|
@@ -225,7 +237,7 @@ survey show neutral-to-negative results).
 | G92 | Asset Studio Gemini Omni readiness | Low | Creative pipeline ready for Asset Studio (Flash, summer 2026 GA: Veo + Nano Banana, 1-Click Creative Testing, Adobe/Canva pull-through) | Aware of summer 2026 GA but no creative-pipeline prep or Adobe/Canva connection | No Asset Studio adoption plan despite creative-bottlenecked account that would benefit from generative testing |
 | G93 | Demand Gen feature stack | Medium | Multimodal video + product feeds (automotive +33% conversions), Campaign Type Attribution, Uplift Experiments adopted where eligible | Demand Gen active but missing feeds/experiments | No Demand Gen despite eligible account |
 | G94 | Ads Advisor 3 safety features | Medium | Agentic safety surface (real-time policy reviews, security monitoring, instant certifications) understood and monitored | N/A | Agentic automation in use without safety-feature awareness |
-| G95 | DSA to AI Max forced migration (Sept 2026) | Critical | Pre-migration readiness done: AI Brief, Final URL Expansion controls, brand exclusions, strong negative lists. No legacy DSA campaigns left unprepared | Migration plan exists but readiness checklist incomplete | Active DSA/ACA campaigns with no migration prep before the no-opt-out September 2026 auto-upgrade |
+| G95 | DSA migration-readiness evidence | Medium | A current in-account or official notice confirms applicability and the account has a reversible migration plan | Notice exists but readiness evidence is incomplete | Confirmed mandatory migration applies and no owner or rollback plan exists; otherwise `not_applicable` |
 
 ---
 

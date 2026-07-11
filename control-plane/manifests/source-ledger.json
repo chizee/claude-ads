@@ -59,6 +59,32 @@
       "claim_ids": []
     },
     {
+      "id": "google-ads-conversion-goals-official",
+      "title": "Google Ads conversion goals and primary/secondary actions",
+      "locator": "https://support.google.com/google-ads/answer/10995103",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "Google Help content terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0007"]
+    },
+    {
+      "id": "google-ads-enhanced-conversions-official",
+      "title": "Google Ads enhanced conversions",
+      "locator": "https://support.google.com/google-ads/answer/9888656",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "Google Help content terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0007"]
+    },
+    {
       "id": "public-claude-ads-pulls",
       "title": "AgriciDaniel/claude-ads pull request tracker",
       "locator": "https://github.com/AgriciDaniel/claude-ads/pulls",
@@ -72,6 +98,19 @@
       "claim_ids": []
     },
     {
+      "id": "meta-conversions-api-official",
+      "title": "Meta Conversions API overview",
+      "locator": "https://www.facebook.com/business/help/AboutConversionsAPI",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "Meta Business Help Center terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0008"]
+    },
+    {
       "id": "google-ads-api-official",
       "title": "Google Ads API documentation",
       "locator": "https://developers.google.com/google-ads/api/docs/start",
@@ -82,7 +121,33 @@
       "confidence": "high",
       "license": "Google Developers content CC BY 4.0 and samples Apache-2.0 unless noted",
       "redistribution": "metadata-only",
-      "claim_ids": []
+      "claim_ids": ["CLM-0007"]
+    },
+    {
+      "id": "linkedin-conversion-tracking-official",
+      "title": "LinkedIn conversion tracking",
+      "locator": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversion-tracking",
+      "source_type": "api-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "LinkedIn API Terms and Microsoft documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0009"]
+    },
+    {
+      "id": "linkedin-conversions-api-official",
+      "title": "LinkedIn Conversions API use cases and deduplication",
+      "locator": "https://learn.microsoft.com/en-us/linkedin/marketing/conversions/conversions-usecase",
+      "source_type": "api-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "LinkedIn API Terms and Microsoft documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0009"]
     },
     {
       "id": "meta-marketing-api-official",
@@ -95,7 +160,33 @@
       "confidence": "high",
       "license": "Meta Platform Terms; citation only",
       "redistribution": "metadata-only",
-      "claim_ids": []
+      "claim_ids": ["CLM-0008"]
+    },
+    {
+      "id": "tiktok-events-api-official",
+      "title": "TikTok Events API",
+      "locator": "https://ads.tiktok.com/help/article/events-api",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "TikTok for Business documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0010"]
+    },
+    {
+      "id": "tiktok-pixel-official",
+      "title": "TikTok Pixel",
+      "locator": "https://ads.tiktok.com/help/article/tiktok-pixel",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "TikTok for Business documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0010"]
     },
     {
       "id": "youtube-google-ads-video-official",
@@ -111,6 +202,45 @@
       "claim_ids": []
     },
     {
+      "id": "microsoft-uet-official",
+      "title": "Microsoft Advertising Universal Event Tracking setup",
+      "locator": "https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_uet_setup_master",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "Microsoft documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0011"]
+    },
+    {
+      "id": "microsoft-conversions-api-official",
+      "title": "Microsoft Advertising Conversions API guide",
+      "locator": "https://learn.microsoft.com/en-us/advertising/guides/uet-conversion-api-integration?view=bingads-13",
+      "source_type": "api-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "Microsoft documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0011"]
+    },
+    {
+      "id": "microsoft-google-import-official",
+      "title": "Microsoft Advertising Google Ads import mapping",
+      "locator": "https://learn.microsoft.com/en-us/advertising/msa-help/hlp_ba_conc_importwhatinfo",
+      "source_type": "official-doc",
+      "authority_tier": 1,
+      "retrieved_at": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "confidence": "high",
+      "license": "Microsoft documentation terms; citation only",
+      "redistribution": "metadata-only",
+      "claim_ids": ["CLM-0011"]
+    },
+    {
       "id": "linkedin-marketing-api-official",
       "title": "LinkedIn Marketing Developer Platform overview",
       "locator": "https://learn.microsoft.com/en-us/linkedin/marketing/overview",
@@ -121,7 +251,7 @@
       "confidence": "high",
       "license": "LinkedIn API Terms and Microsoft documentation terms; citation only",
       "redistribution": "metadata-only",
-      "claim_ids": []
+      "claim_ids": ["CLM-0009"]
     },
     {
       "id": "tiktok-business-api-official",
@@ -134,7 +264,7 @@
       "confidence": "high",
       "license": "TikTok for Business developer terms; citation only",
       "redistribution": "metadata-only",
-      "claim_ids": []
+      "claim_ids": ["CLM-0010"]
     },
     {
       "id": "microsoft-advertising-api-official",
@@ -147,7 +277,7 @@
       "confidence": "high",
       "license": "Microsoft documentation terms; citation only",
       "redistribution": "metadata-only",
-      "claim_ids": []
+      "claim_ids": ["CLM-0011"]
     },
     {
       "id": "apple-ads-api-official",

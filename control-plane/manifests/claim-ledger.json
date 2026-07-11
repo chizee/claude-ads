@@ -73,6 +73,66 @@
       "last_verified": "2026-07-11",
       "refresh_due": "2026-08-10",
       "owner": "adapter-owner"
+    },
+    {
+      "id": "CLM-0007",
+      "statement": "Google Ads distinguishes primary conversion actions used for bidding from secondary observation actions, and enhanced conversions supplement existing measurement with hashed first-party data subject to applicable policy and consent requirements.",
+      "scope": "Google Ads runtime measurement controls; feature eligibility and diagnostics remain account-specific",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["google-ads-api-official", "google-ads-conversion-goals-official", "google-ads-enhanced-conversions-official"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "google-evidence-owner"
+    },
+    {
+      "id": "CLM-0008",
+      "statement": "Meta Conversions API supports website, app, offline, and messaging event connections and can be used alongside Meta Pixel; account implementation, consent, matching, and deduplication must be verified from current diagnostics.",
+      "scope": "Meta runtime measurement controls; no universal performance lift or EMQ threshold is asserted",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["meta-marketing-api-official", "meta-conversions-api-official"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "meta-evidence-owner"
+    },
+    {
+      "id": "CLM-0009",
+      "statement": "LinkedIn supports conversion measurement through Insight Tag, Conversions API, and CSV sources, and documents event-ID deduplication when browser and server sources are used together.",
+      "scope": "LinkedIn runtime measurement controls; access, permissions, version, and account eligibility remain discoverable inputs",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["linkedin-marketing-api-official", "linkedin-conversion-tracking-official", "linkedin-conversions-api-official"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "linkedin-evidence-owner"
+    },
+    {
+      "id": "CLM-0010",
+      "statement": "TikTok supports website measurement through Pixel, Events API, or both, and recommends deduplication when Pixel and Events API send the same business event.",
+      "scope": "TikTok runtime measurement controls; market, objective, event, and account eligibility remain discoverable inputs",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["tiktok-business-api-official", "tiktok-events-api-official", "tiktok-pixel-official"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "tiktok-evidence-owner"
+    },
+    {
+      "id": "CLM-0011",
+      "statement": "Microsoft Advertising uses UET for website conversion tracking, provides a server-side Conversions API, and documents Google Ads import mappings and limitations that require explicit post-import validation.",
+      "scope": "Microsoft runtime measurement and import controls; imported fields and pilots must be checked against current account evidence",
+      "classification": "evidence-based",
+      "verdict": "verified",
+      "source_ids": ["microsoft-advertising-api-official", "microsoft-uet-official", "microsoft-conversions-api-official", "microsoft-google-import-official"],
+      "load_bearing": true,
+      "last_verified": "2026-07-11",
+      "refresh_due": "2026-08-10",
+      "owner": "microsoft-evidence-owner"
     }
   ]
 }
