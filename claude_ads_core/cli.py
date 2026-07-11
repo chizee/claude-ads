@@ -11,6 +11,7 @@ from typing import Any, Sequence
 from . import __version__
 from .adapters import AdapterError, GenericCSVExportAdapter
 from .contracts import CONTRACT_NAMES, ContractError, load_contract, validate_contract
+from .reporting import ReportRenderError, write_report_bundle
 from .scoring import ScoringError, score_account, score_portfolio
 
 
@@ -44,6 +45,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     status = commands.add_parser("status", help="show a report bundle's deterministic status")
     status.add_argument("path")
+
+    render = commands.add_parser(
+        "render",
+        aliases=["report"],
+        help="render a validated report bundle beneath a safe output root",
+    )
+    render.add_argument("path", help="ReportBundle JSON input")
+    render.add_argument("--format", choices=("markdown", "html", "pdf"), default="markdown")
+    render.add_argument("--root", default=".claude-ads/runs", help="safe root for report artifacts")
+    render.add_argument("--output", help="relative output path; defaults to <run-id>/report.<extension>")
 
     ingest = commands.add_parser("ingest-export", help="normalize a generic CSV export")
     ingest.add_argument("--platform", required=True)
@@ -84,9 +95,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "status": scoring["status"],
                 }
             )
+        elif args.command in {"render", "report"}:
+            bundle = load_contract("report-bundle", args.path)
+            extension = {"markdown": "md", "html": "html", "pdf": "pdf"}[args.format]
+            destination = args.output or f"{bundle['run_manifest']['run_id']}/report.{extension}"
+            output_path = write_report_bundle(bundle, args.format, args.root, destination)
+            _emit(
+                {
+                    "format": args.format,
+                    "path": str(output_path),
+                    "run_id": bundle["run_manifest"]["run_id"],
+                    "status": "rendered",
+                }
+            )
         elif args.command == "ingest-export":
             _emit(GenericCSVExportAdapter(args.platform).read_snapshot(args.path))
-    except (AdapterError, ContractError, ScoringError) as exc:
+    except (AdapterError, ContractError, ReportRenderError, ScoringError) as exc:
         print(json.dumps({"status": "invalid", "error": str(exc)}, sort_keys=True), file=sys.stderr)
         return 2
     return 0
