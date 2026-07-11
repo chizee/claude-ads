@@ -14,6 +14,17 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+try:
+    import requests
+    from requests.adapters import HTTPAdapter
+    from requests.exceptions import InvalidURL
+except ImportError:  # pragma: no cover - callers surface their dependency error
+    requests = None
+    HTTPAdapter = object  # type: ignore[assignment,misc]
+
+    class InvalidURL(ValueError):
+        """Fallback used only when Requests is not installed."""
+
 # Sensitive substrings to redact from any error message before logging or
 # returning to the caller. Catches common credential parameter names (api_key,
 # apikey, access_token, refresh_token, auth, key, token, secret, password,
@@ -126,18 +137,13 @@ _MAX_URL_LENGTH = 8192
 _LOCAL_HOSTNAMES = {"localhost", "localhost.localdomain", "metadata", "metadata.google.internal"}
 
 
-def validate_url(url: str) -> str:
-    """Validate URL scheme and block private/internal IPs (SSRF protection).
+def _validate_and_resolve_url(url: str) -> tuple[str, Any, tuple[str, ...]]:
+    """Validate a URL and return every public address from one DNS snapshot.
 
-    Args:
-        url: The URL to validate. If no scheme, https:// is prepended.
-
-    Returns:
-        The validated URL string (with scheme).
-
-    Raises:
-        ValueError: If URL has invalid scheme, no hostname, resolves to
-                    a blocked IP, or DNS resolution fails.
+    The returned addresses are suitable for connection pinning. Callers must
+    not validate the hostname here and then resolve it again while connecting:
+    doing so would recreate the DNS rebinding/TOCTOU window this helper exists
+    to close.
     """
     if not isinstance(url, str):
         raise ValueError("URL must be a string.")
@@ -167,38 +173,205 @@ def validate_url(url: str) -> str:
     if normalized_hostname in _LOCAL_HOSTNAMES or normalized_hostname.endswith(".localhost"):
         raise ValueError("URL targets a local/internal hostname.")
     try:
-        resolved = socket.getaddrinfo(normalized_hostname, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
-        if not resolved:
-            raise ValueError(f"DNS resolution returned no addresses for {normalized_hostname}")
-        for _, _, _, _, addr in resolved:
-            ip = ipaddress.ip_address(addr[0])
-            # is_global rejects loopback, private, link-local, multicast,
-            # documentation, benchmark, CGNAT, unspecified, and reserved space.
-            if not ip.is_global or ip.is_multicast or ip.is_reserved:
-                raise ValueError(f"URL resolves to blocked non-public IP: {ip}")
+        resolved = socket.getaddrinfo(
+            normalized_hostname,
+            None,
+            socket.AF_UNSPEC,
+            socket.SOCK_STREAM,
+        )
     except socket.gaierror as exc:
         raise ValueError(f"DNS resolution failed for {normalized_hostname}: {exc}") from exc
-    return url
+    if not resolved:
+        raise ValueError(f"DNS resolution returned no addresses for {normalized_hostname}")
+
+    addresses: list[str] = []
+    for _, _, _, _, addr in resolved:
+        ip = ipaddress.ip_address(addr[0])
+        # is_global rejects loopback, private, link-local, multicast,
+        # documentation, benchmark, CGNAT, unspecified, and reserved space.
+        if not ip.is_global or ip.is_multicast or ip.is_reserved:
+            raise ValueError(f"URL resolves to blocked non-public IP: {ip}")
+        canonical = str(ip)
+        if canonical not in addresses:
+            addresses.append(canonical)
+    return url, parsed, tuple(addresses)
+
+
+def validate_url(url: str) -> str:
+    """Validate URL scheme and block private/internal IPs (SSRF protection).
+
+    Args:
+        url: The URL to validate. If no scheme, https:// is prepended.
+
+    Returns:
+        The validated URL string (with scheme).
+
+    Raises:
+        ValueError: If URL has invalid scheme, no hostname, resolves to
+                    a blocked IP, or DNS resolution fails.
+    """
+    validated, _, _ = _validate_and_resolve_url(url)
+    return validated
+
+
+def validate_browser_url(url: str, *, egress_sandbox_attested: bool = False) -> str:
+    """Validate a URL at the strongest boundary Playwright can enforce.
+
+    Playwright route interception sees a URL before Chromium performs its own
+    DNS lookup, but it cannot pin the later socket to the address Python
+    validated. Browser dispatch is therefore denied by default, including for
+    public IP literals. Callers may proceed only after explicitly attesting
+    that an independently configured OS/container egress boundary blocks
+    private, loopback, link-local, metadata, and other non-public destinations
+    after DNS resolution and across redirects. The attestation is a contract;
+    this module cannot inspect or establish that external sandbox.
+    """
+    validated, _, _ = _validate_and_resolve_url(url)
+    if not egress_sandbox_attested:
+        raise ValueError(
+            "Browser request blocked: Playwright cannot pin DNS at the socket "
+            "boundary. An explicit OS/container egress-sandbox attestation is "
+            "required; use the Requests-based fetcher otherwise."
+        )
+    return validated
+
+
+def _origin_prefix(parsed: Any) -> str:
+    """Return the exact Requests adapter mount prefix for a parsed origin."""
+    # Preserve an explicitly written default port and a trailing DNS dot. A
+    # normalized prefix such as ``https://example.com/`` does not match
+    # Requests' URL ``https://example.com:443/`` and would silently fall
+    # through to the ordinary, unpinned HTTPS adapter.
+    return f"{parsed.scheme}://{parsed.netloc.lower()}/"
+
+
+class _PinnedHTTPAdapter(HTTPAdapter):
+    """Requests adapter that connects to a validated IP without re-resolving.
+
+    The request URL and HTTP Host header remain hostname-based. For HTTPS,
+    ``server_hostname`` preserves SNI and ``assert_hostname`` preserves normal
+    certificate hostname verification while the pool's socket target is the
+    pinned numeric address.
+    """
+
+    def __init__(self, parsed: Any, addresses: tuple[str, ...]) -> None:
+        if HTTPAdapter is object:  # pragma: no cover - dependency guard
+            raise RuntimeError("requests is required for guarded HTTP requests")
+        super().__init__()
+        self._scheme = parsed.scheme
+        self._hostname = parsed.hostname.rstrip(".").lower()
+        self._port = parsed.port
+        self._address = addresses[0]
+
+    def _check_request_origin(self, request: Any) -> Any:
+        parsed = urlparse(request.url)
+        hostname = (parsed.hostname or "").rstrip(".").lower()
+        if (
+            parsed.scheme != self._scheme
+            or hostname != self._hostname
+            or parsed.port != self._port
+        ):
+            raise InvalidURL("Pinned adapter cannot be reused for another origin.")
+        return parsed
+
+    def get_connection_with_tls_context(
+        self,
+        request: Any,
+        verify: Any,
+        proxies: Any = None,
+        cert: Any = None,
+    ) -> Any:
+        parsed = self._check_request_origin(request)
+        if proxies:
+            raise InvalidURL("Proxies are forbidden for guarded requests.")
+        if parsed.scheme == "https" and verify is False:
+            raise InvalidURL("TLS certificate verification cannot be disabled.")
+
+        host_params, pool_kwargs = self.build_connection_pool_key_attributes(
+            request,
+            verify,
+            cert,
+        )
+        host_params["host"] = self._address
+        if parsed.scheme == "https":
+            pool_kwargs["server_hostname"] = self._hostname
+            pool_kwargs["assert_hostname"] = self._hostname
+
+        # PreparedRequest does not add Host itself; urllib3 would otherwise
+        # derive it from the pinned IP pool and break virtual hosting.
+        default_port = 443 if parsed.scheme == "https" else 80
+        bracketed = f"[{self._hostname}]" if ":" in self._hostname else self._hostname
+        request.headers["Host"] = (
+            bracketed
+            if parsed.port in (None, default_port)
+            else f"{bracketed}:{parsed.port}"
+        )
+        return self.poolmanager.connection_from_host(
+            **host_params,
+            pool_kwargs=pool_kwargs,
+        )
 
 
 def guarded_request(session: Any, method: str, url: str, **kwargs: Any) -> Any:
-    """Validate an outbound URL immediately before a Requests dispatch.
+    """Validate and address-pin an outbound Requests dispatch.
 
     Automatic redirects are disabled because every redirect target must return
-    to this boundary for a fresh validation. Callers that support redirects
-    must implement a bounded manual loop.
+    to this boundary for a fresh validation. The adapter connects to an IP from
+    the same DNS snapshot that passed policy, closing the validation/connect
+    TOCTOU window without changing Host, SNI, or TLS hostname verification.
     """
-    validated = validate_url(url)
+    if requests is None:  # pragma: no cover - dependency guard
+        raise ValueError("requests is required for guarded HTTP requests.")
+    if not isinstance(url, str):
+        raise ValueError("URL must be a string.")
+    raw_url = url.strip()
+    if any(ord(char) < 32 for char in raw_url) or "\\" in raw_url:
+        raise ValueError("URL contains forbidden control characters or backslashes.")
+    if not urlparse(raw_url).scheme:
+        raw_url = f"https://{raw_url}"
+    try:
+        # Requests canonicalizes IDNs before adapter selection. Validate and
+        # mount against that same form; mounting the caller's Unicode netloc
+        # would let the prepared punycode URL fall through to the default
+        # unpinned adapter.
+        canonical_url = requests.Request(method.upper(), raw_url).prepare().url
+    except (requests.exceptions.RequestException, ValueError) as exc:
+        raise ValueError(f"Invalid URL: {sanitize_error(exc)}") from exc
+
+    validated, parsed, addresses = _validate_and_resolve_url(canonical_url)
     if kwargs.get("allow_redirects") is True:
         raise ValueError("Automatic redirects are forbidden for guarded requests.")
+    if parsed.scheme == "https" and kwargs.get("verify") is False:
+        raise ValueError("TLS certificate verification cannot be disabled.")
+    if kwargs.get("proxies"):
+        raise ValueError("Proxies are forbidden for guarded requests.")
     kwargs["allow_redirects"] = False
+
+    if not hasattr(session, "mount"):
+        # Existing callers historically passed the requests module. Replace it
+        # with an isolated Session rather than using the module-level pool,
+        # which cannot be safely pinned.
+        if requests is None or session is not requests:
+            raise ValueError("guarded_request requires requests.Session.")
+        session = requests.Session()
+        session.trust_env = False
+
+    adapter = _PinnedHTTPAdapter(parsed, addresses)
+    session.mount(_origin_prefix(parsed), adapter)
+    get_adapter = getattr(session, "get_adapter", None)
+    if get_adapter is not None and get_adapter(validated) is not adapter:
+        raise ValueError("Pinned adapter selection failed; request denied.")
     dispatcher = getattr(session, method.lower(), None)
     if dispatcher is None:
         raise ValueError(f"Unsupported HTTP method: {method}")
     return dispatcher(validated, **kwargs)
 
 
-def install_playwright_ssrf_guard(context: Any) -> list[dict[str, str]]:
+def install_playwright_ssrf_guard(
+    context: Any,
+    *,
+    egress_sandbox_attested: bool = False,
+) -> list[dict[str, str]]:
     """Screen every Playwright request before dispatch.
 
     Context-level routing covers the main frame, redirects, child frames, and
@@ -211,7 +384,10 @@ def install_playwright_ssrf_guard(context: Any) -> list[dict[str, str]]:
     def guard(route: Any, request: Any = None) -> None:
         outbound = request or route.request
         try:
-            validate_url(outbound.url)
+            validate_browser_url(
+                outbound.url,
+                egress_sandbox_attested=egress_sandbox_attested,
+            )
         except (TypeError, ValueError) as exc:
             blocked.append({"url": sanitize_url(str(outbound.url)), "error": sanitize_error(exc)})
             route.abort("blockedbyclient")
@@ -223,11 +399,20 @@ def install_playwright_ssrf_guard(context: Any) -> list[dict[str, str]]:
 
 
 def create_guarded_browser_context(browser: Any, **kwargs: Any) -> tuple[Any, list[dict[str, str]]]:
-    """Create a Playwright context with service workers and downloads disabled."""
+    """Create a guarded Playwright context.
+
+    ``egress_sandbox_attested`` is consumed here rather than passed to
+    Playwright. Its default is intentionally false, which makes every browser
+    request fail closed at the route boundary.
+    """
+    egress_sandbox_attested = bool(kwargs.pop("egress_sandbox_attested", False))
     kwargs.setdefault("service_workers", "block")
     kwargs.setdefault("accept_downloads", False)
     context = browser.new_context(**kwargs)
-    return context, install_playwright_ssrf_guard(context)
+    return context, install_playwright_ssrf_guard(
+        context,
+        egress_sandbox_attested=egress_sandbox_attested,
+    )
 
 
 def output_root(root: str | os.PathLike[str] | None = None) -> Path:

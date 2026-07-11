@@ -14,7 +14,12 @@ import argparse
 import json
 import sys
 
-from url_utils import create_guarded_browser_context, sanitize_error, sanitize_url, validate_url
+from url_utils import (
+    create_guarded_browser_context,
+    sanitize_error,
+    sanitize_url,
+    validate_browser_url,
+)
 
 try:
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
@@ -23,7 +28,12 @@ except ImportError:
     sys.exit(1)
 
 
-def analyze_landing(url: str, timeout: int = 30000) -> dict:
+def analyze_landing(
+    url: str,
+    timeout: int = 30000,
+    *,
+    egress_sandbox_attested: bool = False,
+) -> dict:
     """
     Analyze landing page quality for ad campaign relevance.
 
@@ -77,7 +87,13 @@ def analyze_landing(url: str, timeout: int = 30000) -> dict:
     }
 
     try:
-        url = validate_url(url)
+        # Playwright cannot bind its eventual socket to a Python-validated DNS
+        # answer. Default browser analysis is denied unless the caller attests
+        # an independent OS/container egress enforcement boundary.
+        url = validate_browser_url(
+            url,
+            egress_sandbox_attested=egress_sandbox_attested,
+        )
     except ValueError as e:
         result["error"] = sanitize_error(e)
         return result
@@ -88,14 +104,19 @@ def analyze_landing(url: str, timeout: int = 30000) -> dict:
 
             # Desktop analysis
             desktop, desktop_blocks = create_guarded_browser_context(
-                browser, viewport={"width": 1920, "height": 1080}
+                browser,
+                viewport={"width": 1920, "height": 1080},
+                egress_sandbox_attested=egress_sandbox_attested,
             )
             page = desktop.new_page()
 
             page.goto(url, wait_until="networkidle", timeout=timeout)
             # Playwright follows redirects silently. Re-validate the final URL
             # against the SSRF blocklist (initial URL was already checked).
-            validate_url(page.url)
+            validate_browser_url(
+                page.url,
+                egress_sandbox_attested=egress_sandbox_attested,
+            )
             if desktop_blocks:
                 blocked = desktop_blocks[0]
                 raise ValueError(f"Blocked browser request to {blocked['url']}: {blocked['error']}")
@@ -220,11 +241,16 @@ def analyze_landing(url: str, timeout: int = 30000) -> dict:
 
             # Mobile analysis
             mobile, mobile_blocks = create_guarded_browser_context(
-                browser, viewport={"width": 375, "height": 812}
+                browser,
+                viewport={"width": 375, "height": 812},
+                egress_sandbox_attested=egress_sandbox_attested,
             )
             page = mobile.new_page()
             page.goto(url, wait_until="networkidle", timeout=timeout)
-            validate_url(page.url)
+            validate_browser_url(
+                page.url,
+                egress_sandbox_attested=egress_sandbox_attested,
+            )
             if mobile_blocks:
                 blocked = mobile_blocks[0]
                 raise ValueError(f"Blocked browser request to {blocked['url']}: {blocked['error']}")
@@ -315,9 +341,21 @@ def main():
     parser.add_argument("url", help="URL to analyze")
     parser.add_argument("--timeout", "-t", type=int, default=30000, help="Timeout in ms")
     parser.add_argument("--json", "-j", action="store_true", help="Output as JSON")
+    parser.add_argument(
+        "--egress-sandbox-attested",
+        action="store_true",
+        help=(
+            "Attest that OS/container egress policy blocks private and metadata "
+            "destinations after DNS resolution (unsafe without that external control)"
+        ),
+    )
 
     args = parser.parse_args()
-    result = analyze_landing(args.url, timeout=args.timeout)
+    result = analyze_landing(
+        args.url,
+        timeout=args.timeout,
+        egress_sandbox_attested=args.egress_sandbox_attested,
+    )
     grades = grade_landing(result)
 
     if args.json:

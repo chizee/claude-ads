@@ -12,8 +12,10 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+import requests
 
 
 # Make scripts/ importable without requiring an installed package
@@ -27,6 +29,7 @@ from url_utils import (  # noqa: E402
     sanitize_error,
     sanitize_headers,
     sanitize_url,
+    validate_browser_url,
     validate_url,
 )
 
@@ -213,6 +216,136 @@ def test_guarded_request_refuses_automatic_redirects(monkeypatch):
         guarded_request(Session(), "GET", "https://example.com", allow_redirects=True)
 
 
+def test_guarded_request_pins_dns_snapshot_and_preserves_tls_identity(monkeypatch):
+    """A later DNS rebind cannot change the socket target after validation."""
+    dns_calls = []
+
+    def rebinding_resolver(host, *args, **kwargs):
+        dns_calls.append(host)
+        if len(dns_calls) == 1:
+            return [(2, 1, 6, "", ("93.184.216.34", 0))]
+        # A vulnerable implementation that resolves again at connect time
+        # would receive the metadata address on its second hostname lookup.
+        return [(2, 1, 6, "", ("169.254.169.254", 0))]
+
+    monkeypatch.setattr("url_utils.socket.getaddrinfo", rebinding_resolver)
+
+    class PoolManager:
+        def connection_from_host(self, **kwargs):
+            self.kwargs = kwargs
+            return object()
+
+    class Session:
+        def mount(self, prefix, adapter):
+            self.prefix = prefix
+            self.adapter = adapter
+
+        def get(self, url, **kwargs):
+            prepared = requests.Request("GET", url).prepare()
+            self.adapter.poolmanager = PoolManager()
+            self.adapter.get_connection_with_tls_context(
+                prepared,
+                verify=True,
+                proxies=None,
+                cert=None,
+            )
+            self.prepared = prepared
+            return SimpleNamespace(status_code=200)
+
+    session = Session()
+    response = guarded_request(session, "GET", "https://example.com/path")
+
+    assert response.status_code == 200
+    assert dns_calls == ["example.com"]
+    assert session.prefix == "https://example.com/"
+    assert session.adapter.poolmanager.kwargs["host"] == "93.184.216.34"
+    pool_kwargs = session.adapter.poolmanager.kwargs["pool_kwargs"]
+    assert pool_kwargs["server_hostname"] == "example.com"
+    assert pool_kwargs["assert_hostname"] == "example.com"
+    assert session.prepared.headers["Host"] == "example.com"
+
+
+def test_guarded_request_mount_prefix_preserves_explicit_default_port(monkeypatch):
+    monkeypatch.setattr(
+        "url_utils.socket.getaddrinfo",
+        lambda *args, **kwargs: [(2, 1, 6, "", ("93.184.216.34", 0))],
+    )
+
+    class Session:
+        def mount(self, prefix, adapter):
+            self.prefix = prefix
+
+        def get(self, url, **kwargs):
+            return SimpleNamespace(status_code=200)
+
+    session = Session()
+    guarded_request(session, "GET", "https://example.com:443/path")
+    assert session.prefix == "https://example.com:443/"
+
+
+def test_guarded_request_mounts_requests_canonical_idn_origin(monkeypatch):
+    resolved_hosts = []
+
+    def resolver(host, *args, **kwargs):
+        resolved_hosts.append(host)
+        return [(2, 1, 6, "", ("93.184.216.34", 0))]
+
+    monkeypatch.setattr("url_utils.socket.getaddrinfo", resolver)
+
+    class Session:
+        def mount(self, prefix, adapter):
+            self.prefix = prefix
+
+        def get(self, url, **kwargs):
+            self.url = url
+            return SimpleNamespace(status_code=200)
+
+    session = Session()
+    guarded_request(session, "GET", "https://b\N{LATIN SMALL LETTER U WITH DIAERESIS}cher.de/path")
+
+    assert session.prefix == "https://xn--bcher-kva.de/"
+    assert session.url == "https://xn--bcher-kva.de/path"
+    assert resolved_hosts == ["xn--bcher-kva.de"]
+
+
+def test_guarded_request_rejects_private_dns_snapshot_before_dispatch(monkeypatch):
+    monkeypatch.setattr(
+        "url_utils.socket.getaddrinfo",
+        lambda *args, **kwargs: [(2, 1, 6, "", ("169.254.169.254", 0))],
+    )
+
+    class Session:
+        def mount(self, *args, **kwargs):  # pragma: no cover - must not mount
+            raise AssertionError("adapter must not be mounted")
+
+        def get(self, *args, **kwargs):  # pragma: no cover - must not dispatch
+            raise AssertionError("network dispatch must not happen")
+
+    with pytest.raises(ValueError, match="blocked non-public IP"):
+        guarded_request(Session(), "GET", "https://rebind.example/")
+
+
+def test_guarded_request_cannot_disable_tls_or_use_proxy(monkeypatch):
+    monkeypatch.setattr(
+        "url_utils.socket.getaddrinfo",
+        lambda *args, **kwargs: [(2, 1, 6, "", ("93.184.216.34", 0))],
+    )
+
+    class Session:
+        def mount(self, *args, **kwargs):
+            raise AssertionError("unsafe request must not mount")
+
+    with pytest.raises(ValueError, match="TLS certificate verification"):
+        guarded_request(Session(), "GET", "https://example.com", verify=False)
+    with pytest.raises(ValueError, match="Proxies are forbidden"):
+        guarded_request(
+            Session(),
+            "GET",
+            "https://example.com",
+            proxies={"https": "http://proxy.example"},
+        )
+
+
 def test_output_path_is_contained_and_blocks_symlink_escape(tmp_path):
     root = tmp_path / "outputs"
     root.mkdir()
@@ -259,6 +392,84 @@ def test_playwright_guard_blocks_private_requests_before_dispatch(monkeypatch):
     assert blocked and "non-public IP" in blocked[0]["error"]
 
 
+def test_playwright_guard_fails_closed_without_egress_attestation(monkeypatch):
+    """Route validation cannot pin Chromium DNS, so default dispatch aborts."""
+    monkeypatch.setattr(
+        "url_utils.socket.getaddrinfo",
+        lambda *args, **kwargs: [(2, 1, 6, "", ("93.184.216.34", 0))],
+    )
+    handlers = []
+
+    class Context:
+        def route(self, pattern, handler):
+            handlers.append(handler)
+
+    class Route:
+        def __init__(self):
+            self.aborted = False
+            self.continued = False
+
+        def abort(self, reason):
+            self.aborted = reason == "blockedbyclient"
+
+        def continue_(self):
+            self.continued = True
+
+    blocked = install_playwright_ssrf_guard(Context())
+    route = Route()
+    handlers[0](route, SimpleNamespace(url="https://example.com/landing"))
+
+    assert route.aborted is True
+    assert route.continued is False
+    assert "egress-sandbox attestation is required" in blocked[0]["error"]
+
+
+def test_playwright_guard_allows_public_url_only_with_egress_attestation(monkeypatch):
+    monkeypatch.setattr(
+        "url_utils.socket.getaddrinfo",
+        lambda *args, **kwargs: [(2, 1, 6, "", ("93.184.216.34", 0))],
+    )
+    handlers = []
+
+    class Context:
+        def route(self, pattern, handler):
+            handlers.append(handler)
+
+    class Route:
+        aborted = False
+        continued = False
+
+        def abort(self, reason):
+            self.aborted = True
+
+        def continue_(self):
+            self.continued = True
+
+    blocked = install_playwright_ssrf_guard(
+        Context(),
+        egress_sandbox_attested=True,
+    )
+    route = Route()
+    handlers[0](route, SimpleNamespace(url="https://example.com/landing"))
+
+    assert route.continued is True
+    assert route.aborted is False
+    assert blocked == []
+
+
+def test_analyze_landing_rejects_hostname_before_browser_launch(monkeypatch):
+    pytest.importorskip("playwright.sync_api")
+    monkeypatch.setattr(
+        "url_utils.socket.getaddrinfo",
+        lambda *args, **kwargs: [(2, 1, 6, "", ("93.184.216.34", 0))],
+    )
+    import analyze_landing as analyze_landing_module
+
+    result = analyze_landing_module.analyze_landing("https://example.com/landing")
+
+    assert "egress-sandbox attestation is required" in result["error"]
+
+
 def test_guarded_browser_context_disables_service_workers_and_downloads():
     from url_utils import create_guarded_browser_context
 
@@ -297,6 +508,9 @@ def test_fetch_page_blocks_redirect_to_private_ip(monkeypatch):
     redirect_response.url = "https://example.com/"
 
     class FakeSession:
+        def mount(self, prefix, adapter):
+            self.adapter = adapter
+
         def get(self, *args, **kwargs):
             return redirect_response
 
@@ -334,6 +548,9 @@ def test_fetch_page_allows_redirect_to_public_ip(monkeypatch):
     class FakeSession:
         def __init__(self):
             self.calls = 0
+
+        def mount(self, prefix, adapter):
+            self.adapter = adapter
 
         def get(self, *args, **kwargs):
             return final_response
