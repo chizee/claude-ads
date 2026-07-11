@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -10,9 +11,14 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
+BASH_INSTALLER_ONLY = pytest.mark.skipif(
+    os.name == "nt", reason="Bash installer behavior is exercised on Unix runners"
+)
 
 
 def _run(script: str, *args: str) -> subprocess.CompletedProcess[str]:
+    if os.name == "nt":
+        pytest.skip("Bash installer behavior is exercised on Linux and macOS runners")
     return subprocess.run(
         ["bash", str(ROOT / script), *args],
         cwd=ROOT,
@@ -37,6 +43,7 @@ def _install(tmp_path: Path) -> tuple[Path, Path]:
     return skills, agents
 
 
+@BASH_INSTALLER_ONLY
 def test_bash_installer_syntax_and_no_global_pip_escape_hatch():
     for script in ("install.sh", "uninstall.sh"):
         result = subprocess.run(
@@ -50,6 +57,7 @@ def test_bash_installer_syntax_and_no_global_pip_escape_hatch():
     assert "python3 -m venv" in installer
 
 
+@BASH_INSTALLER_ONLY
 def test_manifest_owned_uninstall_preserves_unrelated_ads_skill(tmp_path):
     skills, agents = _install(tmp_path)
     unrelated = skills / "ads-user-owned"
@@ -68,6 +76,7 @@ def test_manifest_owned_uninstall_preserves_unrelated_ads_skill(tmp_path):
     assert not (skills / ".claude-ads-claude.manifest").exists()
 
 
+@BASH_INSTALLER_ONLY
 def test_installer_includes_portable_interface_and_all_platform_surfaces(tmp_path):
     skills, agents = _install(tmp_path)
     assert (skills / "ads" / "agents" / "openai.yaml").is_file()
@@ -79,6 +88,7 @@ def test_installer_includes_portable_interface_and_all_platform_surfaces(tmp_pat
         assert (agents / f"audit-{platform}.md").is_file()
 
 
+@BASH_INSTALLER_ONLY
 def test_tampered_manifest_fails_before_removing_files(tmp_path):
     skills, agents = _install(tmp_path)
     manifest = skills / ".claude-ads-claude.manifest"
@@ -96,6 +106,7 @@ def test_tampered_manifest_fails_before_removing_files(tmp_path):
     assert (skills / "ads" / "SKILL.md").exists()
 
 
+@BASH_INSTALLER_ONLY
 def test_installer_refuses_symlink_escape(tmp_path):
     skills = tmp_path / "skills"
     agents = tmp_path / "agents"
@@ -117,6 +128,7 @@ def test_installer_refuses_symlink_escape(tmp_path):
     assert not (outside / "SKILL.md").exists()
 
 
+@BASH_INSTALLER_ONLY
 def test_manifest_traversal_is_rejected_before_removal(tmp_path):
     skills, agents = _install(tmp_path)
     manifest = skills / ".claude-ads-claude.manifest"

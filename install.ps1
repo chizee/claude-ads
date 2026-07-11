@@ -43,53 +43,62 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Get-ClaudeAdsUserHome {
+    if (-not [string]::IsNullOrWhiteSpace($env:USERPROFILE)) { return $env:USERPROFILE }
+    if (-not [string]::IsNullOrWhiteSpace($HOME)) { return $HOME }
+    $ProfileHome = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+    if (-not [string]::IsNullOrWhiteSpace($ProfileHome)) { return $ProfileHome }
+    throw "Cannot determine the current user's home directory."
+}
+
 function Resolve-TargetPaths {
     param([string]$T)
+    $UserHome = Get-ClaudeAdsUserHome
     switch ($T) {
         'claude' {
             return @{
-                SkillBase = Join-Path $env:USERPROFILE ".claude\skills"
-                AgentDir  = Join-Path $env:USERPROFILE ".claude\agents"
+                SkillBase = Join-Path $UserHome ".claude\skills"
+                AgentDir  = Join-Path $UserHome ".claude\agents"
                 AllowPip  = $true
                 Label     = "Claude Code"
             }
         }
         'codex' {
             return @{
-                SkillBase = Join-Path $env:USERPROFILE ".codex\skills"
-                AgentDir  = Join-Path $env:USERPROFILE ".codex\agents"
+                SkillBase = Join-Path $UserHome ".codex\skills"
+                AgentDir  = Join-Path $UserHome ".codex\agents"
                 AllowPip  = $true
                 Label     = "OpenAI Codex CLI"
             }
         }
         'cursor' {
             return @{
-                SkillBase = Join-Path $env:USERPROFILE ".cursor\extensions\claude-ads\skills"
-                AgentDir  = Join-Path $env:USERPROFILE ".cursor\extensions\claude-ads\agents"
+                SkillBase = Join-Path $UserHome ".cursor\extensions\claude-ads\skills"
+                AgentDir  = Join-Path $UserHome ".cursor\extensions\claude-ads\agents"
                 AllowPip  = $false
                 Label     = "Cursor IDE"
             }
         }
         'windsurf' {
             return @{
-                SkillBase = Join-Path $env:USERPROFILE ".windsurf\skills"
-                AgentDir  = Join-Path $env:USERPROFILE ".windsurf\agents"
+                SkillBase = Join-Path $UserHome ".windsurf\skills"
+                AgentDir  = Join-Path $UserHome ".windsurf\agents"
                 AllowPip  = $false
                 Label     = "Windsurf IDE"
             }
         }
         'gemini' {
             return @{
-                SkillBase = Join-Path $env:USERPROFILE ".gemini\extensions\claude-ads\skills"
-                AgentDir  = Join-Path $env:USERPROFILE ".gemini\extensions\claude-ads\agents"
+                SkillBase = Join-Path $UserHome ".gemini\extensions\claude-ads\skills"
+                AgentDir  = Join-Path $UserHome ".gemini\extensions\claude-ads\agents"
                 AllowPip  = $false
                 Label     = "Gemini CLI"
             }
         }
         'goose' {
             return @{
-                SkillBase = Join-Path $env:USERPROFILE ".config\goose\skills"
-                AgentDir  = Join-Path $env:USERPROFILE ".config\goose\agents"
+                SkillBase = Join-Path $UserHome ".config\goose\skills"
+                AgentDir  = Join-Path $UserHome ".config\goose\agents"
                 AllowPip  = $false
                 Label     = "Goose CLI"
             }

@@ -18,15 +18,24 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Get-ClaudeAdsUserHome {
+    if (-not [string]::IsNullOrWhiteSpace($env:USERPROFILE)) { return $env:USERPROFILE }
+    if (-not [string]::IsNullOrWhiteSpace($HOME)) { return $HOME }
+    $ProfileHome = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+    if (-not [string]::IsNullOrWhiteSpace($ProfileHome)) { return $ProfileHome }
+    throw "Cannot determine the current user's home directory."
+}
+
 function Resolve-TargetPaths {
     param([string]$T)
+    $UserHome = Get-ClaudeAdsUserHome
     switch ($T) {
-        'claude'   { return @{ SkillBase = Join-Path $env:USERPROFILE ".claude\skills";                                AgentDir = Join-Path $env:USERPROFILE ".claude\agents" } }
-        'codex'    { return @{ SkillBase = Join-Path $env:USERPROFILE ".codex\skills";                                 AgentDir = Join-Path $env:USERPROFILE ".codex\agents" } }
-        'cursor'   { return @{ SkillBase = Join-Path $env:USERPROFILE ".cursor\extensions\claude-ads\skills";          AgentDir = Join-Path $env:USERPROFILE ".cursor\extensions\claude-ads\agents" } }
-        'windsurf' { return @{ SkillBase = Join-Path $env:USERPROFILE ".windsurf\skills";                              AgentDir = Join-Path $env:USERPROFILE ".windsurf\agents" } }
-        'gemini'   { return @{ SkillBase = Join-Path $env:USERPROFILE ".gemini\extensions\claude-ads\skills";          AgentDir = Join-Path $env:USERPROFILE ".gemini\extensions\claude-ads\agents" } }
-        'goose'    { return @{ SkillBase = Join-Path $env:USERPROFILE ".config\goose\skills";                          AgentDir = Join-Path $env:USERPROFILE ".config\goose\agents" } }
+        'claude'   { return @{ SkillBase = Join-Path $UserHome ".claude\skills";                                AgentDir = Join-Path $UserHome ".claude\agents" } }
+        'codex'    { return @{ SkillBase = Join-Path $UserHome ".codex\skills";                                 AgentDir = Join-Path $UserHome ".codex\agents" } }
+        'cursor'   { return @{ SkillBase = Join-Path $UserHome ".cursor\extensions\claude-ads\skills";          AgentDir = Join-Path $UserHome ".cursor\extensions\claude-ads\agents" } }
+        'windsurf' { return @{ SkillBase = Join-Path $UserHome ".windsurf\skills";                              AgentDir = Join-Path $UserHome ".windsurf\agents" } }
+        'gemini'   { return @{ SkillBase = Join-Path $UserHome ".gemini\extensions\claude-ads\skills";          AgentDir = Join-Path $UserHome ".gemini\extensions\claude-ads\agents" } }
+        'goose'    { return @{ SkillBase = Join-Path $UserHome ".config\goose\skills";                          AgentDir = Join-Path $UserHome ".config\goose\agents" } }
         default    { throw "Unknown target: $T" }
     }
 }
