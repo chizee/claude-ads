@@ -152,7 +152,8 @@ never recompute scores in prompts or report templates.
   only when spend is unavailable.
 
 Write each run beneath `.claude-ads/runs/<run-id>/` with a manifest and atomic
-artifacts. Render Markdown, HTML, PDF, and client summaries from the same JSON.
+artifacts. Render Markdown, HTML, and PDF from the same JSON; tailor the report's
+audience and detail without inventing a separate unvalidated summary artifact.
 Never let a worker overwrite a prior run or write a shared final filename.
 
 ## Recommendation safety

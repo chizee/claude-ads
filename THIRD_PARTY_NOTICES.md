@@ -27,6 +27,7 @@ Dependencies are installed from their publishers and retain their own licenses:
 - Playwright for Python: Apache-2.0.
 - Pillow: HPND-style license.
 - ReportLab: BSD-style license.
+- WeasyPrint: BSD-style license.
 - Matplotlib: PSF-based license.
 - PyYAML and pytest: MIT.
 

@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import stat
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -23,10 +24,28 @@ from claude_ads_core.reporting import (
 
 FIXTURE_ROOT = Path(__file__).resolve().parents[1] / "fixtures" / "reports"
 BUNDLE_PATH = FIXTURE_ROOT / "sanitized-report-bundle.json"
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def load_bundle() -> dict:
     return json.loads(BUNDLE_PATH.read_text(encoding="utf-8"))
+
+
+def test_product_manifest_advertises_only_executable_report_formats():
+    manifest = json.loads(
+        (REPO_ROOT / "control-plane" / "manifests" / "product-manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert manifest["human_renderers"] == ["markdown", "html", "pdf"]
+    for output_format in manifest["human_renderers"]:
+        assert output_format in {"markdown", "html", "pdf"}
+
+    project = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    assert any(
+        requirement.startswith("weasyprint>=")
+        for requirement in project["project"]["optional-dependencies"]["pdf"]
+    )
 
 
 def test_sanitized_report_fixture_is_a_valid_bundle():

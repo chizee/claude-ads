@@ -7,7 +7,7 @@
   "portable_standard": "agent-skills",
   "canonical_command": "/ads",
   "canonical_machine_output": "versioned-json",
-  "human_renderers": ["markdown", "html", "pdf", "client-summary"],
+  "human_renderers": ["markdown", "html", "pdf"],
   "default_mutation_mode": "read-only",
   "primary_audience": ["agency", "consultant", "in-house-paid-media"],
   "target_platforms": [

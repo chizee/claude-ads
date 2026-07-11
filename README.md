@@ -9,7 +9,8 @@ consultants, and in-house performance teams.
 
 Claude Ads turns authorized account exports or reads into source-grounded audits,
 plans, experiments, creative workflows, monitoring, and client reports. Versioned
-JSON is the system of record; Markdown, HTML, and PDF are deterministic renderings.
+JSON is the system of record; Markdown and HTML are deterministic renderings, and
+PDF is rendered from the same HTML through the declared WeasyPrint dependency.
 Live account changes are disabled by default and released per platform only after
 approval, idempotency, verification, audit, and rollback pass.
 
@@ -125,7 +126,7 @@ schema-valid Findings
         ↓
 deterministic scoring + ReportBundle
         ↓
-Markdown / HTML / PDF / client summary
+Markdown / HTML / PDF
         ↓ optional
 MutationPlan → approve → apply → verify → rollback/log
 ```

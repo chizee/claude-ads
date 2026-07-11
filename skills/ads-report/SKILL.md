@@ -1,6 +1,6 @@
 ---
 name: ads-report
-description: "Render Markdown, HTML, PDF, or client-summary paid-advertising reports from a validated Claude Ads JSON run bundle. Use for ads report, client report, audit PDF, executive summary, or exporting prior audit and plan results."
+description: "Render Markdown, HTML, or PDF paid-advertising reports from a validated Claude Ads JSON run bundle. Use for ads report, client report, audit PDF, executive audience reporting, or exporting prior audit and plan results."
 ---
 
 # Render Paid Media Reports
@@ -18,4 +18,3 @@ Do not include credentials, customer lists, private paths, raw research, interna
 agent transcripts, or promotional copy unless the operator explicitly enabled
 branding. Never hide partial or insufficient-evidence status in an executive
 summary.
-
