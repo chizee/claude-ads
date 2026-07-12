@@ -31,6 +31,7 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import stat
 import struct
 import sys
@@ -78,6 +79,402 @@ RETRY_BACKOFF = [1, 2, 4, 8]  # seconds
 
 MAX_BATCH_SIZE = 50
 MAX_DIMENSION = 8192
+
+
+def _windows_acl_api():
+    """Return Win32 ACL libraries with pointer-safe ctypes signatures."""
+    import ctypes
+    from ctypes import wintypes
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    advapi32 = ctypes.WinDLL("advapi32", use_last_error=True)
+    void_pp = ctypes.POINTER(ctypes.c_void_p)
+    kernel32.GetCurrentProcess.argtypes = []
+    kernel32.GetCurrentProcess.restype = wintypes.HANDLE
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel32.CloseHandle.restype = wintypes.BOOL
+    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+    kernel32.LocalFree.restype = ctypes.c_void_p
+    advapi32.OpenProcessToken.argtypes = [
+        wintypes.HANDLE, wintypes.DWORD, ctypes.POINTER(wintypes.HANDLE)
+    ]
+    advapi32.OpenProcessToken.restype = wintypes.BOOL
+    advapi32.GetTokenInformation.argtypes = [
+        wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD,
+        ctypes.POINTER(wintypes.DWORD),
+    ]
+    advapi32.GetTokenInformation.restype = wintypes.BOOL
+    advapi32.ConvertSidToStringSidW.argtypes = [ctypes.c_void_p, ctypes.POINTER(wintypes.LPWSTR)]
+    advapi32.ConvertSidToStringSidW.restype = wintypes.BOOL
+    advapi32.ConvertStringSecurityDescriptorToSecurityDescriptorW.argtypes = [
+        wintypes.LPCWSTR, wintypes.DWORD, void_pp, ctypes.POINTER(wintypes.DWORD)
+    ]
+    advapi32.ConvertStringSecurityDescriptorToSecurityDescriptorW.restype = wintypes.BOOL
+    advapi32.GetSecurityDescriptorDacl.argtypes = [
+        ctypes.c_void_p, ctypes.POINTER(wintypes.BOOL), void_pp,
+        ctypes.POINTER(wintypes.BOOL),
+    ]
+    advapi32.GetSecurityDescriptorDacl.restype = wintypes.BOOL
+    advapi32.SetSecurityInfo.argtypes = [
+        wintypes.HANDLE, ctypes.c_int, wintypes.DWORD, ctypes.c_void_p,
+        ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p,
+    ]
+    advapi32.SetSecurityInfo.restype = wintypes.DWORD
+    advapi32.GetSecurityInfo.argtypes = [
+        wintypes.HANDLE, ctypes.c_int, wintypes.DWORD, void_pp, void_pp,
+        void_pp, void_pp, void_pp,
+    ]
+    advapi32.GetSecurityInfo.restype = wintypes.DWORD
+    advapi32.GetSecurityDescriptorControl.argtypes = [
+        ctypes.c_void_p, ctypes.POINTER(wintypes.WORD), ctypes.POINTER(wintypes.DWORD)
+    ]
+    advapi32.GetSecurityDescriptorControl.restype = wintypes.BOOL
+    advapi32.GetAclInformation.argtypes = [
+        ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD, ctypes.c_int
+    ]
+    advapi32.GetAclInformation.restype = wintypes.BOOL
+    advapi32.GetAce.argtypes = [ctypes.c_void_p, wintypes.DWORD, void_pp]
+    advapi32.GetAce.restype = wintypes.BOOL
+    kernel32.ReOpenFile.argtypes = [
+        wintypes.HANDLE, wintypes.DWORD, wintypes.DWORD, wintypes.DWORD
+    ]
+    kernel32.ReOpenFile.restype = wintypes.HANDLE
+    return ctypes, wintypes, kernel32, advapi32
+
+
+def _windows_current_user_sid() -> str:
+    ctypes, wintypes, kernel32, advapi32 = _windows_acl_api()
+
+    class _SID_AND_ATTRIBUTES(ctypes.Structure):
+        _fields_ = [("Sid", ctypes.c_void_p), ("Attributes", wintypes.DWORD)]
+
+    class _TOKEN_USER(ctypes.Structure):
+        _fields_ = [("User", _SID_AND_ATTRIBUTES)]
+
+    token = wintypes.HANDLE()
+    if not advapi32.OpenProcessToken(
+        kernel32.GetCurrentProcess(), 0x0008, ctypes.byref(token)
+    ):
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        required = wintypes.DWORD()
+        advapi32.GetTokenInformation(token, 1, None, 0, ctypes.byref(required))
+        if required.value == 0:
+            raise ctypes.WinError(ctypes.get_last_error())
+        buffer = ctypes.create_string_buffer(required.value)
+        if not advapi32.GetTokenInformation(
+            token, 1, buffer, required.value, ctypes.byref(required)
+        ):
+            raise ctypes.WinError(ctypes.get_last_error())
+        sid = ctypes.cast(buffer, ctypes.POINTER(_TOKEN_USER)).contents.User.Sid
+        string_sid = wintypes.LPWSTR()
+        if not advapi32.ConvertSidToStringSidW(sid, ctypes.byref(string_sid)):
+            raise ctypes.WinError(ctypes.get_last_error())
+        try:
+            return string_sid.value
+        finally:
+            kernel32.LocalFree(ctypes.cast(string_sid, ctypes.c_void_p))
+    finally:
+        kernel32.CloseHandle(token)
+
+
+def _windows_sid_string(sid: int) -> str:
+    ctypes, wintypes, kernel32, advapi32 = _windows_acl_api()
+    string_sid = wintypes.LPWSTR()
+    if not advapi32.ConvertSidToStringSidW(ctypes.c_void_p(sid), ctypes.byref(string_sid)):
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        return string_sid.value
+    finally:
+        kernel32.LocalFree(ctypes.cast(string_sid, ctypes.c_void_p))
+
+
+def _windows_handle_has_owner_only_acl(handle: int) -> bool:
+    ctypes, wintypes, kernel32, advapi32 = _windows_acl_api()
+
+    class _ACL_SIZE_INFORMATION(ctypes.Structure):
+        _fields_ = [
+            ("AceCount", wintypes.DWORD),
+            ("AclBytesInUse", wintypes.DWORD),
+            ("AclBytesFree", wintypes.DWORD),
+        ]
+
+    descriptor = ctypes.c_void_p()
+    dacl = ctypes.c_void_p()
+    owner = ctypes.c_void_p()
+    result = advapi32.GetSecurityInfo(
+        wintypes.HANDLE(handle), 1, 0x00000005, ctypes.byref(owner), None,
+        ctypes.byref(dacl), None, ctypes.byref(descriptor),
+    )
+    if result:
+        raise ctypes.WinError(result)
+    try:
+        control = wintypes.WORD()
+        revision = wintypes.DWORD()
+        if not advapi32.GetSecurityDescriptorControl(
+            descriptor, ctypes.byref(control), ctypes.byref(revision)
+        ) or not (control.value & 0x1000):
+            return False
+        info = _ACL_SIZE_INFORMATION()
+        if not advapi32.GetAclInformation(
+            dacl, ctypes.byref(info), ctypes.sizeof(info), 2
+        ) or info.AceCount != 1:
+            return False
+        ace = ctypes.c_void_p()
+        if not advapi32.GetAce(dacl, 0, ctypes.byref(ace)):
+            return False
+        address = ace.value
+        ace_type = ctypes.c_ubyte.from_address(address).value
+        ace_flags = ctypes.c_ubyte.from_address(address + 1).value
+        mask = wintypes.DWORD.from_address(address + 4).value
+        trustee = _windows_sid_string(address + 8)
+        owner_sid = _windows_sid_string(owner.value)
+        current_sid = _windows_current_user_sid()
+        return (
+            ace_type == 0
+            and ace_flags == 0
+            and mask == 0x001F01FF
+            and trustee == current_sid
+            and owner_sid == current_sid
+        )
+    finally:
+        kernel32.LocalFree(descriptor)
+
+
+def _windows_file_identity(handle: int) -> tuple[int, bytes]:
+    """Return FileIdInfo identity, including the 128-bit ReFS-safe file ID."""
+    ctypes, wintypes, kernel32, _ = _windows_acl_api()
+
+    class _FILE_ID_128(ctypes.Structure):
+        _fields_ = [("Identifier", ctypes.c_ubyte * 16)]
+
+    class _FILE_ID_INFO(ctypes.Structure):
+        _fields_ = [("VolumeSerialNumber", ctypes.c_ulonglong), ("FileId", _FILE_ID_128)]
+
+    kernel32.GetFileInformationByHandleEx.argtypes = [
+        wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD
+    ]
+    kernel32.GetFileInformationByHandleEx.restype = wintypes.BOOL
+    info = _FILE_ID_INFO()
+    if not kernel32.GetFileInformationByHandleEx(
+        wintypes.HANDLE(handle), 18, ctypes.byref(info), ctypes.sizeof(info)
+    ):
+        raise ctypes.WinError(ctypes.get_last_error())
+    return info.VolumeSerialNumber, bytes(info.FileId.Identifier)
+
+
+def _windows_open_path_guard(path: Path, anchor: int) -> int:
+    """Open and verify the current path without delete sharing, then hold it."""
+    ctypes, wintypes, kernel32, _ = _windows_acl_api()
+    kernel32.CreateFileW.argtypes = [
+        wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, ctypes.c_void_p,
+        wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE,
+    ]
+    kernel32.CreateFileW.restype = wintypes.HANDLE
+    guard = kernel32.CreateFileW(
+        str(path),
+        0x00020000,  # READ_CONTROL
+        0x00000001,  # FILE_SHARE_READ only; deny write/truncate/delete/swap.
+        None,
+        3,  # OPEN_EXISTING
+        0x00000080,  # FILE_ATTRIBUTE_NORMAL
+        None,
+    )
+    invalid_handle = ctypes.c_void_p(-1).value
+    if guard == invalid_handle:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        if _windows_file_identity(guard) != _windows_file_identity(anchor):
+            raise PermissionError("Private file path no longer identifies the created object")
+        if not _windows_handle_has_owner_only_acl(guard):
+            raise PermissionError("Private file path has an invalid owner or DACL")
+        return guard
+    except Exception:
+        kernel32.CloseHandle(guard)
+        raise
+
+
+def _windows_delete_by_anchor(anchor: int) -> None:
+    """Mark the exact anchored object for deletion without consulting its path."""
+    ctypes, wintypes, kernel32, _ = _windows_acl_api()
+
+    class _FILE_DISPOSITION_INFO(ctypes.Structure):
+        _fields_ = [("DeleteFile", ctypes.c_ubyte)]  # Win32 BOOLEAN, exactly 1 byte.
+
+    kernel32.SetFileInformationByHandle.argtypes = [
+        wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD
+    ]
+    kernel32.SetFileInformationByHandle.restype = wintypes.BOOL
+    invalid_handle = ctypes.c_void_p(-1).value
+    deletion_handle = kernel32.ReOpenFile(
+        wintypes.HANDLE(anchor),
+        0x00010000,  # DELETE
+        0x00000007,
+        0,
+    )
+    if deletion_handle == invalid_handle:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        disposition = _FILE_DISPOSITION_INFO(True)
+        if not kernel32.SetFileInformationByHandle(
+            deletion_handle, 4, ctypes.byref(disposition), ctypes.sizeof(disposition)
+        ):
+            raise ctypes.WinError(ctypes.get_last_error())
+    finally:
+        kernel32.CloseHandle(deletion_handle)
+
+
+def _windows_create_private_temp(
+    directory: Path, prefix: str, suffix: str, *, temporary: bool
+) -> tuple[int, Path, int]:
+    """Atomically create a private temp file and return fd, path, anchored ACL handle."""
+    import msvcrt
+
+    ctypes, wintypes, kernel32, advapi32 = _windows_acl_api()
+
+    class _SECURITY_ATTRIBUTES(ctypes.Structure):
+        _fields_ = [
+            ("nLength", wintypes.DWORD),
+            ("lpSecurityDescriptor", ctypes.c_void_p),
+            ("bInheritHandle", wintypes.BOOL),
+        ]
+
+    kernel32.CreateFileW.argtypes = [
+        wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+        ctypes.POINTER(_SECURITY_ATTRIBUTES), wintypes.DWORD, wintypes.DWORD,
+        wintypes.HANDLE,
+    ]
+    kernel32.CreateFileW.restype = wintypes.HANDLE
+    security_descriptor = ctypes.c_void_p()
+    current_sid = _windows_current_user_sid()
+    sddl = f"O:{current_sid}D:P(A;;FA;;;{current_sid})"
+    if not advapi32.ConvertStringSecurityDescriptorToSecurityDescriptorW(
+        sddl, 1, ctypes.byref(security_descriptor), None
+    ):
+        raise ctypes.WinError(ctypes.get_last_error())
+    file_handle = None
+    acl_handle = None
+    path = None
+    returned = False
+    try:
+        present = wintypes.BOOL()
+        defaulted = wintypes.BOOL()
+        dacl = ctypes.c_void_p()
+        if not advapi32.GetSecurityDescriptorDacl(
+            security_descriptor, ctypes.byref(present), ctypes.byref(dacl),
+            ctypes.byref(defaulted),
+        ) or not present:
+            raise ctypes.WinError(ctypes.get_last_error())
+        attributes = _SECURITY_ATTRIBUTES(
+            ctypes.sizeof(_SECURITY_ATTRIBUTES), security_descriptor, False
+        )
+        invalid_handle = ctypes.c_void_p(-1).value
+        for _ in range(128):
+            candidate = directory / f"{prefix}{secrets.token_hex(16)}{suffix}"
+            file_handle = kernel32.CreateFileW(
+                str(candidate),
+                0xC0060000,  # GENERIC_READ|GENERIC_WRITE|READ_CONTROL|WRITE_DAC
+                0x00000007,  # FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE
+                ctypes.byref(attributes),
+                1,  # CREATE_NEW
+                0x00000100 if temporary else 0x00000080,
+                None,
+            )
+            if file_handle != invalid_handle:
+                path = candidate
+                break
+            error = ctypes.get_last_error()
+            if error not in {80, 183}:  # ERROR_FILE_EXISTS / ERROR_ALREADY_EXISTS
+                raise ctypes.WinError(error)
+        if path is None or file_handle == invalid_handle:
+            raise FileExistsError("Could not allocate a unique private temporary file")
+        acl_handle = kernel32.ReOpenFile(
+            file_handle,
+            0x00060000,  # READ_CONTROL|WRITE_DAC
+            0x00000007,
+            0,
+        )
+        if acl_handle == invalid_handle:
+            raise ctypes.WinError(ctypes.get_last_error())
+        result = advapi32.SetSecurityInfo(
+            acl_handle, 1, 0x80000004, None, None, dacl, None
+        )
+        if result:
+            raise ctypes.WinError(result)
+        if not _windows_handle_has_owner_only_acl(acl_handle):
+            raise PermissionError(f"Owner-only Windows ACL verification failed for {path.name}")
+        descriptor = msvcrt.open_osfhandle(
+            file_handle, os.O_RDWR | getattr(os, "O_BINARY", 0)
+        )
+        file_handle = None  # The CRT descriptor now owns the original handle.
+        returned = True
+        return descriptor, path, acl_handle
+    finally:
+        if not returned:
+            cleanup_anchor = acl_handle if acl_handle not in {None, ctypes.c_void_p(-1).value} else file_handle
+            if cleanup_anchor not in {None, ctypes.c_void_p(-1).value}:
+                try:
+                    _windows_delete_by_anchor(cleanup_anchor)
+                except OSError:
+                    pass
+        if file_handle not in {None, ctypes.c_void_p(-1).value}:
+            kernel32.CloseHandle(file_handle)
+        if not returned and acl_handle not in {None, ctypes.c_void_p(-1).value}:
+            kernel32.CloseHandle(acl_handle)
+        kernel32.LocalFree(security_descriptor)
+
+
+def _close_windows_handle(handle: int | None) -> None:
+    if handle is None:
+        return
+    _, wintypes, kernel32, _ = _windows_acl_api()
+    if not kernel32.CloseHandle(wintypes.HANDLE(handle)):
+        raise OSError("Could not close the Windows ACL anchor handle")
+
+
+def _windows_path_has_owner_only_acl(path: Path) -> bool:
+    if os.name != "nt":
+        return False
+    ctypes, wintypes, kernel32, _ = _windows_acl_api()
+    kernel32.CreateFileW.argtypes = [
+        wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, ctypes.c_void_p,
+        wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE,
+    ]
+    kernel32.CreateFileW.restype = wintypes.HANDLE
+    handle = kernel32.CreateFileW(
+        str(path),
+        0x00020000,  # READ_CONTROL
+        0x00000007,
+        None,
+        3,  # OPEN_EXISTING
+        0x00000080,  # FILE_ATTRIBUTE_NORMAL
+        None,
+    )
+    invalid_handle = ctypes.c_void_p(-1).value
+    if handle == invalid_handle:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        return _windows_handle_has_owner_only_acl(handle)
+    finally:
+        kernel32.CloseHandle(handle)
+
+
+def _set_private_permissions(path: Path, descriptor: int | None = None) -> None:
+    """Apply and verify owner-only permissions on the current platform."""
+    if os.name == "nt":
+        raise RuntimeError("Windows private files must use atomic CreateFileW creation")
+    elif descriptor is not None and hasattr(os, "fchmod"):
+        os.fchmod(descriptor, 0o600)
+    else:
+        os.chmod(path, 0o600)
+
+
+def _path_has_private_permissions(path: Path) -> bool:
+    if os.name == "nt":
+        return _windows_path_has_owner_only_acl(path)
+    return stat.S_IMODE(path.stat().st_mode) == 0o600
+
+
 MAX_REFERENCE_IMAGE_BYTES = 20 * 1024 * 1024
 MAX_REFERENCE_DECODED_BYTES = 128 * 1024 * 1024
 _ALLOWED_IMAGE_EXTENSIONS = {'.png'}
@@ -386,37 +783,94 @@ def _private_reference_snapshot(reference: Any, input_root: Path):
     finally:
         os.close(descriptor)
 
-    snapshot_descriptor, snapshot_name = tempfile.mkstemp(
-        prefix=".claude-ads-reference-", suffix=source.suffix.lower()
-    )
-    snapshot = Path(snapshot_name)
+    snapshot_acl_handle = None
+    snapshot_path_guard = None
+    if os.name == "nt":
+        snapshot_descriptor, snapshot, snapshot_acl_handle = _windows_create_private_temp(
+            Path(tempfile.gettempdir()),
+            ".claude-ads-reference-",
+            source.suffix.lower(),
+            temporary=True,
+        )
+    else:
+        snapshot_descriptor, snapshot_name = tempfile.mkstemp(
+            prefix=".claude-ads-reference-", suffix=source.suffix.lower()
+        )
+        snapshot = Path(snapshot_name)
     try:
-        if hasattr(os, "fchmod"):
-            os.fchmod(snapshot_descriptor, 0o600)
+        if os.name != "nt":
+            try:
+                _set_private_permissions(snapshot, snapshot_descriptor)
+            except Exception:
+                os.close(snapshot_descriptor)
+                raise
         with os.fdopen(snapshot_descriptor, "wb") as stream:
             stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())
+        if snapshot_acl_handle is not None:
+            snapshot_path_guard = _windows_open_path_guard(
+                snapshot, snapshot_acl_handle
+            )
         yield str(snapshot), hashlib.sha256(payload).hexdigest()
     finally:
-        snapshot.unlink(missing_ok=True)
+        if os.name == "nt":
+            try:
+                _close_windows_handle(snapshot_path_guard)
+            finally:
+                try:
+                    if snapshot_acl_handle is not None:
+                        _windows_delete_by_anchor(snapshot_acl_handle)
+                finally:
+                    _close_windows_handle(snapshot_acl_handle)
+        else:
+            snapshot.unlink(missing_ok=True)
 
 
 def _write_private(path: Path, data: bytes) -> None:
     """Atomically write a generated asset with owner-only permissions."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
-    temporary = Path(temporary_name)
+    acl_handle = None
+    path_guard = None
+    keep_output = False
+    if os.name == "nt":
+        descriptor, temporary, acl_handle = _windows_create_private_temp(
+            path.parent, f".{path.name}.", ".tmp", temporary=False
+        )
+    else:
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+        )
+        temporary = Path(temporary_name)
     try:
+        if os.name != "nt":
+            try:
+                _set_private_permissions(temporary, descriptor)
+            except Exception:
+                os.close(descriptor)
+                raise
         with os.fdopen(descriptor, "wb") as stream:
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
-        os.chmod(temporary, 0o600)
         os.replace(temporary, path)
-        os.chmod(path, 0o600)
+        if acl_handle is not None:
+            path_guard = _windows_open_path_guard(path, acl_handle)
+        else:
+            _set_private_permissions(path)
+        keep_output = True
     finally:
-        temporary.unlink(missing_ok=True)
+        if os.name == "nt":
+            try:
+                _close_windows_handle(path_guard)
+            finally:
+                try:
+                    if acl_handle is not None and not keep_output:
+                        _windows_delete_by_anchor(acl_handle)
+                finally:
+                    _close_windows_handle(acl_handle)
+        else:
+            temporary.unlink(missing_ok=True)
 
 
 def _actual_dimensions(image_bytes: bytes) -> tuple[int, int] | None:

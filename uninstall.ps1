@@ -149,8 +149,15 @@ function Main {
 
     function Assert-CurrentUserOwnedFile([string]$Path) {
         if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { return }
-        $Identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-        $OwnerSid = (Get-Acl -LiteralPath $Path).GetOwner([Security.Principal.SecurityIdentifier])
+        $Identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+        $Sections = [System.Security.AccessControl.AccessControlSections]::Owner
+        if ($PSVersionTable.PSEdition -eq 'Core') {
+            $FileInfo = [System.IO.FileInfo]::new($Path)
+            $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($FileInfo, $Sections)
+        } else {
+            $FileSecurity = [System.IO.File]::GetAccessControl($Path, $Sections)
+        }
+        $OwnerSid = $FileSecurity.GetOwner([System.Security.Principal.SecurityIdentifier])
         $CallerSids = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
         if ($null -ne $Identity.User) { [void]$CallerSids.Add($Identity.User.Value) }
         foreach ($Group in @($Identity.Groups)) { [void]$CallerSids.Add($Group.Value) }

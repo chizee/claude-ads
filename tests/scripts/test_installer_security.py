@@ -160,6 +160,9 @@ def test_bash_installer_syntax_and_no_global_pip_escape_hatch():
     assert "Get-CompatibleRelativePath" in powershell
     assert "[System.IO.Path]::GetRelativePath" not in powershell
     assert "Get-NormalizedInstallRoot" in powershell
+    assert "System.IO.File]::GetAccessControl" in powershell
+    assert "System.IO.FileSystemAclExtensions]::GetAccessControl" in powershell
+    assert "Get-Acl" not in powershell
     assert "Refusing to overwrite unowned file" in powershell
     assert "-band [IO.FileAttributes]::ReparsePoint" in powershell
     assert powershell.count("Copy-Item") == 1
@@ -169,6 +172,9 @@ def test_bash_installer_syntax_and_no_global_pip_escape_hatch():
     assert "Duplicate ownership-manifest path" in powershell_uninstall
     assert "Assert-SafeRecursiveTree" in powershell_uninstall
     assert "Refusing reparse-point uninstall path" in powershell_uninstall
+    assert "System.IO.File]::GetAccessControl" in powershell_uninstall
+    assert "System.IO.FileSystemAclExtensions]::GetAccessControl" in powershell_uninstall
+    assert "Get-Acl" not in powershell_uninstall
 
 
 @BASH_INSTALLER_ONLY
@@ -447,7 +453,7 @@ def test_powershell_root_normalization_preserves_filesystem_root():
 $SourceText = Get-Content -LiteralPath $env:CLAUDE_ADS_INSTALLER -Raw
 $SourceText = [regex]::Replace($SourceText, '(?m)^Main\s*$', '')
 . ([scriptblock]::Create($SourceText))
-$Root = [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($env:TEMP))
+$Root = [IO.Path]::GetPathRoot([IO.Path]::GetFullPath([IO.Path]::GetTempPath()))
 $Normalized = Get-NormalizedInstallRoot $Root
 if ($Normalized -ne $Root) { throw "filesystem root changed: $Root -> $Normalized" }
 """

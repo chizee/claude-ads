@@ -6,6 +6,7 @@ import hashlib
 import base64
 import json
 import os
+import subprocess
 import struct
 import sys
 import zlib
@@ -43,6 +44,98 @@ def _probe_png(ihdr: bytes, idat: bytes, middle: bytes = b"") -> bytes:
     )
 
 
+def test_private_permission_implementation_uses_structural_handle_acl_checks():
+    source = (SCRIPTS_DIR / "generate_image.py").read_text(encoding="utf-8")
+    assert "SetSecurityInfo" in source
+    assert "GetSecurityInfo" in source
+    assert "GetAclInformation" in source
+    assert "GetAce" in source
+    assert "ace_flags == 0" in source
+    assert "CreateFileW" in source
+    assert "SECURITY_ATTRIBUTES" in source
+    assert "ReOpenFile" in source
+    assert "GetFileInformationByHandleEx" in source
+    assert "_windows_open_path_guard" in source
+    assert "_windows_delete_by_anchor" in source
+    assert "SetNamedSecurityInfo" not in source
+    assert 'sddl = f"O:{current_sid}D:P' in source
+    assert "icacls" not in source.lower()
+    assert "whoami" not in source.lower()
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows ACL semantics require NTFS")
+def test_windows_private_writer_applies_verified_owner_only_dacl(tmp_path):
+    output = tmp_path / "private.bin"
+    generate_image._write_private(output, b"private")
+    assert output.read_bytes() == b"private"
+    script = r"""
+$sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
+$security = [System.IO.File]::GetAccessControl($env:CLAUDE_ADS_PRIVATE_FILE, $sections)
+$current = [System.Security.Principal.WindowsIdentity]::GetCurrent().User
+$owner = $security.GetOwner([System.Security.Principal.SecurityIdentifier])
+$rules = @($security.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier]))
+if (-not $security.AreAccessRulesProtected) { throw 'DACL inheritance is not protected' }
+if (-not $owner.Equals($current)) { throw 'owner is not the current token user' }
+if ($rules.Count -ne 1) { throw "expected one ACE, found $($rules.Count)" }
+$rule = $rules[0]
+if ($rule.IsInherited) { throw 'ACE is inherited' }
+if ($rule.InheritanceFlags -ne [System.Security.AccessControl.InheritanceFlags]::None) { throw 'ACE has inheritance flags' }
+if ($rule.PropagationFlags -ne [System.Security.AccessControl.PropagationFlags]::None) { throw 'ACE has propagation flags' }
+if (-not $rule.IdentityReference.Equals($current)) { throw 'ACE trustee mismatch' }
+if ($rule.AccessControlType -ne [System.Security.AccessControl.AccessControlType]::Allow) { throw 'ACE is not allow' }
+if ($rule.FileSystemRights -ne [System.Security.AccessControl.FileSystemRights]::FullControl) { throw 'ACE is not exact full control' }
+"""
+    verified = subprocess.run(
+        ["powershell.exe", "-NoProfile", "-Command", script],
+        env={**os.environ, "CLAUDE_ADS_PRIVATE_FILE": str(output)},
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert verified.returncode == 0, verified.stdout + verified.stderr
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows sharing semantics require NTFS")
+def test_windows_path_guard_allows_read_and_denies_write(tmp_path):
+    descriptor, path, anchor = generate_image._windows_create_private_temp(
+        tmp_path, ".guard-", ".bin", temporary=False
+    )
+    guard = None
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(b"private")
+        guard = generate_image._windows_open_path_guard(path, anchor)
+        assert path.read_bytes() == b"private"
+        with pytest.raises(OSError):
+            with path.open("wb"):
+                pass
+    finally:
+        generate_image._close_windows_handle(guard)
+        generate_image._windows_delete_by_anchor(anchor)
+        generate_image._close_windows_handle(anchor)
+    assert not path.exists()
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows file identity requires NTFS/ReFS")
+def test_windows_guard_rejects_pre_acquisition_path_swap_and_deletes_exact_anchor(tmp_path):
+    descriptor, path, anchor = generate_image._windows_create_private_temp(
+        tmp_path, ".swap-", ".bin", temporary=False
+    )
+    moved = tmp_path / "moved-private.bin"
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(b"private")
+        path.rename(moved)
+        path.write_bytes(b"replacement")
+        with pytest.raises(PermissionError, match="no longer identifies"):
+            generate_image._windows_open_path_guard(path, anchor)
+    finally:
+        generate_image._windows_delete_by_anchor(anchor)
+        generate_image._close_windows_handle(anchor)
+    assert not moved.exists()
+    assert path.read_bytes() == b"replacement"
+
+
 def _lifecycle() -> dict:
     return {
         "schema_version": "1.0.0",
@@ -77,7 +170,9 @@ def test_batch_json_contains_hashes_and_relative_locators_only(tmp_path, monkeyp
     assert payload[0]["model"] == "test-model"
     assert "prompt" not in payload[0]
     assert "file" not in payload[0]
-    assert (tmp_path / "artifacts/creative.png").stat().st_mode & 0o777 == 0o600
+    assert generate_image._path_has_private_permissions(
+        tmp_path / "artifacts/creative.png"
+    )
 
 
 def test_batch_reference_requires_explicit_bounded_input_root(
@@ -210,6 +305,9 @@ def test_batch_reference_uses_private_snapshot_and_removes_it(
         observed["path"] = snapshot
         observed["bytes"] = snapshot.read_bytes()
         observed["mode"] = snapshot.stat().st_mode & 0o777
+        observed["private_permissions"] = generate_image._path_has_private_permissions(
+            snapshot
+        )
         return b"generated-image", 1, 1
 
     monkeypatch.setenv("CLAUDE_ADS_OUTPUT_ROOT", str(output_root))
@@ -228,6 +326,7 @@ def test_batch_reference_uses_private_snapshot_and_removes_it(
     payload = json.loads(capsys.readouterr().out)
     assert observed["path"] != source
     assert observed["bytes"] == source_bytes
+    assert observed["private_permissions"] is True
     if os.name != "nt":
         assert observed["mode"] == 0o600
     assert not observed["path"].exists()
