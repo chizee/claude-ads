@@ -4,15 +4,15 @@
   "schemas": {
     "external_run": {
       "path": "evals/schemas/model-run-evidence.v2.schema.json",
-      "sha256": "45e77f5be60b821da130e0056cf6608ed6250b6a4e19144a76b1fca93fcd52c2"
+      "sha256": "3691051ab197bce7ad9be31ecc56888892c4167a3451a39686eee203eb4f2da5"
     },
     "gate_report": {
       "path": "evals/schemas/model-gate-report.v2.schema.json",
-      "sha256": "1bea22a526ec571e5ffb9ef81ce76eb61ba20b414cf677472c4d63fa3fbb96a2"
+      "sha256": "c0f424a6a0f8dc92c5c480513c02a993b773f1a9cadbe753f72c4034c3d66626"
     },
     "trust_bundle": {
       "path": "evals/schemas/model-eval-trust-bundle.v1.schema.json",
-      "sha256": "35b4ecc6cbac3b80f2deccba178e2b3511cb9bb75b805b32ceb1dc8eceaa97ca"
+      "sha256": "8d9bc589e572d51cd9bd370795cee9f707fa52d8803419ae9b272f66c0e433ba"
     }
   },
   "suite": {

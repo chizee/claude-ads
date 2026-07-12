@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+  <title id="title">How Claude Ads works</title>
+  <desc id="desc">Claude Ads turns authorized evidence into validated findings and a prioritized action plan.</desc>
+  <rect width="1200" height="300" fill="#ffffff"/>
+  <g font-family="Inter, Helvetica Neue, Arial, sans-serif">
+    <text x="28" y="44" font-size="14" font-weight="700" letter-spacing="1.5" fill="#c2412d">HOW IT WORKS</text>
+    <text x="176" y="44" font-size="14" fill="#667085">| evidence in, decision-ready artifacts out</text>
+    <g fill="none" stroke="#c2412d" stroke-width="1.6">
+      <path d="M272 164 H322"/><path d="M314 158 L322 164 L314 170"/>
+      <path d="M572 164 H622"/><path d="M614 158 L622 164 L614 170"/>
+      <path d="M872 164 H922"/><path d="M914 158 L922 164 L914 170"/>
+    </g>
+    <g>
+      <rect x="28" y="78" width="244" height="172" rx="16" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="52" y="118" font-size="15" font-weight="700" fill="#c2412d">01</text>
+      <text x="52" y="164" font-size="20" font-weight="700" fill="#191b20">Define the run</text>
+      <text x="52" y="194" font-size="14" fill="#5b6472">Objective, authority, platforms,</text>
+      <text x="52" y="217" font-size="14" fill="#5b6472">data window, and guardrails.</text>
+      <rect x="328" y="78" width="244" height="172" rx="16" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="352" y="118" font-size="15" font-weight="700" fill="#c2412d">02</text>
+      <text x="352" y="164" font-size="20" font-weight="700" fill="#191b20">Analyze in bounds</text>
+      <text x="352" y="194" font-size="14" fill="#5b6472">Workers inspect only their scope</text>
+      <text x="352" y="217" font-size="14" fill="#5b6472">and return typed findings.</text>
+      <rect x="628" y="78" width="244" height="172" rx="16" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="652" y="118" font-size="15" font-weight="700" fill="#c2412d">03</text>
+      <text x="652" y="164" font-size="20" font-weight="700" fill="#191b20">Validate evidence</text>
+      <text x="652" y="194" font-size="14" fill="#5b6472">Schemas, freshness, coverage,</text>
+      <text x="652" y="217" font-size="14" fill="#5b6472">and safety gates run first.</text>
+      <rect x="928" y="78" width="244" height="172" rx="16" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="952" y="118" font-size="15" font-weight="700" fill="#c2412d">04</text>
+      <text x="952" y="164" font-size="20" font-weight="700" fill="#191b20">Prioritize actions</text>
+      <text x="952" y="194" font-size="14" fill="#5b6472">Owners, timing, confidence,</text>
+      <text x="952" y="217" font-size="14" fill="#5b6472">measurement, and rollback.</text>
+    </g>
+  </g>
+</svg>

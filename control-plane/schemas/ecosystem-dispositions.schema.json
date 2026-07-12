@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/schemas/ecosystem-dispositions.v1.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:control:v1:ecosystem-dispositions.v1.json",
   "title": "Claude Ads ecosystem disposition ledger",
   "type": "object",
   "additionalProperties": false,

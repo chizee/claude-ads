@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-marketing-hub.github.io/claude-ads/schemas/v1/account-snapshot.schema.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:core:v1:account-snapshot.schema.json",
   "title": "AccountSnapshot v1",
   "type": "object",
   "required": ["schema_version", "account", "window", "currency", "campaigns", "creatives", "conversions", "budgets"],

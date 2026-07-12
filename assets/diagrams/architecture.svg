@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" role="img" aria-labelledby="title desc">
+  <title id="title">Claude Ads architecture</title>
+  <desc id="desc">One conductor routes bounded workers into validated findings and deterministic reports.</desc>
+  <rect width="1200" height="440" fill="#ffffff"/>
+  <g font-family="Inter, Helvetica Neue, Arial, sans-serif">
+    <text x="28" y="44" font-size="14" font-weight="700" letter-spacing="1.5" fill="#c2412d">SYSTEM ARCHITECTURE</text>
+    <text x="235" y="44" font-size="14" fill="#667085">| one conductor, bounded workers, verified artifacts</text>
+    <g fill="none" stroke="#efb5a6" stroke-width="2">
+      <path d="M186 223 H245"/>
+      <path d="M425 223 C500 223 500 120 560 120"/>
+      <path d="M425 223 C500 223 500 190 560 190"/>
+      <path d="M425 223 C500 223 500 260 560 260"/>
+      <path d="M425 223 C500 223 500 330 560 330"/>
+      <path d="M790 120 C850 120 850 223 910 223"/>
+      <path d="M790 190 C850 190 850 223 910 223"/>
+      <path d="M790 260 C850 260 850 223 910 223"/>
+      <path d="M790 330 C850 330 850 223 910 223"/>
+    </g>
+    <g>
+      <rect x="34" y="194" width="152" height="58" rx="12" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="56" y="230" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> audit</text>
+      <rect x="245" y="165" width="180" height="116" rx="16" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="269" y="207" font-size="19" font-weight="700" fill="#191b20">Conductor</text>
+      <text x="269" y="237" font-size="14" fill="#5b6472">ads/SKILL.md</text>
+      <text x="269" y="261" font-size="13" fill="#667085">scope, policy, aggregation</text>
+    </g>
+    <g font-size="15" fill="#191b20">
+      <rect x="560" y="92" width="230" height="56" rx="11" fill="#ffffff" stroke="#e4e7ec"/>
+      <circle cx="580" cy="120" r="4" fill="#c2412d"/><text x="596" y="126">12 platform workers</text>
+      <rect x="560" y="162" width="230" height="56" rx="11" fill="#ffffff" stroke="#e4e7ec"/>
+      <circle cx="580" cy="190" r="4" fill="#c2412d"/><text x="596" y="196">Cross-platform workers</text>
+      <rect x="560" y="232" width="230" height="56" rx="11" fill="#ffffff" stroke="#e4e7ec"/>
+      <circle cx="580" cy="260" r="4" fill="#c2412d"/><text x="596" y="266">Source and policy checks</text>
+      <rect x="560" y="302" width="230" height="56" rx="11" fill="#ffffff" stroke="#e4e7ec"/>
+      <circle cx="580" cy="330" r="4" fill="#c2412d"/><text x="596" y="336">Schema and release verifier</text>
+    </g>
+    <g>
+      <rect x="910" y="164" width="256" height="118" rx="16" fill="#ffffff" stroke="#e4e7ec"/>
+      <text x="936" y="205" font-size="19" font-weight="700" fill="#191b20">Validated run bundle</text>
+      <text x="936" y="236" font-size="14" fill="#5b6472">versioned JSON system of record</text>
+      <text x="936" y="260" font-size="13" fill="#667085">Markdown, HTML, and PDF renderings</text>
+    </g>
+  </g>
+</svg>

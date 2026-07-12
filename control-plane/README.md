@@ -30,6 +30,11 @@ system text, account exports, credentials, or raw private corpus.
   exhaustive typed audit catalog and fail-closed platform health state. A named
   check is not scoreable unless its versioned profile is enabled.
 
+Schema `$id` values use stable `urn:ai-marketing-hub:claude-ads:schema:*`
+identifiers. They are identifiers, not network locations. The tracked files in
+`claude_ads_core/schemas/v1/`, `control-plane/schemas/`, and `evals/schemas/`
+are the canonical validation resources.
+
 ## Doctrine
 
 1. No source, no current claim.

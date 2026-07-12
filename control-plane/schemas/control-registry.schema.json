@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-marketing-hub.github.io/claude-ads/control-plane/schemas/control-registry.schema.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:control:v1:control-registry.schema.json",
   "title": "Claude Ads control registry",
   "type": "object",
   "required": ["schema_version", "registry_version", "catalog_version", "controls"],

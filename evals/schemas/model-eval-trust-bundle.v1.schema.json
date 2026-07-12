@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/evals/schemas/model-eval-trust-bundle.v1.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:evals:model-eval-trust-bundle.v1.json",
   "title": "External model-evaluation trust bundle",
   "type": "object",
   "additionalProperties": false,

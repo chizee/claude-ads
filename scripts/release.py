@@ -89,6 +89,9 @@ PRIVATE_PATH_PATTERNS = {
     "Unix home path": re.compile(r"(?<![A-Za-z0-9])(?:/var)?/home/[A-Za-z0-9._-]+/"),
     "macOS home path": re.compile(r"(?<![A-Za-z0-9])/Users/[A-Za-z0-9._-]+/"),
     "Windows home path": re.compile(r"(?i)\b[A-Z]:\\Users\\[A-Za-z0-9._-]+\\"),
+    "personal tilde path": re.compile(
+        r"(?i)(?<![A-Za-z0-9])~/(?:Desktop|Documents|Downloads|Dropbox|Music|OneDrive|Pictures|Videos)/"
+    ),
     "private Fable corpus path": re.compile(r"(?i)(?:/|\\)Desktop[/\\]Fable 5 Brain(?:/|\\)"),
     "private Brainstein vault path": re.compile(
         r"(?i)(?:/|\\)Desktop[/\\]Vaults[/\\]Brainstein(?:/|\\)"

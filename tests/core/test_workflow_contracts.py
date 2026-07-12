@@ -91,7 +91,9 @@ def test_integer_parity_inventory_covers_every_workflow_orchestration_schema_fie
     for contract in CONTRACT_NAMES:
         schema = json.loads(schema_path(contract).read_text(encoding="utf-8"))
         lifecycle = schema.get("properties", {}).get("data_lifecycle", {})
-        if lifecycle.get("$ref") == "data-lifecycle.schema.json":
+        if lifecycle.get("$ref") == (
+            "urn:ai-marketing-hub:claude-ads:schema:core:v1:data-lifecycle.schema.json"
+        ):
             lifecycle_refs.add(contract)
     assert lifecycle_refs == DATA_LIFECYCLE_REFERENCE_CONTRACTS
 

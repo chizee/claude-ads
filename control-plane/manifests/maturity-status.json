@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "evaluated_at": "2026-07-11",
+  "evaluated_at": "2026-07-12",
   "current": "domain-integrated",
   "levels": [
     {
@@ -94,8 +94,8 @@
   ],
   "blockers": [
     "All twelve account-health scoring profiles are deliberately disabled. The audit catalog is typed for unscored discovery, but per-control severity, source, input, category-weight, and regression decisions have not been approved and must not be inferred.",
-    "The supplementary Codex forward evaluation passed 24 of 24 cases with no P0 failure. The fail-closed canonical Claude and retained-v1 comparison harness is implemented, but neither required external Claude Code run artifact has been supplied.",
-    "Independent code, evidence, security, privacy, and licensing approvals bound to the final integration commit and tree are not yet present.",
-    "The current integration commit has not yet passed the complete remote-CI and release-evidence gate."
+    "The prior canonical Claude comparison, independent reviews, and remote CI bind commit 50eda33d73ab4f85fbb756a3bb032c8582adfcd9 only. They do not verify the current repository-cleanup subject.",
+    "Fresh code, evidence, security, privacy, and licensing approvals must bind the final cleanup commit and tree.",
+    "The final cleanup commit must pass the complete local, remote-CI, canonical-model, and release-evidence gates before merge or tag."
   ]
 }

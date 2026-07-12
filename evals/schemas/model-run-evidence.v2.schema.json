@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/evals/schemas/model-run-evidence.v2.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:evals:model-run-evidence.v2.json",
   "title": "Claude Ads external model-run evidence",
   "type": "object",
   "additionalProperties": false,

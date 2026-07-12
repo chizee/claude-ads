@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/schemas/data-lifecycle-policy.v1.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:control:v1:data-lifecycle-policy.v1.json",
   "title": "Claude Ads data lifecycle policy",
   "type": "object", "additionalProperties": false,
   "required": ["schema_version", "policy_id", "effective_at", "principles", "classifications", "incident_handling"],

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/schemas/creative-worker-result.v1.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:control:v1:creative-worker-result.v1.json",
   "title": "Claude Ads bounded creative worker result",
   "type": "object",
   "additionalProperties": false,

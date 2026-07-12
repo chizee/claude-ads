@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-marketing-hub.github.io/claude-ads/schemas/v1/finding.schema.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:core:v1:finding.schema.json",
   "title": "Finding v1",
   "type": "object",
   "required": ["schema_version", "control_id", "status", "evidence", "confidence", "observation", "diagnosis", "recommendation"],

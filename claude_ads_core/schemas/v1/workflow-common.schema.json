@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-marketing-hub.github.io/claude-ads/schemas/v1/workflow-common.schema.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:core:v1:workflow-common.schema.json",
   "$defs": {
     "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"},
     "nonempty": {"type": "string", "minLength": 1},

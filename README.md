@@ -1,23 +1,36 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="Claude Ads" width="100%">
+  <img src="assets/banner.svg" alt="Claude Ads, Claude-first paid-media operations across twelve advertising platforms" width="100%">
 </p>
 
 # Claude Ads
 
-Claude-first, portable paid-media operations for professional agencies,
-consultants, and in-house performance teams.
+Claude-first, portable paid-media operations for agencies, consultants, and
+in-house performance teams.
 
-Claude Ads turns authorized account exports or reads into source-grounded audits,
-plans, experiments, creative workflows, monitoring, and client reports. Versioned
-JSON is the system of record; Markdown and HTML are deterministic renderings.
-PDF can be rendered from the same HTML when the execution host also satisfies
-the separately managed WeasyPrint native-library requirements.
-Live account changes are disabled by default and released per platform only after
-approval, idempotency, verification, audit, and rollback pass.
+Claude Ads turns authorized exports or account reads into source-grounded
+audits, plans, creative workflows, experiments, monitoring, and reports. It is
+read-only by default. Live changes stay disabled until the exact platform and
+operation pass approval, idempotency, verification, audit, and rollback gates.
+
+<p align="center">
+  <img src="assets/diagrams/how-it-works.svg" alt="Validated inputs flow through bounded workers into schema-valid findings and deterministic reports" width="100%">
+</p>
+
+## What it does
+
+- Audits paid-media accounts with dated evidence and explicit confidence.
+- Plans campaigns, channels, budgets, measurement, and experiments.
+- Creates copy, image, video, and product-photo briefs and assets.
+- Monitors pacing, delivery, tracking, fatigue, policy, and performance.
+- Produces versioned JSON, then renders Markdown, HTML, and optional PDF.
+- Drafts safe account changes without applying them by default.
+- Reports missing data, stale sources, contradictions, and partial failures.
 
 ## Platforms
 
-The v2 contract treats these as first-class surfaces:
+<p align="center">
+  <img src="assets/diagrams/platform-coverage.svg" alt="Twelve first-class paid-advertising platform surfaces" width="100%">
+</p>
 
 | Search, video, and social | Commerce and retail media |
 | --- | --- |
@@ -32,32 +45,14 @@ The v2 contract treats these as first-class surfaces:
 | X Ads |  |
 
 Each platform has a focused skill, audit worker, control reference, capability
-declaration, and testable routing surface. The machine-readable
-`control-plane/manifests/capability-manifest.json` is authoritative when a live
-read or write integration differs by platform.
-
-## What changed in v2
-
-- Category-first deterministic scoring replaces duplicated prompt math.
-- Health, evidence coverage, regulatory exposure, and opportunities are separate.
-- Twelve platform workers return one versioned finding contract.
-- Missing evidence yields provisional or insufficient-evidence results instead of
-  invented certainty.
-- Source, claim, capability, safety, maturity, and ecosystem-disposition manifests
-  gate product claims.
-- HTTP access pins validated DNS answers through the connection boundary. Browser
-  dispatch fails closed unless an external OS/container egress sandbox is attested.
-- Installations use a managed environment and ownership manifest; uninstall never
-  deletes unrelated `ads-*` skills.
-- Account mutations follow draft → approve → apply → verify → audit → rollback.
-- Raw private research, captured prompts, credentials, and client exports stay out
-  of Git and release packages.
+declaration, and testable routing surface. The
+[capability manifest](control-plane/manifests/capability-manifest.json) is the
+authoritative record for live reads and writes.
 
 ## Commands
 
-An installed standalone skill uses the canonical `/ads` command. Claude Code
-plugins are always namespaced, so a marketplace or `--plugin-dir` installation
-uses `/claude-ads:ads`. Both surfaces load the same `ads/SKILL.md` contract.
+Standalone installs use `/ads`. Claude Code plugins are namespaced and use
+`/claude-ads:ads`. Both load the same `ads/SKILL.md` contract.
 
 | Command | Outcome |
 | --- | --- |
@@ -65,9 +60,9 @@ uses `/claude-ads:ads`. Both surfaces load the same `ads/SKILL.md` contract.
 | `/ads audit [all\|platform\|scope]` | Run a complete or scoped evidence-backed audit |
 | `/ads plan` | Build channel, campaign, budget, competitor, and measurement plans |
 | `/ads create` | Produce copy, image, video, or product-photo assets |
-| `/ads launch --draft` | Produce a campaign mutation plan without changing the account |
+| `/ads launch --draft` | Draft a campaign mutation plan without changing the account |
 | `/ads monitor` | Review pacing, delivery, tracking, fatigue, policy, and performance |
-| `/ads optimize --draft` | Produce evidence-backed optimization changes |
+| `/ads optimize --draft` | Draft evidence-backed optimization changes |
 | `/ads experiment` | Design or read out a controlled test |
 | `/ads report` | Render a validated JSON run bundle |
 | `/ads research refresh` | Refresh platform, policy, API, benchmark, and ecosystem evidence |
@@ -75,60 +70,57 @@ uses `/claude-ads:ads`. Both surfaces load the same `ads/SKILL.md` contract.
 | `/ads status`, `/ads next` | Show current status and the highest-priority blocker |
 
 Platform shortcuts such as `/ads google`, `/ads meta`, `/ads amazon`, and
-`/ads reddit` route to the corresponding platform audit.
+`/ads reddit` route to the matching platform audit.
+
+## Demo
+
+<p align="center">
+  <img src="assets/demo.gif" alt="Claude Ads command discovery inside Claude Code" width="800">
+</p>
+
+The GIF shows the original command-discovery experience. The v2 command table
+above and the platform table are current and authoritative.
 
 ## Installation
 
-Claude Code is canonical. Codex, Gemini, Cursor, Windsurf, Goose, and portable
-Agent Skills layouts are supported where their runtime can consume the same files.
+Claude Code is the canonical runtime. Codex, Gemini, Cursor, Windsurf, Goose,
+and compatible Agent Skills hosts can consume the same skill files where their
+runtime supports them.
 
-Prefer your host's plugin installation flow or a tagged release archive whose
-SHA-256 checksum you verified. With the Claude Code plugin flow, invoke
-`/claude-ads:ads`; the managed installer below creates the standalone `/ads`
-surface. Never pipe a remote installer directly to a shell.
+Prefer the host's native plugin flow or a tagged release archive with a verified
+SHA-256 checksum. Never pipe a remote installer directly to a shell.
 
-From an authenticated local checkout:
+From an authenticated local checkout of the private v2 branch:
 
 ```bash
-git clone https://github.com/AI-Marketing-Hub/claude-ads.git
+git clone --branch v2 https://github.com/AI-Marketing-Hub/claude-ads.git
 cd claude-ads
 bash install.sh --source=local
 ```
 
-Managed Python wheels install only on the CPython 3.11/3.12 resolution matrix:
-glibc 2.17+/manylinux-compatible x86_64, macOS 11+ x86_64/arm64, and Windows
-amd64. This matrix attests exact Python wheel selection and installer behavior;
-it does not attest browser or PDF feature execution on every tuple. Other
-interpreters fail before destination mutation; use `--no-deps`/`-NoDeps` for a
-skill-only install. The installer uses the exact union-hash lock and never falls
-back to moving requirement ranges.
-
-Browser capture additionally requires an operator-installed Playwright browser
-payload on a Playwright-supported host (Windows 11/Server 2019+, macOS 14+,
-Debian 12/13, or Ubuntu 22.04/24.04/26.04). PDF rendering additionally requires
-the host's WeasyPrint/Pango system libraries. These external payloads are not
-Python packages, are not installed by the base lock, and are intentionally not
-represented as Python components in the CycloneDX SBOM. Their machine-readable
-boundary is `control-plane/manifests/external-runtime-dependencies.json`.
-
-Select another host explicitly:
+Select another standalone host explicitly:
 
 ```bash
 bash install.sh --target=codex --source=local
 bash install.sh --target=gemini --source=local --no-deps
 ```
 
-The installer:
+PowerShell uses the same managed ownership model:
 
-- Detects the source checkout instead of downloading an unrelated mirror.
-- Copies the main skill, sub-skills, references, interface metadata, agents, and
-  helper scripts.
-- Installs deterministic core tooling and optional runtime dependencies into a
-  managed virtual environment for supported hosts.
-- Refuses to overwrite pre-existing files unless the prior valid manifest owns
-  them. The PowerShell installer additionally preflights its complete destination
-  plan, managed environment, and intermediate directories before mutation.
-- Records installed files and owned directories for bounded uninstall.
+```powershell
+git clone --branch v2 https://github.com/AI-Marketing-Hub/claude-ads.git
+Set-Location claude-ads
+.\install.ps1 -Source local
+```
+
+Managed dependencies support CPython 3.11 and 3.12 on the declared Linux,
+macOS, and Windows wheel matrix. Unsupported interpreters fail before the
+destination changes. Use `--no-deps` or `-NoDeps` for a skill-only install.
+
+Browser capture requires an operator-installed Playwright browser payload. PDF
+rendering requires the host's WeasyPrint and Pango system libraries. These are
+documented in the
+[external runtime dependency manifest](control-plane/manifests/external-runtime-dependencies.json).
 
 Uninstall only manifest-owned files:
 
@@ -136,78 +128,68 @@ Uninstall only manifest-owned files:
 bash uninstall.sh --target=claude
 ```
 
-PowerShell equivalents are `install.ps1` and `uninstall.ps1`.
+The PowerShell equivalent is `uninstall.ps1`.
 
-## Operating model
+## Architecture
 
-```text
-Exports / APIs / MCP
-        ↓
-sanitize + normalize
-        ↓
-AccountSnapshot + RunManifest
-        ↓
-bounded platform and cross-platform workers
-        ↓
-schema-valid Findings
-        ↓
-deterministic scoring + ReportBundle
-        ↓
-Markdown / HTML / PDF
-        ↓ optional
-MutationPlan → approve → apply → verify → rollback/log
-```
+<p align="center">
+  <img src="assets/diagrams/architecture.svg" alt="One conductor dispatches platform and cross-platform workers, then validates and renders a canonical JSON bundle" width="100%">
+</p>
 
-Workers analyze bounded scopes and return JSON. One conductor owns aggregation and
-final artifacts. Required-worker failure makes the bundle partial; it is never
-silently presented as a complete audit.
+One conductor owns scope, policy, aggregation, and final artifacts. Workers
+analyze bounded slices and return schema-valid findings. Required-worker failure
+makes the run partial. It is never silently presented as a complete audit.
 
-## Scoring
+The canonical result is versioned JSON. Markdown, HTML, and PDF are renderings
+of the same validated run bundle.
+
+## Scoring and evidence
+
+<p align="center">
+  <img src="assets/diagrams/ads-health-score.svg" alt="Health and evidence coverage remain separate; scoring requires an approved platform profile" width="100%">
+</p>
 
 Controls use `pass`, `fail`, `unknown`, or `not_applicable`.
 
-- Critical, high, medium, and informational severity weights are `5`, `3`, `1`,
-  and `0`.
-- Controls are scored inside their category before category weights are applied.
-- Unknown controls lower evidence coverage without silently lowering or raising
-  known health.
-- At least 80% weighted coverage is required for a normal score; 60–79% is
-  provisional; below 60% is insufficient evidence.
-- Optional, beta, unavailable, premium, or ineligible features are unscored
-  opportunities.
+- Health, evidence coverage, regulatory exposure, and opportunities stay separate.
+- Unknown controls reduce evidence coverage without changing known health.
+- Coverage of 80% or more is graded, 60 to 79% is provisional, and below 60%
+  is insufficient evidence.
+- Optional, beta, premium, unavailable, and ineligible features stay unscored.
+- A disabled or unapproved platform profile produces no health score.
+- A failed platform is excluded from portfolio scoring and makes the run partial.
 
-See `ads/references/scoring-system.md` and the production implementation in
-`claude_ads_core/scoring.py`.
+See the [scoring reference](ads/references/scoring-system.md) and production
+implementation in `claude_ads_core/scoring.py`.
 
 ## Account safety
 
 All adapters are read-only by default. Applying a change requires:
 
-1. A tested, enabled capability for that exact operation.
+1. A tested and enabled capability for the exact operation.
 2. Explicit account and object IDs.
-3. A human-readable before/after diff and blast radius.
-4. Approval from the configured owner within account-defined ceilings.
+3. A human-readable before and after diff with blast radius.
+4. Owner approval within account-defined ceilings.
 5. An idempotency key, audit destination, rollback, and verification window.
 6. Verification that remote state still matches the mutation precondition.
 
 Missing ceilings mean no write. Permanent deletion is not supported in v2.
+Credentials belong in environment variables, an OS keychain, or an approved
+secret manager. They never belong in the repository, profiles, reports, or logs.
 
-## Evidence and control plane
+## Evidence and release controls
 
-The public-safe `control-plane/` records:
+The public-safe `control-plane/` records product boundaries, dated sources,
+claims, capabilities, safety rules, privacy rules, ecosystem decisions, and
+release requirements.
 
-- Product and publishing boundaries.
-- Dated source and claim ledgers.
-- Truthful platform capabilities.
-- Safety and privacy requirements.
-- Multi-agent orchestration rules.
-- Issue, pull-request, fork, and repository dispositions.
-- Maturity and release gates.
+- No source means no current platform claim.
+- No implementation, fixture, and test means no capability claim.
+- No approval and rollback means no account mutation.
+- No independent verification means no release.
 
-Maturity progresses through `inventory-baselined`, `source-grounded`,
-`domain-integrated`, `eval-verified`, and `release-ready`. Stale load-bearing
-sources, failed security checks, missing capability tests, or unavailable required
-remote CI demote the current state.
+See the [release requirements](control-plane/RELEASE_REQUIREMENTS.md) and
+[publishing policy](control-plane/PUBLISHING_POLICY.md).
 
 ## Development
 
@@ -230,9 +212,6 @@ python -m claude_ads_core validate finding path/to/finding.json
 bash -n install.sh uninstall.sh
 ```
 
-Release readiness additionally requires source freshness, package scanning,
-cross-platform installation tests, remote CI, and fresh-context verification.
-
 ## Repository map
 
 ```text
@@ -240,21 +219,22 @@ ads/                  main skill, interface metadata, and shared references
 skills/               platform and lifecycle skills
 agents/               platform, cross-platform, research, and verifier workers
 claude_ads_core/      typed contracts, adapters, validation, and scoring
-control-plane/        source, claim, capability, safety, maturity, and release state
-scripts/              browser, landing-page, creative, and reporting helpers
+control-plane/        evidence, capability, safety, maturity, and release state
+scripts/              browser, creative, reporting, and release helpers
 evals/                routing and behavioral evaluation cases
-tests/                deterministic, routing, security, installer, and adapter tests
+tests/                deterministic, security, installer, and adapter tests
 ```
 
 ## Privacy and publication
 
-This repository remains private until the owner approves a separate public-release
-gate. Client data, raw private research, captured prompts, credentials, account
-exports, and agent transcripts must never enter Git history or release archives.
+The canonical repository remains private until the owner approves a separate
+public-release gate. Client data, raw private research, captured prompts,
+credentials, account exports, and agent transcripts must never enter Git history
+or release archives.
 
 ## License
 
 Original Claude Ads code and documentation are available under the MIT License.
-Third-party APIs, trademarks, documentation, and cited artifacts remain subject to
-their respective terms. See the control-plane source ledger and third-party notices
-before importing external material.
+Third-party APIs, trademarks, documentation, and cited artifacts remain subject
+to their own terms. Review the [source ledger](control-plane/manifests/source-ledger.json)
+and [third-party notices](THIRD_PARTY_NOTICES.md) before importing external work.

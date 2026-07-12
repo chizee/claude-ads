@@ -5,7 +5,40 @@ All notable changes to claude-ads are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2026-07-11
+## [Unreleased]
+
+### Changed
+
+* Replaced the legacy animated banner and diagram collection with five static,
+  accessible, lightweight SVGs aligned to the verified v2 platform, worker,
+  capability, and scoring contracts.
+* Reworked the README around a concise quick start, twelve-platform coverage,
+  canonical commands, safety defaults, and evidence-led scoring.
+* Retained `assets/demo.gif` as the only animated repository visual and labeled
+  its original command-discovery interface as historical.
+* Consolidated public-safe research support in the dated source and claim
+  ledgers. Raw research transcripts and private working notes now stay outside
+  the product repository.
+* Replaced dead HTTP JSON Schema identifiers with stable URNs and documented
+  the tracked canonical schema locations.
+* Extended repository auditing to reject personal tilde-home folders used for
+  documents and downloads while retaining portable install examples.
+* Added explicit progressive-disclosure routes for the adjacent-platform
+  reference and the bounded research and fresh-context review workers.
+* Added an explicit active-platform route for every creative-spec reference so
+  no packaged reference depends on implicit filename discovery.
+
+### Removed
+
+* Removed orphaned legacy banners, diagrams, and the obsolete reusable branding
+  prompt. Several old diagrams contained stale counts or instructions that
+  conflicted with v2 installation, scoring, privacy, and capability policy.
+* Removed tracked raw research corpora that contained local-machine paths or
+  duplicated material already represented by the public-safe control plane.
+* Removed the orphaned brand DNA prose template, which contradicted the strict
+  v1 brand-profile schema and had no runtime route.
+
+## [2.0.0] - Unreleased
 
 Major architecture release for professional paid-media operations.
 

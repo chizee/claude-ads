@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/schemas/product-status.v1.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:control:v1:product-status.v1.json",
   "title": "Claude Ads repository artifact status",
   "type": "object",
   "required": ["schema_version", "evidence_class", "as_of", "selection_policy", "maturity", "evidence", "capabilities", "scoring_profiles", "release_gate", "next_blocker"],

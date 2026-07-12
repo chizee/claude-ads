@@ -1,183 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     viewBox="0 0 1680 768" width="100%"
-     preserveAspectRatio="xMidYMid meet" role="img"
-     aria-label="Claude Ads — AI-Powered Ad Audit"
-     font-family="JetBrains Mono, monospace">
-<title>Claude Ads — Paid Advertising Audit Skill for Claude Code</title>
-<desc>OpenHog-OS-style window. Cream title bar with traffic lights, dark CRT terminal inside with CLAUDE ADS figlet logo + command palette. Animated breathing gradient on the logo and blinking cursor.</desc>
-
-<defs>
-  <!-- Web fonts embedded inside the SVG so it renders correctly even when used as <img> -->
-  <style type="text/css"><![CDATA[
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
-
-    .ascii      { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 22px; font-weight: 700; fill: url(#orangeGrad); }
-    .tagline    { font-family: 'Inter', system-ui, sans-serif; font-size: 28px; font-weight: 500; fill: #F5F4ED; letter-spacing: -0.3px; }
-    .sysline    { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 11px; fill: #7A3A1F; letter-spacing: 1.8px; }
-    .sysline-accent { fill: #D97757; }
-    .hud        { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 10px; fill: #7A3A1F; letter-spacing: 1.6px; }
-    .hud-muted  { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 10px; fill: #5A5750; letter-spacing: 1.6px; }
-    .cmd        { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 30px; fill: #5A5750; letter-spacing: 0.5px; }
-    .cmd-active { fill: #F5F4ED; }
-    .cmd-slash  { fill: #7A3A1F; }
-    .cmd-arg    { fill: #7A3A1F; opacity: 0.7; }
-    .cmd-head   { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 11px; fill: #D97757; letter-spacing: 2px; opacity: 0.65; }
-    .cmd-head-b { fill: #7A3A1F; }
-    .accent-line{ fill: #D97757; }
-    .live-dot   { fill: #D97757; }
-    .win-title  { font-family: 'JetBrains Mono', 'Cascadia Mono', 'Menlo', monospace; font-size: 15px; fill: #E0D2C4; font-weight: 600; }
-  ]]></style>
-
-  <!-- Vertical orange gradient (animated below) -->
-  <linearGradient id="orangeGrad" x1="0" y1="-0.3" x2="0" y2="1.3" gradientUnits="objectBoundingBox">
-    <stop offset="0%"   stop-color="#F5B095"/>
-    <stop offset="25%"  stop-color="#E89270"/>
-    <stop offset="50%"  stop-color="#D97757"/>
-    <stop offset="75%"  stop-color="#B25B3F"/>
-    <stop offset="100%" stop-color="#7A3A1F"/>
-
-    <!-- BREATHING GRADIENT: vertical pan of the colour stops -->
-    <animate attributeName="y1" values="-0.3;0.3;-0.3" dur="4.2s" repeatCount="indefinite"/>
-    <animate attributeName="y2" values="0.7;1.3;0.7"   dur="4.2s" repeatCount="indefinite"/>
-  </linearGradient>
-
-  <pattern id="scanlines" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
-    <rect width="3" height="2" fill="transparent"/>
-    <rect x="0" y="2" width="3" height="1" fill="rgba(0,0,0,0.18)"/>
-  </pattern>
-</defs>
-
-<!-- ═══════════ OS WINDOW SHELL (dark) ═══════════ -->
-<rect x="0.5" y="0.5" width="1679" height="767" rx="10" fill="#2A2520" stroke="#3A312A" stroke-width="1"/>
-<path d="M 0 10 Q 0 0 10 0 L 1670 0 Q 1680 0 1680 10 L 1680 48 L 0 48 Z" fill="#2A2520"/>
-<line x1="0" y1="48" x2="1680" y2="48" stroke="#3A312A" stroke-width="1"/>
-<text x="20" y="29" class="win-title">claude-ads.app — Terminal · /ads audit</text>
-<circle cx="1596" cy="24" r="9" fill="#fbbf24" stroke="#3A312A" stroke-width="0.7"/>
-<circle cx="1624" cy="24" r="9" fill="#10b981" stroke="#3A312A" stroke-width="0.7"/>
-<circle cx="1652" cy="24" r="9" fill="#ef4444" stroke="#3A312A" stroke-width="0.7"/>
-
-<!-- ═══════════ TERMINAL CONTENT (dark canvas) ═══════════ -->
-<g transform="translate(0, 48)">
-  <rect width="1680" height="720" fill="#1F1B16"/>
-  <rect width="1680" height="720" fill="url(#scanlines)" opacity="0.45"/>
-
-  <!-- Inner terminal HUD bar -->
-  <rect x="0" y="0" width="1680" height="26" fill="#0A0807"/>
-  <line x1="0" y1="26" x2="1680" y2="26" stroke="rgba(217,119,87,0.22)" stroke-width="1"/>
-  <circle cx="26" cy="13" r="3" class="live-dot">
-    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.6s" repeatCount="indefinite"/>
-  </circle>
-  <text x="38"   y="17" class="hud">SYS · CLAUDE-ADS</text>
-  <text x="220"  y="17" class="hud">NODE 0x1F · ACTIVE</text>
-  <text x="1660" y="17" class="hud-muted" text-anchor="end">UPTIME 04:12:08</text>
-
-  <!-- Inner terminal status bar -->
-  <rect x="0" y="694" width="1680" height="26" fill="#0A0807"/>
-  <line x1="0" y1="694" x2="1680" y2="694" stroke="rgba(217,119,87,0.22)" stroke-width="1"/>
-  <text x="20"   y="711" class="hud">● LINK · STABLE</text>
-  <text x="180"  y="711" class="hud">BUF 1024K</text>
-  <text x="290"  y="711" class="hud">V1.7.1</text>
-  <text x="1450" y="711" class="hud-muted" text-anchor="end">208.140.MAINFRAME.AGRICIDANIEL</text>
-  <text x="1660" y="711" class="hud-muted" text-anchor="end">12:08:20 UTC</text>
-
-  <!-- ASCII logo — single <text> with explicit dy on each line for proper monospace stacking -->
-  <text x="120" y="155" class="ascii" xml:space="preserve">
-    <tspan x="120" dy="0">  ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗</tspan>
-    <tspan x="120" dy="26">██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝</tspan>
-    <tspan x="120" dy="26">██║     ██║     ███████║██║   ██║██║  ██║█████╗  </tspan>
-    <tspan x="120" dy="26">██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  </tspan>
-    <tspan x="120" dy="26">╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗</tspan>
-    <tspan x="120" dy="26"> ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝</tspan>
-  </text>
-
-  <text x="120" y="335" class="ascii" xml:space="preserve">
-    <tspan x="120" dy="0"> █████╗ ██████╗ ███████╗</tspan>
-    <tspan x="120" dy="26">██╔══██╗██╔══██╗██╔════╝</tspan>
-    <tspan x="120" dy="26">███████║██║  ██║███████╗</tspan>
-    <tspan x="120" dy="26">██╔══██║██║  ██║╚════██║</tspan>
-    <tspan x="120" dy="26">██║  ██║██████╔╝███████║</tspan>
-    <tspan x="120" dy="26">╚═╝  ╚═╝╚═════╝ ╚══════╝</tspan>
-  </text>
-
-  <!-- Divider (pulse synced to gradient breath) -->
-  <rect x="120" y="500" width="540" height="3" rx="2" class="accent-line">
-    <animate attributeName="opacity" values="0.7;1;0.7" dur="4.2s" repeatCount="indefinite"/>
-  </rect>
-
-  <!-- Tagline -->
-  <text x="120" y="545" class="tagline">The Paid-Ads Operating System</text>
-  <text x="120" y="580" class="sysline">
-    <tspan class="sysline-accent">›</tspan> RUNTIME READY · 22 SUB-SKILLS · 209 CHECKS · 6 HOSTS
-  </text>
-
-  <!-- Command palette — scanner cycles through 7 commands every 5.7s -->
-  <g transform="translate(1660, 100)">
-    <text class="cmd-head" text-anchor="end" y="0">
-      <tspan class="cmd-head-b">┌─ </tspan>COMMAND PALETTE<tspan class="cmd-head-b"> ─┐</tspan>
-    </text>
-
-    <!-- ROW HIGHLIGHT — moves through 7 positions, sits behind commands.
-         A brand-orange tinted bar that tracks the active command's row. -->
-    <rect x="-410" y="30" width="430" height="44" rx="4"
-          fill="rgba(217,119,87,0.10)" stroke="rgba(217,119,87,0.25)" stroke-width="1">
-      <animate attributeName="y"
-               values="30;80;130;180;230;280;330;-200"
-               keyTimes="0;0.123;0.246;0.368;0.491;0.614;0.737;0.860"
-               dur="5.7s"
-               calcMode="discrete"
-               repeatCount="indefinite"/>
-    </rect>
-
-    <!-- 7 commands, each with a staggered fill animation (bright→dim cycle).
-         keyTimes 0→0.122 = 0.7s bright window inside a 5.7s cycle.
-         begin offsets stagger them top-to-bottom. -->
-    <text class="cmd" text-anchor="end" y="55">
-      <tspan class="cmd-slash">/</tspan>ads audit
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="0s"   repeatCount="indefinite"/>
-    </text>
-    <text class="cmd" text-anchor="end" y="105">
-      <tspan class="cmd-slash">/</tspan>ads google
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="0.7s" repeatCount="indefinite"/>
-    </text>
-    <text class="cmd" text-anchor="end" y="155">
-      <tspan class="cmd-slash">/</tspan>ads meta
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="1.4s" repeatCount="indefinite"/>
-    </text>
-    <text class="cmd" text-anchor="end" y="205">
-      <tspan class="cmd-slash">/</tspan>ads budget
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="2.1s" repeatCount="indefinite"/>
-    </text>
-    <text class="cmd" text-anchor="end" y="255">
-      <tspan class="cmd-slash">/</tspan>ads creative
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="2.8s" repeatCount="indefinite"/>
-    </text>
-    <text class="cmd" text-anchor="end" y="305">
-      <tspan class="cmd-slash">/</tspan>ads plan <tspan class="cmd-arg">&lt;type&gt;</tspan>
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="3.5s" repeatCount="indefinite"/>
-    </text>
-    <text class="cmd" text-anchor="end" y="355">
-      <tspan class="cmd-slash">/</tspan>ads competitor
-      <animate attributeName="fill" values="#F5F4ED;#F5F4ED;#5A5750" keyTimes="0;0.122;0.125" dur="5.7s" begin="4.2s" repeatCount="indefinite"/>
-    </text>
-
-    <!-- Roaming cursor — jumps to each command's y position in turn.
-         calcMode=discrete = no interpolation between positions (instant jumps). -->
-    <rect x="-3" y="35" width="18" height="26" fill="#F5F4ED">
-      <animate attributeName="y"
-               values="35;85;135;185;235;285;335;-100"
-               keyTimes="0;0.123;0.246;0.368;0.491;0.614;0.737;0.860"
-               dur="5.7s"
-               calcMode="discrete"
-               repeatCount="indefinite"/>
-      <!-- Blink while at position -->
-      <animate attributeName="opacity"
-               values="1;1;0;1;1;0;1"
-               keyTimes="0;0.2;0.25;0.3;0.7;0.75;1"
-               dur="0.7s"
-               repeatCount="indefinite"/>
-    </rect>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Claude Ads</title>
+  <desc id="desc">Claude Ads is a paid-media operating skill for twelve advertising platforms.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#1b2a4a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="640" fill="#ffffff"/>
+  <g font-family="Inter, Helvetica Neue, Arial, sans-serif">
+    <circle cx="1170" cy="72" r="3" fill="#e7eaf0"/>
+    <circle cx="1190" cy="72" r="3" fill="#e7eaf0"/>
+    <circle cx="1210" cy="72" r="3" fill="#e7eaf0"/>
+    <text x="74" y="198" font-size="88" font-weight="800" fill="#191b20">CLAUDE <tspan fill="#c2412d">ADS</tspan></text>
+    <text x="76" y="257" font-size="34" font-weight="700" fill="#374151">The paid-media operating skill</text>
+    <rect x="76" y="287" width="58" height="4" rx="2" fill="#c2412d"/>
+    <text x="76" y="348" font-size="22" fill="#5b6472">Source-grounded audits, plans, creative workflows,</text>
+    <text x="76" y="382" font-size="22" fill="#5b6472">experiments, monitoring, and reports for Claude Code.</text>
+    <g transform="translate(76 444)">
+      <rect width="132" height="44" rx="22" fill="#fbf3ef"/>
+      <text x="66" y="29" text-anchor="middle" font-size="16" font-weight="700" fill="#b93822">12 platforms</text>
+      <rect x="145" width="142" height="44" rx="22" fill="#f3f5f7"/>
+      <text x="216" y="29" text-anchor="middle" font-size="16" font-weight="700" fill="#374151">Read-only first</text>
+      <rect x="300" width="152" height="44" rx="22" fill="#f3f5f7"/>
+      <text x="376" y="29" text-anchor="middle" font-size="16" font-weight="700" fill="#374151">Typed contracts</text>
+    </g>
+    <g transform="translate(840 135)" filter="url(#shadow)">
+      <rect width="366" height="372" rx="18" fill="#ffffff" stroke="#eceef2"/>
+      <text x="28" y="46" font-size="14" font-weight="700" letter-spacing="1.3" fill="#667085">COMMAND PALETTE</text>
+      <rect x="18" y="68" width="330" height="42" rx="10" fill="#fbebe5"/>
+      <text x="34" y="96" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> audit</text>
+      <text x="34" y="146" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> plan</text>
+      <text x="34" y="190" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> create</text>
+      <text x="34" y="234" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> monitor</text>
+      <text x="34" y="278" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> optimize --draft</text>
+      <text x="34" y="322" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#191b20"><tspan fill="#c2412d">/ads</tspan> report</text>
+      <circle cx="327" cy="342" r="5" fill="#16a34a"/>
+      <text x="310" y="347" text-anchor="end" font-size="12" fill="#667085">verified outputs</text>
+    </g>
   </g>
-</g>
-
 </svg>

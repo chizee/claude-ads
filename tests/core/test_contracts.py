@@ -135,7 +135,45 @@ def test_all_packaged_schemas_are_valid_json_and_versioned():
         path = schema_path(name)
         schema = json.loads(path.read_text(encoding="utf-8"))
         assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
-        assert schema["$id"].endswith(f"/v1/{name}.schema.json")
+        assert schema["$id"] == (
+            f"urn:ai-marketing-hub:claude-ads:schema:core:v1:{name}.schema.json"
+        )
+
+
+def test_every_cross_file_schema_reference_is_absolute_and_registered(repo_root: Path):
+    schema_roots = (
+        repo_root / "claude_ads_core/schemas/v1",
+        repo_root / "control-plane/schemas",
+        repo_root / "evals/schemas",
+    )
+    documents = []
+    registered_ids = set()
+    for schema_root in schema_roots:
+        for path in schema_root.glob("*.json"):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            documents.append((path, document))
+            registered_ids.add(document["$id"])
+
+    def references(value):
+        if isinstance(value, dict):
+            if "$ref" in value:
+                yield value["$ref"]
+            for child in value.values():
+                yield from references(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from references(child)
+
+    for path, document in documents:
+        for reference in references(document):
+            if reference.startswith("#"):
+                continue
+            target = reference.split("#", 1)[0]
+            assert target.startswith("urn:ai-marketing-hub:claude-ads:schema:"), (
+                path,
+                reference,
+            )
+            assert target in registered_ids, (path, reference)
 
 
 def test_snapshot_rejects_reversed_window():

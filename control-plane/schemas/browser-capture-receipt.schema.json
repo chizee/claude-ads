@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AI-Marketing-Hub/claude-ads/schemas/browser-capture-receipt.v1.json",
+  "$id": "urn:ai-marketing-hub:claude-ads:schema:control:v1:browser-capture-receipt.v1.json",
   "title": "Claude Ads browser capture receipt",
   "type": "object",
   "additionalProperties": false,
@@ -18,7 +18,7 @@
     "schema_version": {"const": "1.0.0"},
     "operation": {"const": "browser-screenshot-capture"},
     "privacy_class": {"const": "confidential"},
-    "data_lifecycle": {"$ref": "../../claude_ads_core/schemas/v1/data-lifecycle.schema.json"},
+    "data_lifecycle": {"$ref": "urn:ai-marketing-hub:claude-ads:schema:core:v1:data-lifecycle.schema.json"},
     "recorded_at": {"type": "string", "format": "date-time"},
     "target": {
       "type": "object",

@@ -129,6 +129,10 @@ creative review, tracking, finance, or compliance only when they can proceed
 independently. Keep requirement interpretation, architecture decisions, scoring,
 and final acceptance in the conductor context.
 
+Use `agents/research-worker.md` for a bounded source, license, issue, pull-request,
+or repository slice. Use `agents/skill-reviewer.md` for a fresh-context review of
+routing, progressive disclosure, prompt contracts, and safety boundaries.
+
 Every task packet specifies:
 
 - Objective, scope, exclusions, inputs, and dependencies.
@@ -297,6 +301,8 @@ never hardcode `~/.claude`. Load only what the request needs:
 - `references/conversion-tracking.md`: measurement foundations.
 - `references/compliance.md` and `compliance-requirements.md`: policy and regulation.
 - `references/mcp-integration.md`: integration and approval boundaries.
+- `references/additional-platforms.md`: evidence gates for channels outside the
+  twelve-platform product contract; load only for adjacent-channel planning.
 - `references/automation-tier-classifier.md`: account automation maturity.
 - `references/status-contract.md`: deterministic `/ads status` and `/ads next` evidence and priority rules.
 - `references/prompt-patterns.md`: worked routing, worker, evidence, mutation, and

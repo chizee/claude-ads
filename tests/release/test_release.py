@@ -135,6 +135,14 @@ def test_audit_checks_frontmatter_and_sensitive_content(tmp_path: Path) -> None:
     errors = audit_repository(root)
     assert any("Unix home path" in error for error in errors)
 
+    skill.write_text(
+        "---\nname: ads-google\ndescription: Google Ads.\n---\n"
+        "Private source: ~/Docu" + "ments/client-research.txt\n",
+        encoding="utf-8",
+    )
+    errors = audit_repository(root)
+    assert any("personal tilde path" in error for error in errors)
+
 
 def test_package_is_deterministic_public_safe_and_verifiable(tmp_path: Path) -> None:
     root = _repository(tmp_path)
