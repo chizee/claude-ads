@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Replaced the legacy animated banner and diagram collection with five static,
-  accessible, lightweight SVGs aligned to the verified v2 platform, worker,
-  capability, and scoring contracts.
+* Installed the intended animated cover banner and the four animated
+  architecture, how-it-works, platform-coverage, and health-score diagrams from
+  the canonical design source. Every SVG is self-contained, with no scripts,
+  event handlers, external requests, or remote assets.
 * Reworked the README around a concise quick start, twelve-platform coverage,
   canonical commands, safety defaults, and evidence-led scoring.
-* Retained `assets/demo.gif` as the only animated repository visual and labeled
-  its original command-discovery interface as historical.
+* Retained `assets/demo.gif` and labeled its original command-discovery
+  interface as historical.
 * Consolidated public-safe research support in the dated source and claim
   ledgers. Raw research transcripts and private working notes now stay outside
   the product repository.
