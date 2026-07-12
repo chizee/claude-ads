@@ -57,6 +57,8 @@ def test_private_permission_implementation_uses_structural_handle_acl_checks():
     assert "GetFileInformationByHandleEx" in source
     assert "_windows_open_path_guard" in source
     assert "_windows_delete_by_anchor" in source
+    assert "0x80020000" in source
+    assert "0x00000001,  # FILE_SHARE_READ only" in source
     assert "SetNamedSecurityInfo" not in source
     assert 'sddl = f"O:{current_sid}D:P' in source
     assert "icacls" not in source.lower()

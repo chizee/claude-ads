@@ -273,7 +273,7 @@ def _windows_open_path_guard(path: Path, anchor: int) -> int:
     kernel32.CreateFileW.restype = wintypes.HANDLE
     guard = kernel32.CreateFileW(
         str(path),
-        0x00020000,  # READ_CONTROL
+        0x80020000,  # GENERIC_READ|READ_CONTROL: participate in share enforcement.
         0x00000001,  # FILE_SHARE_READ only; deny write/truncate/delete/swap.
         None,
         3,  # OPEN_EXISTING
