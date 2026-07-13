@@ -12,6 +12,14 @@ audits, plans, creative workflows, experiments, monitoring, and reports. It is
 read-only by default. Live changes stay disabled until the exact platform and
 operation pass approval, idempotency, verification, audit, and rollback gates.
 
+> [!NOTE]
+> Claude Ads ships from two homes: the **public release** at
+> [`AgriciDaniel/claude-ads`](https://github.com/AgriciDaniel/claude-ads)
+> (MIT, no membership required) and the **community mirror** at
+> `AI-Marketing-Hub/claude-ads`, where
+> [AI Marketing Hub Pro](https://www.skool.com/ai-marketing-hub-pro) members
+> get early access and direct collaboration.
+
 <p align="center">
   <img src="assets/diagrams/how-it-works.svg" alt="Validated inputs flow through bounded workers into schema-valid findings and deterministic reports" width="100%">
 </p>
@@ -83,10 +91,17 @@ runtime supports them.
 Prefer the host's native plugin flow or a tagged release archive with a verified
 SHA-256 checksum. Never pipe a remote installer directly to a shell.
 
-From an authenticated local checkout of the private v2 branch:
+For Claude Code, the native plugin flow is:
+
+```text
+/plugin marketplace add AgriciDaniel/claude-ads
+/plugin install claude-ads@ai-marketing-hub-claude-ads
+```
+
+Or install from a local clone of the public repository:
 
 ```bash
-git clone --branch v2 https://github.com/AI-Marketing-Hub/claude-ads.git
+git clone https://github.com/AgriciDaniel/claude-ads.git
 cd claude-ads
 bash install.sh --source=local
 ```
@@ -101,7 +116,7 @@ bash install.sh --target=gemini --source=local --no-deps
 PowerShell uses the same managed ownership model:
 
 ```powershell
-git clone --branch v2 https://github.com/AI-Marketing-Hub/claude-ads.git
+git clone https://github.com/AgriciDaniel/claude-ads.git
 Set-Location claude-ads
 .\install.ps1 -Source local
 ```

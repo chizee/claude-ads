@@ -191,7 +191,7 @@ function Main {
     }
     $SkillDirResolved = [IO.Path]::GetFullPath((Join-Path $SkillBase "ads"))
     $ManifestPath = [IO.Path]::GetFullPath((Join-Path $SkillBase ".claude-ads-$Target.manifest.json"))
-    $RepoUrl = "https://github.com/AI-Marketing-Hub/claude-ads"
+    $RepoUrl = "https://github.com/AgriciDaniel/claude-ads"
     $StringComparer = if ($PathComparison -eq [StringComparison]::OrdinalIgnoreCase) {
         [StringComparer]::OrdinalIgnoreCase
     } else {

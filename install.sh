@@ -24,7 +24,7 @@ set -euo pipefail
 # possible via --target=...). Custom --skill-dir paths are validated against
 # `;&|$()<>` ` `, leading dashes, `..` segments, and UNC-style paths.
 
-REPO_URL="https://github.com/AI-Marketing-Hub/claude-ads"
+REPO_URL="https://github.com/AgriciDaniel/claude-ads"
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 # ─────────────────────────────────────────────────────────────────────────────

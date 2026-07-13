@@ -5,6 +5,31 @@ All notable changes to claude-ads are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-07-13
+
+Documentation and metadata patch on top of v2.0.0 for the public mirror
+release. No code-contract, scoring, catalog, or behavior changes.
+
+### Changed
+
+* **Public release surface**: user-facing repository links in the README
+  install paths, `SUPPORT.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`,
+  `CONTRIBUTING.md`, the issue templates, `CITATION.cff`, and the plugin and
+  marketplace manifests now point to the public `AgriciDaniel/claude-ads`
+  repository, so installation, issues, discussions, and private vulnerability
+  reporting work without AI-Marketing-Hub org access. The community mirror
+  stays documented for AI Marketing Hub Pro members.
+* **Installer default clone source** (`install.sh`, `install.ps1`) retargeted
+  from the private org repository to the public repository so remote-source
+  installs can clone it without org credentials.
+* **Runtime attribution URLs**: the PDF report footer (`generate_report.py`)
+  and the page-fetch User-Agent contact URL (`fetch_page.py`) now reference
+  the public repository. Signed review-evidence provenance
+  (`review_evidence.py`, review templates) intentionally keeps the canonical
+  org subject.
+* **README**: added the dual-distribution note and the native Claude Code
+  plugin install commands.
+
 ## [2.0.0] - 2026-07-12
 
 Major architecture release for professional paid-media operations.

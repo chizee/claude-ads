@@ -20,7 +20,7 @@ raw private research, local absolute paths, or agent transcripts.
 ## Development setup
 
 ```bash
-git clone https://github.com/AI-Marketing-Hub/claude-ads.git
+git clone https://github.com/AgriciDaniel/claude-ads.git
 cd claude-ads
 python -m venv .venv
 .venv/bin/python -m pip install -e . -r requirements.txt -r requirements-dev.txt
@@ -91,7 +91,7 @@ deletion is unsupported in v2.
 ## Security reports
 
 Do not open a public issue for a vulnerability. Use the repository's private
-[GitHub Security Advisory](https://github.com/AI-Marketing-Hub/claude-ads/security/advisories/new)
+[GitHub Security Advisory](https://github.com/AgriciDaniel/claude-ads/security/advisories/new)
 channel and include the affected version, reproduction, and impact.
 
 ## Release work
